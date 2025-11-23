@@ -180,6 +180,10 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+    background: transparent; /* make expanded menu transparent */
+    /* optional: add subtle blur behind the nav
+       backdrop-filter: blur(6px);
+    */
 }
 
 .nav-menu.closing {
@@ -344,7 +348,7 @@ dl, ol, ul {
     height: 100vh;
     overflow: hidden;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     z-index: 1;
     background: transparent;
@@ -366,7 +370,7 @@ dl, ol, ul {
     opacity: 0;
     animation: fade 18s infinite ease-in-out;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
 }
 
@@ -430,19 +434,6 @@ dl, ol, ul {
 }
 
 
-/* ------------------------------------
-   MEDIA QUERIES
------------------------------------- */
-
-@media (min-width: 1024px) {
-    .nav-menu { width: 33vw; }
-}
-
-@media (min-width: 1600px) {
-    .nav-menu { width: 16.6vw; }
-}
-
-
 
     /* Place caption directly under the carousel / trio */
     .caption {
@@ -459,7 +450,7 @@ dl, ol, ul {
     }
 
 
-@media (max-width: 1400px) {
+
 
     /* Space below the fixed nav (not arbitrary — real offset) */
     .carousel {
@@ -477,13 +468,70 @@ dl, ol, ul {
         right: auto;
         transform: none;
         width: 100vw;
-        max-width: none;
+        max-width: 1600px;
         margin: 0 auto;
     }
 
-    .trio {
-        width: 100%;
-        transform: translate(-50%, -50%) scale(1.15);
+  
+
+
+/* ------------------------------------
+   MEDIA QUERIES
+------------------------------------ */
+@media (max-width: 400px) {
+    .carousel {margin-top: 15em !important;}
+}
+
+@media (min-width: 401px) and (max-width: 500px) {
+    .carousel {
+        margin-top: 18em !important;
     }
 }
+
+@media (min-width: 501px) and (max-width: 600px) {
+    .carousel {
+        margin-top: 20em !important;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 700px) {
+    .carousel {
+        margin-top: 22em !important;
+    }
+}
+
+@media (min-width: 701px) and (max-width: 900px) {
+    .carousel {
+        margin-top: 30em !important;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1200px) {
+    .carousel {
+        margin-top: 35em !important;
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1600px) {
+    .carousel {
+        margin-top: 40em !important;
+    }
+}
+
+@media (min-width: 1601px) and (max-width: 5000px) {
+    .carousel {
+        margin-top: 45em !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .nav-menu { width: 33vw; }
+}
+
+@media (min-width: 1600px) {
+    .nav-menu { width: 16.6vw; }
+
+}
+
+
 
