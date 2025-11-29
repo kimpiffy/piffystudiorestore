@@ -1,14 +1,109 @@
 {% extends 'dashboard_base.html' %}
 
-
 {% block content %}
-<h1>{{ form.instance.pk|yesno:"Edit Product,Add Product" }}</h1>
 
-<form method="POST" enctype="multipart/form-data">
+<h1>
+    {% if product %}
+        Edit Product – {{ product.title }}
+    {% else %}
+        Add Product
+    {% endif %}
+</h1>
+
+<!-- ========================= -->
+<!-- PRODUCT DETAILS FORM -->
+<!-- ========================= -->
+<form method="POST">
     {% csrf_token %}
+
     {{ form.as_p }}
-    {{ image_form.as_p }}
-    <button type="submit">Save</button>
+
+    <button type="submit" name="save_product" class="btn btn-success mt-3">
+        Save Product
+    </button>
 </form>
+
+{% if product %}
+
+<!-- ========================= -->
+<!-- IMAGE UPLOAD FORM (SEPARATE FORM!) -->
+<!-- ========================= -->
+<h3 class="mt-4">Upload Images</h3>
+
+<form method="POST" enctype="multipart/form-data"
+      action="{% url 'shop:upload_product_image' product.id %}">
+
+    {% csrf_token %}
+    <input type="hidden" name="action" value="upload_images">
+
+ <p>
+    <label>Upload Images:</label>
+    <input type="file" name="images" multiple>
+</p>
+
+
+    <button type="submit" class="btn btn-primary mt-3">
+        Upload Images
+    </button>
+</form>
+
+<!-- ========================= -->
+<!-- EXISTING IMAGES -->
+<!-- ========================= -->
+<h3 class="mt-4">Existing Images</h3>
+
+<div class="row">
+    {% for image in images %}
+        <div class="col-4 mb-3">
+            <div class="card">
+                <img src="{{ image.image.url }}" class="card-img-top" alt="">
+                <div class="card-body text-center">
+                    <a href="{% url 'shop:delete_product_image' image.id %}"
+                       class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No images yet.</p>
+    {% endfor %}
+</div>
+
+<!-- ========================= -->
+<!-- VARIANTS -->
+<!-- ========================= -->
+<h3 class="mt-4">Variants</h3>
+
+<a href="{% url 'shop:add_variant' product.id %}" class="btn btn-primary mb-3">
+    Add Variant
+</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Stock</th>
+            <th>Price Adjust</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for variant in variants %}
+            <tr>
+                <td>{{ variant.name }}</td>
+                <td>{{ variant.stock }}</td>
+                <td>{{ variant.price_adjust }}</td>
+                <td>
+                    <a href="{% url 'shop:edit_variant' variant.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'shop:delete_variant' variant.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4">No variants yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endif %}
 
 {% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Manage Categories</h1>
+
+<a href="{% url 'shop:add_category' %}" class="btn btn-primary mb-3">Add Category</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Description</th>
+            <th style="width: 150px;">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for category in categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.slug }}</td>
+            <td>{{ category.description|default:"—" }}</td>
+            <td>
+                <a href="{% url 'shop:edit_category' category.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'shop:delete_category' category.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
