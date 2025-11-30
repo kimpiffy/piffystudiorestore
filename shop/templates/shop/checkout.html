@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Checkout</h1>
+
+    <div class="cart-summary">
+        <h3>Order Summary</h3>
+        <ul>
+            {% for item in cart_items %}
+                <li>
+                    {{ item.product.title }} x {{ item.quantity }} - £{{ item.total_price }}
+                </li>
+            {% endfor %}
+        </ul>
+        <strong>Total: £{{ total_price }}</strong>
+    </div>
+
+    <!-- Stripe Checkout Button -->
+    <form action="{% url 'shop:create_checkout_session' %}" method="POST">
+        <button type="submit" id="checkout-button">Checkout with Stripe</button>
+    </form>
+{% endblock %}

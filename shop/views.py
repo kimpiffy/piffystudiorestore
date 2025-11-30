@@ -1,9 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from accounts.decorators import staff_required
-
 from .models import Product, ProductImage, Category, ProductVariant
 from .forms import ProductForm, CategoryForm, MultiImageUploadForm, VariantForm
+from django.shortcuts import get_object_or_404, redirect
+from .models import Product, Cart, CartItem, Order
+from django.http import JsonResponse
+import json
+try:
+    import stripe
+except ImportError:
+    stripe = None
 
 
 # ============================
@@ -23,6 +30,15 @@ def product_detail(request, slug):
     return render(request, 'shop/product_detail.html', {
         'product': product
     })
+
+# ORDER SUCCESS PAGE
+def success(request):
+    return render(request, 'shop/success.html')  # Adjust the template path if necessary
+
+# CANCEL PAGE
+
+def cancel(request):
+    return render(request, 'shop/cancel.html')  # Adjust the template path as needed
 
 
 # ============================
@@ -313,8 +329,7 @@ def delete_category(request, pk):
 # ============================
 # IMAGE ORDER UPDATE (AJAX)
 # ============================
-from django.http import JsonResponse
-import json
+
 
 @staff_required
 def update_image_order(request):
@@ -336,3 +351,103 @@ def update_image_order(request):
         return JsonResponse({"status": "ok"})
 
     return JsonResponse({"error": "Invalid method"}, status=400)
+
+# frontend product list
+
+def product_list(request):
+    # Fetch products and categories
+    products = Product.objects.all().order_by('-created_at')
+    categories = Category.objects.all()
+    
+    # Category filter
+    category_id = request.GET.get('category')
+    if category_id:
+        products = products.filter(category_id=category_id)
+    
+    # Price filter
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    if min_price and max_price:
+        products = products.filter(price__gte=min_price, price__lte=max_price)
+    
+    return render(request, 'shop/product_list.html', {
+        'products': products,
+        'categories': categories
+    })
+
+from django.conf import settings
+
+# configure stripe if available
+stripe_api_key = getattr(settings, "STRIPE_SECRET_KEY", None)
+if stripe is not None and stripe_api_key:
+    stripe.api_key = stripe_api_key
+
+def create_checkout_session(request):
+    if stripe is None:
+        messages.error(request, "Stripe library is not installed. Please install the 'stripe' package.")
+        return redirect('shop:product_list')
+
+    # Get cart items, total price
+    cart = Cart.objects.filter(user=request.user).first()
+    if not cart or not hasattr(cart, 'items') or not cart.items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect('shop:product_list')
+
+    line_items = []
+    for item in cart.items.all():
+        unit_amount = int(item.product.price * 100)  # Stripe expects the price in cents
+        line_items.append({
+            'price_data': {
+                'currency': 'usd',
+                'product_data': {
+                    'name': item.product.title,
+                },
+                'unit_amount': unit_amount,
+            },
+            'quantity': item.quantity,
+        })
+
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=line_items,
+        mode='payment',
+        success_url=getattr(settings, "STRIPE_SUCCESS_URL", "http://yourdomain.com/success/"),
+        cancel_url=getattr(settings, "STRIPE_CANCEL_URL", "http://yourdomain.com/cancel/"),
+    )
+
+    return redirect(session.url, code=303)
+
+
+def success(request):
+    # Assuming you store the order after a successful Stripe payment
+    order_id = request.GET.get('session_id')  # Stripe session_id or order_id can be passed
+    order = Order.objects.get(id=order_id)  # Retrieve the order from your database
+
+    return render(request, 'shop/success.html', {
+        'order': order,
+    })
+
+def create_checkout_session(request):
+    # Create line items for the Stripe Checkout session (e.g., cart items)
+    line_items = [
+        {
+            'price_data': {
+                'currency': 'usd',
+                'product_data': {
+                    'name': 'T-shirt',
+                },
+                'unit_amount': 2000,  # Price in cents
+            },
+            'quantity': 1,
+        },
+    ]
+
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=line_items,
+        mode='payment',
+        success_url=request.build_absolute_uri('/thank-you/?session_id={CHECKOUT_SESSION_ID}'),  # Include session ID
+        cancel_url=request.build_absolute_uri('/cancel/'),  # URL to redirect if canceled
+    )
+
+    return redirect(session.url, code=303)

@@ -1,12 +1,27 @@
 {% extends "dashboard_base.html" %}
+{% load static %}
 
 {% block content %}
-<h1 class="mb-4">Login</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="card p-4 shadow-sm" style="max-width: 420px; width: 100%; text-align: center; background: white; border-radius: 12px;">
 
-    <button type="submit" class="btn btn-primary">Log in</button>
-</form>
+        <!-- LOGO -->
+        <img src="{% static 'img/logo.png' %}" 
+             alt="Logo"
+             class="mb-4 img-fluid mx-auto d-block"
+             style="width:300px; height:auto;">
+
+        <h2 class="mb-3" style="color: var(--accent);">Login</h2>
+
+        <form method="post" class="text-center">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" class="btn-accent mt-3">Log In</button>
+        </form>
+
+    </div>
+</div>
+
 {% endblock %}

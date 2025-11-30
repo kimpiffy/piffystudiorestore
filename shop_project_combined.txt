@@ -1,0 +1,1662 @@
+
+
+### shop/models.py ###
+
+from django.db import models
+from django.utils.text import slugify
+
+
+# ============================
+# CATEGORY
+# ============================
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(unique=True, blank=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'Categories'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+# ============================
+# PRODUCT
+# ============================
+class Product(models.Model):
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=9, decimal_places=2)
+    stock = models.PositiveIntegerField(default=10)
+    featured = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+
+# ============================
+# PRODUCT IMAGE
+# ============================
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='products/')
+    position = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['position']  
+
+    def __str__(self):
+        return f"{self.product.title} image"
+
+# ============================
+# PRODUCT VARIANT
+# ============================
+class ProductVariant(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
+    name = models.CharField(max_length=100)  # "Small", "A3 print", "Framed", etc.
+    stock = models.PositiveIntegerField(default=0)
+    price_adjust = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
+
+    class Meta:
+        unique_together = ('product', 'name')
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.product.title} - {self.name}"
+
+    @property
+    def final_price(self):
+        return self.product.price + self.price_adjust
+
+==================================================
+
+
+### shop/__init__.py ###
+
+
+==================================================
+
+
+### shop/apps.py ###
+
+from django.apps import AppConfig
+
+
+class ShopConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'shop'
+
+==================================================
+
+
+### shop/forms.py ###
+
+from django import forms
+from .models import Product, ProductImage, Category, ProductVariant
+
+
+# ============================
+# PRODUCT FORM
+# ============================
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = [
+            'title',
+            'category',
+            'description',
+            'price',
+            'stock',
+            'featured'
+        ]
+
+
+# ============================
+# SINGLE IMAGE FORM
+# ============================
+class ProductImageForm(forms.ModelForm):
+    class Meta:
+        model = ProductImage
+        fields = ['image']
+
+
+# ============================
+# MULTI-IMAGE UPLOADER
+# ============================
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultiImageUploadForm(forms.Form):
+    images = forms.FileField(
+        widget=MultipleFileInput(attrs={'multiple': True}),
+        required=False
+    )
+
+    def clean_images(self):
+        # ALWAYS return a list of uploaded files.
+        # This bypasses Django's single-file validation.
+        return self.files.getlist('images')
+
+
+# ============================
+# CATEGORY FORM
+# ============================
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'description']
+
+
+# ============================
+# VARIANT FORM
+# ============================
+class VariantForm(forms.ModelForm):
+    class Meta:
+        model = ProductVariant
+        fields = ['name', 'stock', 'price_adjust']
+
+==================================================
+
+
+### shop/admin.py ###
+
+from django.contrib import admin
+from .models import Product, Category, ProductImage, ProductVariant
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'price', 'stock', 'featured')
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ('title', 'description')
+    list_filter = ('category', 'featured')
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ('product', 'image')
+
+
+@admin.register(ProductVariant)
+class ProductVariantAdmin(admin.ModelAdmin):
+    list_display = ('product', 'name', 'stock', 'price_adjust')
+
+==================================================
+
+
+### shop/tests.py ###
+
+from django.test import TestCase
+
+# Create your tests here.
+
+==================================================
+
+
+### shop/urls.py ###
+
+from django.urls import path
+from . import views
+
+app_name = "shop"
+
+urlpatterns = [
+    path('manage/products/', views.manage_products, name='manage_products'),
+    path('manage/products/add/', views.add_product, name='add_product'),
+    path('manage/products/<int:pk>/edit/', views.edit_product, name='edit_product'),
+    path('manage/products/<int:pk>/delete/', views.delete_product, name='delete_product'),
+    path("manage/products/bulk-delete/", views.bulk_delete, name="bulk_delete"),
+    path("manage/products/<int:pk>/duplicate/", views.duplicate_product, name="duplicate_product"),
+
+
+    # Image uploads + ordering
+    path('manage/products/<int:product_id>/images/upload/', views.upload_product_image, name='upload_product_image'),
+    path('manage/images/<int:image_id>/delete/', views.delete_product_image, name='delete_product_image'),
+    path('manage/images/reorder/', views.update_image_order, name='update_image_order'),
+
+    # Categories
+    path('manage/categories/', views.manage_categories, name='manage_categories'),
+    path('manage/categories/add/', views.add_category, name='add_category'),
+    path('manage/categories/<int:pk>/edit/', views.edit_category, name='edit_category'),
+    path('manage/categories/<int:pk>/delete/', views.delete_category, name='delete_category'),
+
+    # Variants
+    path('manage/variants/add/<int:product_id>/', views.add_variant, name='add_variant'),
+    path('manage/variants/<int:variant_id>/edit/', views.edit_variant, name='edit_variant'),
+    path('manage/variants/<int:variant_id>/delete/', views.delete_variant, name='delete_variant'),
+]
+
+==================================================
+
+
+### shop/views.py ###
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from accounts.decorators import staff_required
+
+from .models import Product, ProductImage, Category, ProductVariant
+from .forms import ProductForm, CategoryForm, MultiImageUploadForm, VariantForm
+
+
+# ============================
+# PUBLIC SHOP
+# ============================
+def product_list(request):
+    products = Product.objects.all().order_by('-created_at')
+    categories = Category.objects.all()
+    return render(request, 'shop/product_list.html', {
+        'products': products,
+        'categories': categories
+    })
+
+
+def product_detail(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    return render(request, 'shop/product_detail.html', {
+        'product': product
+    })
+
+
+# ============================
+# PRODUCT MANAGEMENT
+# ============================
+@staff_required
+def manage_products(request):
+    products = Product.objects.all().order_by('-created_at')
+
+    for p in products:
+        p.featured = p.images.first()  # None if no images
+
+    return render(request, 'shop/manage/products_list.html', {'products': products})
+
+
+@staff_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+
+        if form.is_valid():
+            product = form.save()
+            messages.success(request, "Product created successfully.")
+            return redirect('shop:edit_product', pk=product.pk)
+
+    else:
+        form = ProductForm()
+
+    return render(request, 'shop/manage/product_form.html', {
+        'form': form,
+        'product': None,
+        'images': [],
+        'variants': []
+    })
+
+
+@staff_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+
+        if form.is_valid():
+            form.save()
+
+            action = request.POST.get("save_product")
+
+            if action == "exit":
+                messages.success(request, "Product saved. Returning to product list.")
+                return redirect('shop:manage_products')
+
+            messages.success(request, "Product updated successfully.")
+            return redirect('shop:edit_product', pk=product.pk)
+
+    else:
+        form = ProductForm(instance=product)
+
+    image_form = MultiImageUploadForm()
+
+    return render(request, 'shop/manage/product_form.html', {
+        'form': form,
+        'product': product,
+        'image_form': image_form,
+        'images': product.images.all(),
+        'variants': product.variants.all()
+    })
+
+
+@staff_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    title = product.title
+    product.delete()
+    messages.success(request, f"Product '{title}' deleted successfully.")
+    return redirect('shop:manage_products')
+
+# BULK DELETE PRODUCTS
+
+@staff_required
+def bulk_delete(request):
+    if request.method == "POST":
+        ids = request.POST.getlist("selected_products[]")
+
+        if ids:
+            Product.objects.filter(id__in=ids).delete()
+            messages.success(request, f"Deleted {len(ids)} products.")
+        else:
+            messages.error(request, "No products selected.")
+
+    return redirect('shop:manage_products')
+
+
+# DUPLICATE PRODUCT
+
+@staff_required
+def duplicate_product(request, pk):
+    original = get_object_or_404(Product, pk=pk)
+
+    # --- 1: Duplicate the product ---------------------------
+    new_product = Product.objects.create(
+        title = original.title + " (Copy)",
+        slug = "",  # force regeneration
+        category = original.category,
+        description = original.description,
+        price = original.price,
+        stock = original.stock,
+        featured = original.featured,
+    )
+
+    # Regenerate slug
+    new_product.save()
+
+    # --- 2: Duplicate variants ------------------------------
+    for variant in original.variants.all():
+        ProductVariant.objects.create(
+            product=new_product,
+            name=variant.name,
+            stock=variant.stock,
+            price_adjust=variant.price_adjust,
+        )
+
+    # --- 3: Duplicate images (with file copy) ----------------
+    from django.core.files.base import ContentFile
+
+    for img in original.images.all():
+        old_file = img.image
+
+        if not old_file:
+            continue
+
+        # Read the existing file
+        old_file.open()
+        file_content = old_file.read()
+        old_file.close()
+
+        # Save new image
+        new_image = ProductImage(product=new_product)
+        new_filename = old_file.name.split("/")[-1]
+
+        new_image.image.save(
+            f"copy_{new_product.id}_{new_filename}",
+            ContentFile(file_content),
+            save=True
+        )
+
+    messages.success(request, f"Product '{original.title}' duplicated.")
+    return redirect('shop:edit_product', pk=new_product.pk)
+
+
+
+# ============================
+# IMAGE UPLOAD
+# ============================
+@staff_required
+def upload_product_image(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == "POST":
+        files = request.FILES.getlist("images")
+
+        for f in files:
+            ProductImage.objects.create(product=product, image=f)
+
+        messages.success(request, "Images uploaded successfully.")
+        return redirect('shop:edit_product', pk=product_id)
+
+    return redirect('shop:edit_product', pk=product_id)
+
+
+@staff_required
+def delete_product_image(request, image_id):
+    image = get_object_or_404(ProductImage, id=image_id)
+    product_id = image.product.id
+    image.delete()
+    messages.success(request, "Image deleted successfully.")
+    return redirect('shop:edit_product', pk=product_id)
+
+
+# ============================
+# VARIANT MANAGEMENT
+# ============================
+@staff_required
+def add_variant(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == 'POST':
+        form = VariantForm(request.POST)
+        if form.is_valid():
+            variant = form.save(commit=False)
+            variant.product = product
+            variant.save()
+            messages.success(request, "Variant added successfully.")
+            return redirect('shop:edit_product', pk=product.id)
+    else:
+        form = VariantForm()
+
+    return render(request, 'shop/manage/variant_form.html', {
+        'form': form,
+        'product': product
+    })
+
+
+@staff_required
+def edit_variant(request, variant_id):
+    variant = get_object_or_404(ProductVariant, id=variant_id)
+
+    if request.method == 'POST':
+        form = VariantForm(request.POST, instance=variant)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Variant updated successfully.")
+            return redirect('shop:edit_product', pk=variant.product.id)
+    else:
+        form = VariantForm(instance=variant)
+
+    return render(request, 'shop/manage/variant_form.html', {
+        'form': form,
+        'variant': variant,
+        'product': variant.product
+    })
+
+
+@staff_required
+def delete_variant(request, variant_id):
+    variant = get_object_or_404(ProductVariant, id=variant_id)
+    product_id = variant.product.id
+    variant.delete()
+    messages.success(request, "Variant deleted successfully.")
+    return redirect('shop:edit_product', pk=product_id)
+
+
+# ============================
+# CATEGORY MANAGEMENT
+# ============================
+@staff_required
+def manage_categories(request):
+    categories = Category.objects.all().order_by('name')
+    return render(request, 'shop/manage/categories_list.html', {
+        'categories': categories
+    })
+
+
+@staff_required
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Category created successfully.")
+            return redirect('shop:manage_categories')
+    else:
+        form = CategoryForm()
+
+    return render(request, 'shop/manage/category_form.html', {
+        'form': form
+    })
+
+
+@staff_required
+def edit_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Category updated successfully.")
+            return redirect('shop:manage_categories')
+    else:
+        form = CategoryForm(instance=category)
+
+    return render(request, 'shop/manage/category_form.html', {
+        'form': form,
+        'category': category
+    })
+
+
+@staff_required
+def delete_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    name = category.name
+    category.delete()
+    messages.success(request, f"Category '{name}' deleted successfully.")
+    return redirect('shop:manage_categories')
+
+
+# ============================
+# IMAGE ORDER UPDATE (AJAX)
+# ============================
+from django.http import JsonResponse
+import json
+
+@staff_required
+def update_image_order(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        order_list = data.get("order", [])
+
+        for item in order_list:
+            img_id = item["id"]
+            position = item["position"]
+
+            try:
+                img = ProductImage.objects.get(id=img_id)
+                img.position = position
+                img.save()
+            except ProductImage.DoesNotExist:
+                continue
+
+        return JsonResponse({"status": "ok"})
+
+    return JsonResponse({"error": "Invalid method"}, status=400)
+
+==================================================
+
+
+### shop/migrations/0003_alter_productimage_options.py ###
+
+# Generated by Django 4.2.26 on 2025-11-30 12:44
+
+from django.db import migrations
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('shop', '0002_productimage_position'),
+    ]
+
+    operations = [
+        migrations.AlterModelOptions(
+            name='productimage',
+            options={'ordering': ['position']},
+        ),
+    ]
+
+==================================================
+
+
+### shop/migrations/__init__.py ###
+
+
+==================================================
+
+
+### shop/migrations/0002_productimage_position.py ###
+
+# Generated by Django 4.2.26 on 2025-11-30 12:25
+
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('shop', '0001_initial'),
+    ]
+
+    operations = [
+        migrations.AddField(
+            model_name='productimage',
+            name='position',
+            field=models.PositiveIntegerField(default=0),
+        ),
+    ]
+
+==================================================
+
+
+### shop/migrations/0001_initial.py ###
+
+# Generated by Django 4.2.26 on 2025-11-30 11:37
+
+from django.db import migrations, models
+import django.db.models.deletion
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = [
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='Category',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=100, unique=True)),
+                ('slug', models.SlugField(blank=True, unique=True)),
+                ('description', models.TextField(blank=True)),
+            ],
+            options={
+                'verbose_name_plural': 'Categories',
+                'ordering': ['name'],
+            },
+        ),
+        migrations.CreateModel(
+            name='Product',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=255)),
+                ('slug', models.SlugField(blank=True, unique=True)),
+                ('description', models.TextField(blank=True)),
+                ('price', models.DecimalField(decimal_places=2, max_digits=9)),
+                ('stock', models.PositiveIntegerField(default=10)),
+                ('featured', models.BooleanField(default=False)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='shop.category')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProductImage',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('image', models.ImageField(upload_to='products/')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='shop.product')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProductVariant',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=100)),
+                ('stock', models.PositiveIntegerField(default=0)),
+                ('price_adjust', models.DecimalField(decimal_places=2, default=0.0, max_digits=9)),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='variants', to='shop.product')),
+            ],
+            options={
+                'ordering': ['name'],
+                'unique_together': {('product', 'name')},
+            },
+        ),
+    ]
+
+==================================================
+
+
+### shop/templates/shop/product_detail.html ###
+
+
+==================================================
+
+
+### shop/templates/shop/shop_index.html ###
+
+{% extends "base.html" %}
+{% block content %}
+<h1>Shop</h1>
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/product_list.html ###
+
+
+==================================================
+
+
+### shop/templates/shop/manage/variant_form.html ###
+
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+<h1 class="mb-4">
+    {% if variant %}
+        Edit Variant – {{ variant.name }}
+    {% else %}
+        Add Variant to {{ product.title }}
+    {% endif %}
+</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button class="btn btn-success" type="submit">Save</button>
+    <a href="{% url 'shop:edit_product' product.id %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/manage/product_form.html ###
+
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">
+        {% if product %}
+            Edit Product – {{ product.title }}
+        {% else %}
+            Add Product
+        {% endif %}
+    </h1>
+</div>
+
+<!-- ===================================== -->
+<!-- PRODUCT DETAILS FORM -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Product Details</div>
+    <div class="card-body">
+
+        <form method="POST" id="productForm">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <!-- Save buttons -->
+            <button type="submit" name="save_product" value="stay" class="btn btn-success mt-3">
+                Save Product
+            </button>
+
+            {% if product %}
+            <button type="submit" name="save_product" value="exit" class="btn btn-secondary mt-3 ms-2">
+                Save & Return to Products
+            </button>
+            {% endif %}
+        </form>
+
+    </div>
+</div>
+
+{% if product %}
+
+<!-- ===================================== -->
+<!-- IMAGE UPLOAD -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Upload Images</div>
+    <div class="card-body">
+
+        <form method="POST" enctype="multipart/form-data"
+              action="{% url 'shop:upload_product_image' product.id %}">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Upload Images</label>
+                <input type="file" name="images" multiple class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Upload Images
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<!-- ===================================== -->
+<!-- EXISTING IMAGES (SORTABLE) -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Existing Images</div>
+    <div class="card-body">
+
+        {% if images %}
+        <div id="image-sort-container" class="row g-3">
+            {% for image in images %}
+            <div class="col-6 col-md-4 col-lg-3 image-sort-item" data-id="{{ image.id }}">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ image.image.url }}"
+                         class="card-img-top"
+                         style="object-fit: cover; height: 180px;">
+
+                    <div class="card-body text-center">
+                        <a href="{% url 'shop:delete_product_image' image.id %}"
+                           class="btn btn-danger btn-sm">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-muted">No images yet.</p>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- ===================================== -->
+<!-- VARIANTS -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Variants</div>
+    <div class="card-body">
+
+        <a href="{% url 'shop:add_variant' product.id %}" class="btn btn-primary mb-3">
+            Add Variant
+        </a>
+
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Stock</th>
+                    <th>Price Adjust</th>
+                    <th style="width: 180px;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for variant in variants %}
+                <tr>
+                    <td>{{ variant.name }}</td>
+                    <td>{{ variant.stock }}</td>
+                    <td>£{{ variant.price_adjust }}</td>
+                    <td>
+                        <a href="{% url 'shop:edit_variant' variant.id %}"
+                           class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'shop:delete_variant' variant.id %}"
+                           class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted text-center">No variants yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Bottom Save + Back Buttons -->
+<div class="text-end mt-4">
+    <a href="{% url 'shop:manage_products' %}" class="btn btn-secondary">
+        Back to Products
+    </a>
+
+    <button type="submit" form="productForm" name="save_product" value="stay" class="btn btn-success ms-2">
+        Save Product
+    </button>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.updateImageOrderUrl = "{% url 'shop:update_image_order' %}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="{% static 'js/imageorder.js' %}"></script>
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/manage/categories_list.html ###
+
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Manage Categories</h1>
+
+<a href="{% url 'shop:add_category' %}" class="btn btn-primary mb-3">Add Category</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Description</th>
+            <th style="width: 150px;">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for category in categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.slug }}</td>
+            <td>{{ category.description|default:"—" }}</td>
+            <td>
+                <a href="{% url 'shop:edit_category' category.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'shop:delete_category' category.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/manage/products_list.html ###
+
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="mb-4">Products</h1>
+
+<div class="d-flex justify-content-between mb-3">
+
+    <a href="{% url 'shop:add_product' %}" class="btn btn-primary">
+        Add Product
+    </a>
+
+    <!-- CATEGORY FILTER -->
+    <form method="get" class="d-flex align-items-center">
+        <select name="category" class="form-select me-2" style="width: 200px;">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}"
+                    {% if request.GET.category == cat.id|stringformat:'s' %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary">Filter</button>
+    </form>
+
+</div>
+
+<!-- BULK DELETE FORM -->
+<form id="bulkDeleteForm" method="POST" action="{% url 'shop:bulk_delete' %}">
+    {% csrf_token %}
+
+    <button type="submit"
+        class="btn btn-danger mb-3"
+        onclick="return confirmBulkDelete();">
+        Delete Selected
+    </button>
+
+    <div class="row g-4">
+
+        {% for product in products %}
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+
+            <div class="card h-100 shadow-sm position-relative">
+
+                <!-- SELECT FOR BULK DELETE -->
+                <div class="position-absolute p-2" style="z-index: 10;">
+                    <input type="checkbox"
+                           name="selected_products[]"
+                           value="{{ product.id }}"
+                           class="product-checkbox">
+                </div>
+
+                <!-- FEATURED IMAGE -->
+                {% if product.featured %}
+                <img src="{{ product.featured.image.url }}"
+                     class="card-img-top"
+                     style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center"
+                     style="height: 200px;">
+                    <span class="text-muted">No Image</span>
+                </div>
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.title }}</h5>
+
+                    <!-- PRICE -->
+                    <p class="mb-1 text-muted">£{{ product.price }}</p>
+
+                    <!-- CATEGORY -->
+                    <p class="small text-muted">{{ product.category.name }}</p>
+
+                    <!-- STOCK TOTAL -->
+                    <p class="small">
+                        <strong>Stock:</strong> {{ product.stock }}
+                    </p>
+                </div>
+
+                <div class="card-footer bg-white text-end">
+
+                    <a href="{% url 'shop:edit_product' product.id %}"
+                       class="btn btn-warning btn-sm">Edit</a>
+
+                    <a href="{% url 'shop:delete_product' product.id %}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete product?');">
+                        Delete
+                    </a>
+
+                    <a href="{% url 'shop:duplicate_product' product.id %}"
+                       class="btn btn-secondary btn-sm">
+                        Duplicate
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+        {% empty %}
+        <p>No products yet.</p>
+        {% endfor %}
+
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/bulkdelete.js' %}"></script>
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/manage/category_form.html ###
+
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    {% if form.instance.pk %}
+        Edit Category
+    {% else %}
+        Add Category
+    {% endif %}
+</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="{% url 'shop:manage_categories' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/product_detail.html ###
+
+
+==================================================
+
+
+### shop/templates/shop/shop_index.html ###
+
+{% extends "base.html" %}
+{% block content %}
+<h1>Shop</h1>
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/product_list.html ###
+
+
+==================================================
+
+
+### shop/templates/shop/manage/variant_form.html ###
+
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+<h1 class="mb-4">
+    {% if variant %}
+        Edit Variant – {{ variant.name }}
+    {% else %}
+        Add Variant to {{ product.title }}
+    {% endif %}
+</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button class="btn btn-success" type="submit">Save</button>
+    <a href="{% url 'shop:edit_product' product.id %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/manage/product_form.html ###
+
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">
+        {% if product %}
+            Edit Product – {{ product.title }}
+        {% else %}
+            Add Product
+        {% endif %}
+    </h1>
+</div>
+
+<!-- ===================================== -->
+<!-- PRODUCT DETAILS FORM -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Product Details</div>
+    <div class="card-body">
+
+        <form method="POST" id="productForm">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <!-- Save buttons -->
+            <button type="submit" name="save_product" value="stay" class="btn btn-success mt-3">
+                Save Product
+            </button>
+
+            {% if product %}
+            <button type="submit" name="save_product" value="exit" class="btn btn-secondary mt-3 ms-2">
+                Save & Return to Products
+            </button>
+            {% endif %}
+        </form>
+
+    </div>
+</div>
+
+{% if product %}
+
+<!-- ===================================== -->
+<!-- IMAGE UPLOAD -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Upload Images</div>
+    <div class="card-body">
+
+        <form method="POST" enctype="multipart/form-data"
+              action="{% url 'shop:upload_product_image' product.id %}">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Upload Images</label>
+                <input type="file" name="images" multiple class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Upload Images
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<!-- ===================================== -->
+<!-- EXISTING IMAGES (SORTABLE) -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Existing Images</div>
+    <div class="card-body">
+
+        {% if images %}
+        <div id="image-sort-container" class="row g-3">
+            {% for image in images %}
+            <div class="col-6 col-md-4 col-lg-3 image-sort-item" data-id="{{ image.id }}">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ image.image.url }}"
+                         class="card-img-top"
+                         style="object-fit: cover; height: 180px;">
+
+                    <div class="card-body text-center">
+                        <a href="{% url 'shop:delete_product_image' image.id %}"
+                           class="btn btn-danger btn-sm">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-muted">No images yet.</p>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- ===================================== -->
+<!-- VARIANTS -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Variants</div>
+    <div class="card-body">
+
+        <a href="{% url 'shop:add_variant' product.id %}" class="btn btn-primary mb-3">
+            Add Variant
+        </a>
+
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Stock</th>
+                    <th>Price Adjust</th>
+                    <th style="width: 180px;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for variant in variants %}
+                <tr>
+                    <td>{{ variant.name }}</td>
+                    <td>{{ variant.stock }}</td>
+                    <td>£{{ variant.price_adjust }}</td>
+                    <td>
+                        <a href="{% url 'shop:edit_variant' variant.id %}"
+                           class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'shop:delete_variant' variant.id %}"
+                           class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted text-center">No variants yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Bottom Save + Back Buttons -->
+<div class="text-end mt-4">
+    <a href="{% url 'shop:manage_products' %}" class="btn btn-secondary">
+        Back to Products
+    </a>
+
+    <button type="submit" form="productForm" name="save_product" value="stay" class="btn btn-success ms-2">
+        Save Product
+    </button>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.updateImageOrderUrl = "{% url 'shop:update_image_order' %}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="{% static 'js/imageorder.js' %}"></script>
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/manage/categories_list.html ###
+
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Manage Categories</h1>
+
+<a href="{% url 'shop:add_category' %}" class="btn btn-primary mb-3">Add Category</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Description</th>
+            <th style="width: 150px;">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for category in categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.slug }}</td>
+            <td>{{ category.description|default:"—" }}</td>
+            <td>
+                <a href="{% url 'shop:edit_category' category.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'shop:delete_category' category.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/manage/products_list.html ###
+
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="mb-4">Products</h1>
+
+<div class="d-flex justify-content-between mb-3">
+
+    <a href="{% url 'shop:add_product' %}" class="btn btn-primary">
+        Add Product
+    </a>
+
+    <!-- CATEGORY FILTER -->
+    <form method="get" class="d-flex align-items-center">
+        <select name="category" class="form-select me-2" style="width: 200px;">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}"
+                    {% if request.GET.category == cat.id|stringformat:'s' %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary">Filter</button>
+    </form>
+
+</div>
+
+<!-- BULK DELETE FORM -->
+<form id="bulkDeleteForm" method="POST" action="{% url 'shop:bulk_delete' %}">
+    {% csrf_token %}
+
+    <button type="submit"
+        class="btn btn-danger mb-3"
+        onclick="return confirmBulkDelete();">
+        Delete Selected
+    </button>
+
+    <div class="row g-4">
+
+        {% for product in products %}
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+
+            <div class="card h-100 shadow-sm position-relative">
+
+                <!-- SELECT FOR BULK DELETE -->
+                <div class="position-absolute p-2" style="z-index: 10;">
+                    <input type="checkbox"
+                           name="selected_products[]"
+                           value="{{ product.id }}"
+                           class="product-checkbox">
+                </div>
+
+                <!-- FEATURED IMAGE -->
+                {% if product.featured %}
+                <img src="{{ product.featured.image.url }}"
+                     class="card-img-top"
+                     style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center"
+                     style="height: 200px;">
+                    <span class="text-muted">No Image</span>
+                </div>
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.title }}</h5>
+
+                    <!-- PRICE -->
+                    <p class="mb-1 text-muted">£{{ product.price }}</p>
+
+                    <!-- CATEGORY -->
+                    <p class="small text-muted">{{ product.category.name }}</p>
+
+                    <!-- STOCK TOTAL -->
+                    <p class="small">
+                        <strong>Stock:</strong> {{ product.stock }}
+                    </p>
+                </div>
+
+                <div class="card-footer bg-white text-end">
+
+                    <a href="{% url 'shop:edit_product' product.id %}"
+                       class="btn btn-warning btn-sm">Edit</a>
+
+                    <a href="{% url 'shop:delete_product' product.id %}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete product?');">
+                        Delete
+                    </a>
+
+                    <a href="{% url 'shop:duplicate_product' product.id %}"
+                       class="btn btn-secondary btn-sm">
+                        Duplicate
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+        {% empty %}
+        <p>No products yet.</p>
+        {% endfor %}
+
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/bulkdelete.js' %}"></script>
+{% endblock %}
+
+==================================================
+
+
+### shop/templates/shop/manage/category_form.html ###
+
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    {% if form.instance.pk %}
+        Edit Category
+    {% else %}
+        Add Category
+    {% endif %}
+</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="{% url 'shop:manage_categories' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+{% endblock %}
+
+==================================================
+
+
+### shop/forms.py ###
+
+from django import forms
+from .models import Product, ProductImage, Category, ProductVariant
+
+
+# ============================
+# PRODUCT FORM
+# ============================
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = [
+            'title',
+            'category',
+            'description',
+            'price',
+            'stock',
+            'featured'
+        ]
+
+
+# ============================
+# SINGLE IMAGE FORM
+# ============================
+class ProductImageForm(forms.ModelForm):
+    class Meta:
+        model = ProductImage
+        fields = ['image']
+
+
+# ============================
+# MULTI-IMAGE UPLOADER
+# ============================
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultiImageUploadForm(forms.Form):
+    images = forms.FileField(
+        widget=MultipleFileInput(attrs={'multiple': True}),
+        required=False
+    )
+
+    def clean_images(self):
+        # ALWAYS return a list of uploaded files.
+        # This bypasses Django's single-file validation.
+        return self.files.getlist('images')
+
+
+# ============================
+# CATEGORY FORM
+# ============================
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'description']
+
+
+# ============================
+# VARIANT FORM
+# ============================
+class VariantForm(forms.ModelForm):
+    class Meta:
+        model = ProductVariant
+        fields = ['name', 'stock', 'price_adjust']
+
+==================================================
+
+
+### shop/urls.py ###
+
+from django.urls import path
+from . import views
+
+app_name = "shop"
+
+urlpatterns = [
+    path('manage/products/', views.manage_products, name='manage_products'),
+    path('manage/products/add/', views.add_product, name='add_product'),
+    path('manage/products/<int:pk>/edit/', views.edit_product, name='edit_product'),
+    path('manage/products/<int:pk>/delete/', views.delete_product, name='delete_product'),
+    path("manage/products/bulk-delete/", views.bulk_delete, name="bulk_delete"),
+    path("manage/products/<int:pk>/duplicate/", views.duplicate_product, name="duplicate_product"),
+
+
+    # Image uploads + ordering
+    path('manage/products/<int:product_id>/images/upload/', views.upload_product_image, name='upload_product_image'),
+    path('manage/images/<int:image_id>/delete/', views.delete_product_image, name='delete_product_image'),
+    path('manage/images/reorder/', views.update_image_order, name='update_image_order'),
+
+    # Categories
+    path('manage/categories/', views.manage_categories, name='manage_categories'),
+    path('manage/categories/add/', views.add_category, name='add_category'),
+    path('manage/categories/<int:pk>/edit/', views.edit_category, name='edit_category'),
+    path('manage/categories/<int:pk>/delete/', views.delete_category, name='delete_category'),
+
+    # Variants
+    path('manage/variants/add/<int:product_id>/', views.add_variant, name='add_variant'),
+    path('manage/variants/<int:variant_id>/edit/', views.edit_variant, name='edit_variant'),
+    path('manage/variants/<int:variant_id>/delete/', views.delete_variant, name='delete_variant'),
+]
+
+==================================================

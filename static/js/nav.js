@@ -21,7 +21,6 @@ function updateAnimationState() {
     }
 }
 
-
 /* =========================================
    CLICK — OPEN / CLOSE
 ========================================= */
@@ -47,7 +46,6 @@ toggle.addEventListener("click", () => {
     updateAnimationState();
 });
 
-
 /* =========================================
    CLOSE WHEN CLICKING A MENU ITEM
 ========================================= */
@@ -55,6 +53,18 @@ menu.addEventListener("click", (event) => {
     const target = event.target;
 
     if (target.matches(".nav-item, .nav-sub")) {
+        // Check for the specific data-link and navigate accordingly
+        const link = target.getAttribute("data-link");
+
+        // Debugging: Check if we are getting the correct link
+        console.log("Navigating to:", link);
+
+        if (link) {
+            // Navigate to the URL defined in the data-link attribute
+            window.location.href = link;
+        }
+
+        // Close the menu after clicking
         menu.classList.remove("open-active", "open-hover");
         menu.classList.add("closing");
 
@@ -67,15 +77,12 @@ menu.addEventListener("click", (event) => {
     }
 });
 
-
 /* =========================================
    HOVER BEHAVIOUR (DESKTOP)
 ========================================= */
-
 let hoverCloseTimeout;
 
 if (!isTouch) {
-
     toggle.addEventListener("mouseenter", () => {
         menu.classList.add("open-hover");
         updateIconState();
@@ -117,11 +124,9 @@ if (!isTouch) {
     menu.addEventListener("mouseleave", closeHoverIfOut);
 }
 
-
 /* =========================================
    SUBMENU — CLICK TO EXPAND (mobile/tablet)
 ========================================= */
-
 const submenuToggles = document.querySelectorAll(".submenu-toggle");
 
 submenuToggles.forEach((btn) => {
@@ -136,5 +141,32 @@ submenuToggles.forEach((btn) => {
         if (!submenu) return;
 
         submenu.classList.toggle("open");
+    });
+});
+
+/* =========================================
+   LINKING NAV ITEMS TO CORRESPONDING PAGES
+========================================= */
+const links = {
+    shop: "/shop/", // This should be updated if you're using a Django URL name like 'shop:shop_index'
+    contact: "/contact/",
+    about: "/about/",
+    art: "/work/art/",
+    digital: "/work/digital/",
+    installations: "/work/installations/"
+};
+
+// Make the navigation buttons use the correct page links
+document.querySelectorAll(".nav-item").forEach(button => {
+    button.addEventListener("click", function() {
+        const link = this.getAttribute("data-link");
+        
+        // Debugging: Log the URL we're navigating to
+        console.log("Navigating to:", link);
+
+        // If it's a valid nav item, navigate to its URL
+        if (link && links[link]) {
+            window.location.href = links[link];
+        }
     });
 });

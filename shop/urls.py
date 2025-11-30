@@ -27,4 +27,17 @@ urlpatterns = [
     path('manage/variants/add/<int:product_id>/', views.add_variant, name='add_variant'),
     path('manage/variants/<int:variant_id>/edit/', views.edit_variant, name='edit_variant'),
     path('manage/variants/<int:variant_id>/delete/', views.delete_variant, name='delete_variant'),
+
+     # Public product views
+
+
+     # Customer order views
+      path('', views.product_list, name='shop_index'),  # Ensure this points to the index page
+       path('<slug:slug>/', views.product_detail, name='product_detail'),  # Add this line
+    path('thank-you/', views.success, name='success'),
+    path('cancel/', views.cancel, name='cancel'),  # For canceled payments
+    path('thank-you/', views.success, name='success'),  # This should match the name in the view
+    path('cancel/', views.cancel, name='cancel'),  # This should match the cancel view
 ]
+
+

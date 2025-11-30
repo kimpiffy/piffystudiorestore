@@ -1,0 +1,158 @@
+/* ---------------------------------------------------
+   DASHBOARD THEME — Matches Frontend Aesthetic
+--------------------------------------------------- */
+
+:root {
+    --background: #def9d2;
+    --accent: #f960d0;
+    --danger: #ff7a33;
+    --text-dark: #222;
+    --text-light: #555;
+}
+
+/* Global Reset */
+body {
+    background: var(--background) !important;
+    font-family: "Inconsolata", monospace;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: var(--text-dark);
+}
+
+/* ---------------------------------------------------
+   NAVBAR
+--------------------------------------------------- */
+.navbar {
+    background: var(--accent) !important;
+    border-bottom: 3px solid rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-family: "League Spartan", sans-serif;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    color: white !important;
+    letter-spacing: 2px;
+}
+
+.nav-link {
+    font-family: "League Spartan", sans-serif;
+    text-transform: uppercase;
+    color: white !important;
+    opacity: 0.9;
+}
+
+.nav-link:hover {
+    opacity: 1;
+}
+
+/* ---------------------------------------------------
+   HEADINGS
+--------------------------------------------------- */
+h1, h2, h3, h4, h5 {
+    font-family: "League Spartan", sans-serif;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    letter-spacing: 1px;
+}
+
+/* ---------------------------------------------------
+   BUTTONS
+--------------------------------------------------- */
+.btn-accent {
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-family: "League Spartan", sans-serif;
+    text-transform: uppercase;
+    padding: 0.55rem 1.2rem;
+    border-radius: 6px;
+    letter-spacing: 1px;
+}
+
+.btn-accent:hover {
+    background: #ff8ae0;
+}
+
+.btn-danger-custom {
+    background: var(--danger);
+    color: white;
+    border: none;
+    font-family: "League Spartan", sans-serif;
+    text-transform: uppercase;
+    padding: 0.55rem 1.2rem;
+    border-radius: 6px;
+}
+
+.btn-danger-custom:hover {
+    background: #ff5a00;
+}
+
+/* ---------------------------------------------------
+   TABLES
+--------------------------------------------------- */
+.table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th {
+    background: var(--accent);
+    color: white;
+    font-family: "League Spartan", sans-serif;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.table td {
+    vertical-align: middle;
+    color: var(--text-light);
+}
+
+/* ---------------------------------------------------
+   FORMS
+--------------------------------------------------- */
+form label {
+    font-family: "League Spartan", sans-serif;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    color: var(--accent);
+}
+
+form input, 
+form select, 
+form textarea {
+    border-radius: 6px !important;
+    border: 1px solid #ccc !important;
+    padding: 0.5rem !important;
+}
+
+/* ---------------------------------------------------
+   PANELS & CARDS
+--------------------------------------------------- */
+.card {
+    border-radius: 12px;
+    border: none;
+    background: white;
+    padding: 1.2rem;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.05);
+}
+
+.card form p { text-align: center; margin-bottom: .75rem; }
+.card form input,
+.card form select,
+.card form textarea { display: inline-block; width: auto; min-width: 200px; }
+
+/* ---------------------------------------------------
+   SPACING
+--------------------------------------------------- */
+.container {
+    max-width: 1150px;
+}
+
+hr {
+    border-color: rgba(0,0,0,0.15);
+    margin: 2rem 0;
+}

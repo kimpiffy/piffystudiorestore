@@ -1,16 +1,32 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load the .env in the project root explicitly
+load_dotenv(BASE_DIR / '.env')
 
 # -------------------------------
 # SECURITY
 # -------------------------------
-SECRET_KEY = 'django-insecure-^w=pstmy@vpr44i050vm#bwjx7n8hsy46)a835&x5e0+ltut(%)'
+# Retrieve the secret key from .env for safety
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') or 'unsafe-default-for-dev'
 
+# Debug mode - Don't leave True in production
 DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+# -------------------------------
+# STRIPE CONFIGURATION
+# -------------------------------
+# Use os.getenv (or set up django-environ if you prefer)
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')  # Secret Key (sk_test_...)
+STRIPE_TEST_PUBLIC_KEY = os.getenv('STRIPE_TEST_PUBLIC_KEY')  # Public Key (pk_test_...)
+STRIPE_SUCCESS_URL = os.getenv('STRIPE_SUCCESS_URL')  # URL after successful payment
+STRIPE_CANCEL_URL = os.getenv('STRIPE_CANCEL_URL')  # URL after canceled payment
 
 # -------------------------------
 # APPLICATIONS
@@ -26,7 +42,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'widget_tweaks',
 
-    # my apps
+    # Your apps
     'pages',
     'portfolio',
     'interactions',
@@ -93,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGIN_REDIRECT_URL = '/accounts/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
-
 # -------------------------------
 # INTERNATIONALIZATION
 # -------------------------------
@@ -109,7 +124,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"   # used later for deployment
+STATIC_ROOT = BASE_DIR / "staticfiles"   # Used later for deployment
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
@@ -119,5 +134,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 # -------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# -------------------------------
+# CRISPY FORMS
+# -------------------------------
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"

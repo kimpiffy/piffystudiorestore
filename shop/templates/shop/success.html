@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="thank-you">
+    <h1>Thank you for your order!</h1>
+    
+    <p>Your order has been successfully processed.</p>
+    <p><strong>Order Number:</strong> {{ order.id }}</p>
+    
+    <h3>Order Details:</h3>
+    <ul>
+      {% for item in order.items.all %}
+        <li>
+          <strong>{{ item.product.title }}</strong> - 
+          {{ item.quantity }} x £{{ item.product.price }}
+        </li>
+      {% endfor %}
+    </ul>
+    
+    <p><strong>Total Amount:</strong> £{{ order.total_price }}</p>
+
+    <p>We will send you an email with the order details shortly. Thank you for shopping with us!</p>
+
+    <a href="{% url 'shop:home' %}">Back to Home</a>
+  </div>
+{% endblock %}
