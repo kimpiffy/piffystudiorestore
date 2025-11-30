@@ -1,109 +1,169 @@
 {% extends 'dashboard_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
 
 {% block content %}
 
-<h1>
-    {% if product %}
-        Edit Product – {{ product.title }}
-    {% else %}
-        Add Product
-    {% endif %}
-</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">
+        {% if product %}
+            Edit Product – {{ product.title }}
+        {% else %}
+            Add Product
+        {% endif %}
+    </h1>
+</div>
 
-<!-- ========================= -->
+<!-- ===================================== -->
 <!-- PRODUCT DETAILS FORM -->
-<!-- ========================= -->
-<form method="POST">
-    {% csrf_token %}
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Product Details</div>
+    <div class="card-body">
 
-    {{ form.as_p }}
+        <form method="POST" id="productForm">
+            {% csrf_token %}
+            {{ form|crispy }}
 
-    <button type="submit" name="save_product" class="btn btn-success mt-3">
-        Save Product
-    </button>
-</form>
+            <!-- Save buttons -->
+            <button type="submit" name="save_product" value="stay" class="btn btn-success mt-3">
+                Save Product
+            </button>
+
+            {% if product %}
+            <button type="submit" name="save_product" value="exit" class="btn btn-secondary mt-3 ms-2">
+                Save & Return to Products
+            </button>
+            {% endif %}
+        </form>
+
+    </div>
+</div>
 
 {% if product %}
 
-<!-- ========================= -->
-<!-- IMAGE UPLOAD FORM (SEPARATE FORM!) -->
-<!-- ========================= -->
-<h3 class="mt-4">Upload Images</h3>
+<!-- ===================================== -->
+<!-- IMAGE UPLOAD -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Upload Images</div>
+    <div class="card-body">
 
-<form method="POST" enctype="multipart/form-data"
-      action="{% url 'shop:upload_product_image' product.id %}">
+        <form method="POST" enctype="multipart/form-data"
+              action="{% url 'shop:upload_product_image' product.id %}">
+            {% csrf_token %}
 
-    {% csrf_token %}
-    <input type="hidden" name="action" value="upload_images">
-
- <p>
-    <label>Upload Images:</label>
-    <input type="file" name="images" multiple>
-</p>
-
-
-    <button type="submit" class="btn btn-primary mt-3">
-        Upload Images
-    </button>
-</form>
-
-<!-- ========================= -->
-<!-- EXISTING IMAGES -->
-<!-- ========================= -->
-<h3 class="mt-4">Existing Images</h3>
-
-<div class="row">
-    {% for image in images %}
-        <div class="col-4 mb-3">
-            <div class="card">
-                <img src="{{ image.image.url }}" class="card-img-top" alt="">
-                <div class="card-body text-center">
-                    <a href="{% url 'shop:delete_product_image' image.id %}"
-                       class="btn btn-danger btn-sm">Delete</a>
-                </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Upload Images</label>
+                <input type="file" name="images" multiple class="form-control">
             </div>
-        </div>
-    {% empty %}
-        <p>No images yet.</p>
-    {% endfor %}
+
+            <button type="submit" class="btn btn-primary">
+                Upload Images
+            </button>
+        </form>
+
+    </div>
 </div>
 
-<!-- ========================= -->
+<!-- ===================================== -->
+<!-- EXISTING IMAGES (SORTABLE) -->
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Existing Images</div>
+    <div class="card-body">
+
+        {% if images %}
+        <div id="image-sort-container" class="row g-3">
+            {% for image in images %}
+            <div class="col-6 col-md-4 col-lg-3 image-sort-item" data-id="{{ image.id }}">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ image.image.url }}"
+                         class="card-img-top"
+                         style="object-fit: cover; height: 180px;">
+
+                    <div class="card-body text-center">
+                        <a href="{% url 'shop:delete_product_image' image.id %}"
+                           class="btn btn-danger btn-sm">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-muted">No images yet.</p>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- ===================================== -->
 <!-- VARIANTS -->
-<!-- ========================= -->
-<h3 class="mt-4">Variants</h3>
+<!-- ===================================== -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Variants</div>
+    <div class="card-body">
 
-<a href="{% url 'shop:add_variant' product.id %}" class="btn btn-primary mb-3">
-    Add Variant
-</a>
+        <a href="{% url 'shop:add_variant' product.id %}" class="btn btn-primary mb-3">
+            Add Variant
+        </a>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Stock</th>
-            <th>Price Adjust</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Stock</th>
+                    <th>Price Adjust</th>
+                    <th style="width: 180px;">Actions</th>
+                </tr>
+            </thead>
 
-    <tbody>
-        {% for variant in variants %}
-            <tr>
-                <td>{{ variant.name }}</td>
-                <td>{{ variant.stock }}</td>
-                <td>{{ variant.price_adjust }}</td>
-                <td>
-                    <a href="{% url 'shop:edit_variant' variant.id %}" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="{% url 'shop:delete_variant' variant.id %}" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="4">No variants yet.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+            <tbody>
+                {% for variant in variants %}
+                <tr>
+                    <td>{{ variant.name }}</td>
+                    <td>{{ variant.stock }}</td>
+                    <td>£{{ variant.price_adjust }}</td>
+                    <td>
+                        <a href="{% url 'shop:edit_variant' variant.id %}"
+                           class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'shop:delete_variant' variant.id %}"
+                           class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted text-center">No variants yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Bottom Save + Back Buttons -->
+<div class="text-end mt-4">
+    <a href="{% url 'shop:manage_products' %}" class="btn btn-secondary">
+        Back to Products
+    </a>
+
+    <button type="submit" form="productForm" name="save_product" value="stay" class="btn btn-success ms-2">
+        Save Product
+    </button>
+</div>
 
 {% endif %}
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.updateImageOrderUrl = "{% url 'shop:update_image_order' %}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="{% static 'js/imageorder.js' %}"></script>
 {% endblock %}

@@ -22,8 +22,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'widget_tweaks',
 
-    # Your apps
+    # my apps
     'pages',
     'portfolio',
     'interactions',
@@ -87,6 +90,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+LOGIN_REDIRECT_URL = '/accounts/dashboard/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+
 # -------------------------------
 # INTERNATIONALIZATION
 # -------------------------------
@@ -111,3 +118,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 # DEFAULT PK
 # -------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

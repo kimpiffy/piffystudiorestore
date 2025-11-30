@@ -1,30 +1,55 @@
 {% extends 'dashboard_base.html' %}
-
+{% load static %}
 
 {% block content %}
-<h1>Manage Products</h1>
 
-<a href="{% url 'shop:add_product' %}" class="button">Add Product</a>
+<h1 class="mb-4">Products</h1>
 
-<table>
-    <tr>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Type</th>
-        <th>Actions</th>
-    </tr>
+<a href="{% url 'shop:add_product' %}" class="btn btn-primary mb-3">Add Product</a>
+
+<div class="row g-4">
 
     {% for product in products %}
-    <tr>
-        <td>{{ product.title }}</td>
-        <td>£{{ product.price }}</td>
-        <td>{{ product.get_product_type_display }}</td>
-        <td>
-            <a href="{% url 'shop:edit_product' product.pk %}">Edit</a> |
-            <a href="{% url 'shop:delete_product' product.pk %}">Delete</a>
-        </td>
-    </tr>
+    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+
+        <div class="card h-100 shadow-sm">
+
+            {% if product.featured %}
+            <img src="{{ product.featured.image.url }}"
+                 class="card-img-top"
+                 style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center"
+                 style="height: 200px;">
+                <span class="text-muted">No Image</span>
+            </div>
+            {% endif %}
+
+            <div class="card-body">
+                <h5 class="card-title">{{ product.title }}</h5>
+                <p class="mb-1 text-muted">£{{ product.price }}</p>
+                <p class="small text-muted">{{ product.category.name }}</p>
+            </div>
+
+            <div class="card-footer bg-white text-end">
+                <a href="{% url 'shop:edit_product' product.id %}"
+                   class="btn btn-warning btn-sm">Edit</a>
+
+                <a href="{% url 'shop:delete_product' product.id %}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Delete product?');">
+                   Delete
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+    {% empty %}
+        <p>No products yet.</p>
     {% endfor %}
-</table>
+
+</div>
 
 {% endblock %}
+
