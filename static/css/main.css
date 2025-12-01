@@ -92,7 +92,6 @@ body {
 }
 
 /* wobble / breathe animation for top-level nav links (subtle, 2D motion) */
-/* only run on pointer-fine (desktop) to avoid mobile perf/UX issues */
 @media (hover: hover) and (pointer: fine) {
     @keyframes navWobble {
         0%   { transform: translate3d(-1px,-1px,0) rotate(-0.35deg) scale(1); }
@@ -102,8 +101,8 @@ body {
         100% { transform: translate3d(-1px,-1px,0) rotate(-0.35deg) scale(1); }
     }
 
-    /* apply wobble only to top-level links (not dropdown items) and only while nav is visible */
-    #navbarNav.show .navbar-nav > li > .nav-link {
+    /* apply wobble to all top-level nav links immediately (no .show dependency) */
+    .navbar-nav > li > .nav-link {
         animation-name: navWobble;
         animation-duration: 3.8s;
         animation-timing-function: ease-in-out;
@@ -114,11 +113,37 @@ body {
     }
 
     /* subtle variation per item so they don't move identically */
-    #navbarNav.show .navbar-nav > li:nth-child(1) > .nav-link { animation-duration: 3.6s; animation-delay: 0s; }
-    #navbarNav.show .navbar-nav > li:nth-child(2) > .nav-link { animation-duration: 3.9s; animation-delay: 0.12s; }
-    #navbarNav.show .navbar-nav > li:nth-child(3) > .nav-link { animation-duration: 4.1s; animation-delay: 0.24s; }
-    #navbarNav.show .navbar-nav > li:nth-child(4) > .nav-link { animation-duration: 3.75s; animation-delay: 0.06s; }
+    .navbar-nav > li:nth-child(1) > .nav-link { animation-duration: 3.6s; animation-delay: 0s; }
+    .navbar-nav > li:nth-child(2) > .nav-link { animation-duration: 3.9s; animation-delay: 0.12s; }
+    .navbar-nav > li:nth-child(3) > .nav-link { animation-duration: 4.1s; animation-delay: 0.24s; }
+    .navbar-nav > li:nth-child(4) > .nav-link { animation-duration: 3.75s; animation-delay: 0.06s; }
     /* extend nth-child rules if you have more items */
 
 
+}
+/* stronger wobble on touch / small-screen devices (pointer: coarse) */
+@media (hover: none), (pointer: coarse) {
+    @keyframes navWobbleTouch {
+        0%   { transform: translate3d(-3px,-3px,0) rotate(-0.6deg) scale(1); }
+        25%  { transform: translate3d( 5px,-4px,0) rotate( 0.9deg) scale(1.004); }
+        50%  { transform: translate3d(-5px, 5px,0) rotate(-0.9deg) scale(1); }
+        75%  { transform: translate3d( 3px, 4px,0) rotate( 0.7deg) scale(1.003); }
+        100% { transform: translate3d(-3px,-3px,0) rotate(-0.6deg) scale(1); }
+    }
+
+    .navbar-nav > li > .nav-link {
+        animation-name: navWobbleTouch !important;
+        animation-duration: 3.4s !important;
+        animation-timing-function: ease-in-out !important;
+        animation-iteration-count: infinite !important;
+        animation-direction: alternate !important;
+        will-change: transform;
+        transform-origin: center center;
+    }
+
+    /* small per-item phase offsets so items don't move exactly together */
+    .navbar-nav > li:nth-child(1) > .nav-link { animation-delay: 0s !important; }
+    .navbar-nav > li:nth-child(2) > .nav-link { animation-delay: 0.08s !important; }
+    .navbar-nav > li:nth-child(3) > .nav-link { animation-delay: 0.16s !important; }
+    .navbar-nav > li:nth-child(4) > .nav-link { animation-delay: 0.24s !important; }
 }
