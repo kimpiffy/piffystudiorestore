@@ -1,70 +1,53 @@
 /* ------------------------------------
-   KEYFRAMES
+   FONTS
 ------------------------------------ */
 
-@keyframes breathe {
-    0%   { transform: scale(var(--breathe-base-scale)); }
-    50%  { transform: scale(calc(var(--breathe-base-scale) + 0.015)); }
-    100% { transform: scale(var(--breathe-base-scale)); }
+/* Body font */
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;600&display=swap');
+
+/* Menu + Headers — Futura style, geometric, uppercase */
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap');
+
+@font-face {
+  font-family: "wakaba";
+  /* paths relative to this CSS file (static/css/) -> ../fonts/ */
+  src: url('../fonts/wakaba.woff2') format('woff2'),
+       url('../fonts/wakaba.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
-/* Staggered nav item entrance when the collapse is shown */
-@keyframes navItemIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+
+/* ------------------------------------
+   GLOBAL SMOOTHING
+------------------------------------ */
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
-
-/* Only run stagger animation when the collapse is open (Bootstrap adds #navbarNav.show) */
-#navbarNav.show .navbar-nav > li {
-    opacity: 1;
-    transform: translateY(0);
-    animation-name: navItemIn;
-    animation-duration: 360ms;
-    animation-fill-mode: forwards;
-    animation-timing-function: cubic-bezier(.2,.9,.3,1);
-}
-
-/* stagger delays (to control the entrance timing) */
-#navbarNav.show .navbar-nav > li:nth-child(1)  { animation-delay:  40ms; }
-#navbarNav.show .navbar-nav > li:nth-child(2)  { animation-delay:  80ms; }
-#navbarNav.show .navbar-nav > li:nth-child(3)  { animation-delay: 120ms; }
-#navbarNav.show .navbar-nav > li:nth-child(4)  { animation-delay: 160ms; }
-#navbarNav.show .navbar-nav > li:nth-child(5)  { animation-delay: 200ms; }
-#navbarNav.show .navbar-nav > li:nth-child(6)  { animation-delay: 240ms; }
-#navbarNav.show .navbar-nav > li:nth-child(7)  { animation-delay: 280ms; }
-#navbarNav.show .navbar-nav > li:nth-child(8)  { animation-delay: 320ms; }
-#navbarNav.show .navbar-nav > li:nth-child(9)  { animation-delay: 360ms; }
-#navbarNav.show .navbar-nav > li:nth-child(10) { animation-delay: 400ms; }
-
-/* Once the staggered entrance finishes, apply breathing */
-#navbarNav.show .navbar-nav > li.staggered-entered {
-    animation: breathe 5s ease-in-out infinite;
-}
-
-/* Hover and Active states */
-.nav-menu .nav-item:hover,
-.navbar-nav .nav-item:hover,
-.nav-menu .nav-item.active,
-.navbar-nav .nav-item.active {
-    animation: none; /* Ensure breathing doesn't run on hover */
-    transform: none; /* Ensure it stays stationary */
-    opacity: 1;
-    transition: transform 160ms cubic-bezier(.2,.9,.3,1), opacity 160ms ease;
-}
-
 /* ------------------------------------
    THEME VARIABLES
 ------------------------------------ */
 
 :root {
-    --background: #def9d2;
-    --accent: #f960d0;  /* Pink accent color */
+    --background: #fffeec;
+    --lilac: #b099d2;  /* Lilac accent color */
+    --orange: #fe5e00; /* Orange accent color */
+    --charcoal: #222223;
+}
 
-    --breathe-base-scale: 1;
-    --breathe-near-scale: 1.01;      /* other items */
-    --breathe-base-duration: 5s;     /* gentle */
-    --breathe-near-duration: 4s;
-    --breathe-active-duration: 1.4s; /* faster for active focus */
+.lilac {
+    color:#b099d2;
+}
+
+.orange {
+    color: #fe5e00;
+}
+
+.uppercase {
+    text-transform: uppercase;
 }
 
 /* ------------------------------------
@@ -76,13 +59,29 @@ body {
     font-family: "Inconsolata", monospace;
     font-size: 13px;
     letter-spacing: 2px;
+}   
+
+/* Nav typography: use the imported League Spartan for menu/headers, fallback to Wakaba */
+.navbar, #navbar, .navbar-nav, .nav-link  {
+    font-family: 'wakaba', sans-serif;
+    text-transform: lowercase;
+    letter-spacing: 3px;
+    font-size: 2rem;
+    color: var(--lilac);
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
+.navbar {
+    padding-left: 1rem;
 }
 
+.nav-link {
+    padding: 0 10px !important;
+}
+
+.nav-link:hover, .nav-link:focus {
+    color: var(--orange);
+    text-transform: uppercase;
+}
 .page-content {
     padding: 0;
     margin: 0;
@@ -92,392 +91,34 @@ a {
     overflow: hidden;
 }
 
-/* ------------------------------------
-   TYPOGRAPHY
------------------------------------- */
-
-.nav-menu a,
-.nav-menu button,
-h1, h2, h3, h4, h5, h6 {
-    font-family: "League Spartan", sans-serif;
-    text-transform: uppercase;
-    line-height: 0.5px;
-    color: var(--accent);  /* Pink color for the navbar */
-}
-
-/* ------------------------------------
-   NAV WRAPPER
------------------------------------- */
-
-.nav {
-    background-color: #def9d2!important;
-    position: relative; /* was fixed — use relative so it sits in flow */
-    top: auto;
-    left: auto;
-    z-index: 3000;
-    width: 100%;
-    padding: 0; /* navbar padding handled by .navbar */
-}
-
-.nav-icon {
-    width: 36px;
-    height: 36px;
-}
-
-/* Navbar container inside the .nav — keep it in flow, not fixed */
-.navbar {
-    position: relative;
-    width: 100%;
-    padding: 20px 20px !important;
-}
-
-/* Collapse: animate vertical expansion via max-height so it pushes content down.
-   Use a large enough max-height for your menu; tweak as needed. */
-.navbar-collapse {
-    position: relative;            /* in flow */
-    width: 100%;
-    max-height: 0;                 /* collapsed */
-    overflow: hidden;
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: max-height 450ms ease, opacity 450ms ease, transform 450ms ease;
-    display: block;                /* allow full-width column layout */
-    flex-direction: column;
-    gap: 1rem;
-    background: var(--background);
-    border-radius: 0;
-    padding: 0 1rem;               /* inner padding for menu area */
-    box-shadow: none;
-}
-
-/* Open state: allow full content height and enable pointer events.
-   Use a large enough max-height to contain your menu; 800px is conservative. */
-.navbar-collapse.show,
-.navbar-collapse.open-active {
-    max-height: 800px;  /* adjust if your menu is taller */
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-}
-
-/* ------------------------------------
-   MENU ITEM STYLING
------------------------------------- */
-
-.nav-item,
-.nav-sub {
-    font-size: 2rem;
-    background-color: var(--background);
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-    color: var(--accent) !important;  /* Pink color */
-    font-family: "League Spartan", sans-serif;
-    text-transform: uppercase;
-}
-
-.nav-sub {
-    font-size: 1.3rem;
-}
-
-.dropdown-menu {
-    background-color: var(--background);
-    border: none;
-    box-shadow: none;
-    padding: 0px !important
-}
-
-.dropdown-item {
-    color: var(--accent) !important;
-    font-family: "League Spartan", sans-serif;
-    text-transform: uppercase;
-    font-size: 1.3rem;
-    padding: 0px;
-}
-
-.dropdown-item:hover {
-    background-color: transparent;
-    color: var(--accent) !important;
-}
-
-/* ------------------------------------
-   RESPONSIVENESS (Always burger icon)
------------------------------------- */
-
-/* Ensure the navbar stays collapsed with burger icon even on larger screens */
-@media (min-width: 1024px) {
-    .navbar-nav { 
-        display: block;  /* Ensure it displays in column layout */
+/* wobble / breathe animation for top-level nav links (subtle, 2D motion) */
+/* only run on pointer-fine (desktop) to avoid mobile perf/UX issues */
+@media (hover: hover) and (pointer: fine) {
+    @keyframes navWobble {
+        0%   { transform: translate3d(-1px,-1px,0) rotate(-0.35deg) scale(1); }
+        25%  { transform: translate3d( 2px,-2px,0) rotate( 0.55deg) scale(1.003); }
+        50%  { transform: translate3d(-2px, 2px,0) rotate(-0.45deg) scale(1); }
+        75%  { transform: translate3d( 1px, 2px,0) rotate( 0.45deg) scale(1.002); }
+        100% { transform: translate3d(-1px,-1px,0) rotate(-0.35deg) scale(1); }
     }
 
-    .navbar-collapse {
-        transform: translateY(-6px);  /* Keep menu offscreen */
+    /* apply wobble only to top-level links (not dropdown items) and only while nav is visible */
+    #navbarNav.show .navbar-nav > li > .nav-link {
+        animation-name: navWobble;
+        animation-duration: 3.8s;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        will-change: transform;
+        transform-origin: center center;
     }
 
-    .navbar-collapse.show {
-        transform: translateY(0);  /* Slide in from under toggle */
-    }
-
-    .nav-toggle {
-        display: block;  /* Keep the burger icon visible on larger screens */
-    }
-}
-
-@media (min-width: 1600px) {
-    .nav-menu { width: 16.6vw; } /* Adjust width for larger screens */
-}
-
-/* Ensure staggered animation doesn't interfere with hover */
-.navbar-nav li.staggered-entrance {
-    animation: none; /* Pause any animation when item has been staggered in */
-}
-
-/* ------------------------------------
-   KEYFRAMES
------------------------------------- */
-
-@keyframes breathe {
-    0%   { transform: scale(var(--breathe-base-scale)); }
-    50%  { transform: scale(calc(var(--breathe-base-scale) + 0.015)); }
-    100% { transform: scale(var(--breathe-base-scale)); }
-}
-
-/* Staggered nav item entrance when the collapse is shown */
-@keyframes navItemIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Only run stagger animation when the collapse is open (Bootstrap adds #navbarNav.show) */
-#navbarNav.show .navbar-nav > li {
-    opacity: 1;
-    transform: translateY(0);
-    animation-name: navItemIn;
-    animation-duration: 360ms;
-    animation-fill-mode: forwards;
-    animation-timing-function: cubic-bezier(.2,.9,.3,1);
-}
-
-/* stagger delays (to control the entrance timing) */
-#navbarNav.show .navbar-nav > li:nth-child(1)  { animation-delay:  40ms; }
-#navbarNav.show .navbar-nav > li:nth-child(2)  { animation-delay:  80ms; }
-#navbarNav.show .navbar-nav > li:nth-child(3)  { animation-delay: 120ms; }
-#navbarNav.show .navbar-nav > li:nth-child(4)  { animation-delay: 160ms; }
-#navbarNav.show .navbar-nav > li:nth-child(5)  { animation-delay: 200ms; }
-#navbarNav.show .navbar-nav > li:nth-child(6)  { animation-delay: 240ms; }
-#navbarNav.show .navbar-nav > li:nth-child(7)  { animation-delay: 280ms; }
-#navbarNav.show .navbar-nav > li:nth-child(8)  { animation-delay: 320ms; }
-#navbarNav.show .navbar-nav > li:nth-child(9)  { animation-delay: 360ms; }
-#navbarNav.show .navbar-nav > li:nth-child(10) { animation-delay: 400ms; }
-
-/* Once the staggered entrance finishes, apply breathing */
-#navbarNav.show .navbar-nav > li.staggered-entered {
-    animation: breathe 5s ease-in-out infinite;
-}
-
-/* Hover and Active states */
-.nav-menu .nav-item:hover,
-.navbar-nav .nav-item:hover,
-.nav-menu .nav-item.active,
-.navbar-nav .nav-item.active {
-    animation: none; /* Ensure breathing doesn't run on hover */
-    transform: none; /* Ensure it stays stationary */
-    opacity: 1;
-    transition: transform 160ms cubic-bezier(.2,.9,.3,1), opacity 160ms ease;
-}
-
-/* ------------------------------------
-   THEME VARIABLES
------------------------------------- */
-
-:root {
-    --background: #def9d2;
-    --accent: #f960d0;  /* Pink accent color */
-
-    --breathe-base-scale: 1;
-    --breathe-near-scale: 1.01;      /* other items */
-    --breathe-base-duration: 5s;     /* gentle */
-    --breathe-near-duration: 4s;
-    --breathe-active-duration: 1.4s; /* faster for active focus */
-}
-
-/* ------------------------------------
-   GLOBAL BASE
------------------------------------- */
-
-body {
-    background-color: var(--background);
-    font-family: "Inconsolata", monospace;
-    font-size: 13px;
-    letter-spacing: 2px;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.page-content {
-    padding: 0;
-    margin: 0;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-/* ------------------------------------
-   TYPOGRAPHY
------------------------------------- */
-
-.nav-menu a,
-.nav-menu button,
-h1, h2, h3, h4, h5, h6 {
-    font-family: "League Spartan", sans-serif;
-    text-transform: uppercase;
-    line-height: 0.5px;
-    color: var(--accent);  /* Pink color for the navbar */
-}
-
-/* ------------------------------------
-   NAV WRAPPER
------------------------------------- */
-
-.nav {
-    background-color: #def9d2!important;
-    position: relative; /* was fixed — use relative so it sits in flow */
-    top: auto;
-    left: auto;
-    z-index: 3000;
-    width: 100%;
-    padding: 0; /* navbar padding handled by .navbar */
-}
-
-.nav-icon {
-    width: 36px;
-    height: 36px;
-}
-
-/* Navbar container inside the .nav — keep it in flow, not fixed */
-.navbar {
-    position: relative;
-    width: 100%;
-    padding: 20px 20px !important;
-}
-
-/* Collapse: animate vertical expansion via max-height so it pushes content down.
-   Use a large enough max-height for your menu; tweak as needed. */
-.navbar-collapse {
-    position: relative;            /* in flow */
-    width: 100%;
-    max-height: 0;                 /* collapsed */
-    overflow: hidden;
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: max-height 450ms ease, opacity 450ms ease, transform 450ms ease;
-    display: block;                /* allow full-width column layout */
-    flex-direction: column;
-    gap: 1rem;
-    background: var(--background);
-    border-radius: 0;
-    padding: 0 1rem;               /* inner padding for menu area */
-    box-shadow: none;
-}
-
-/* Open state: allow full content height and enable pointer events.
-   Use a large enough max-height to contain your menu; 800px is conservative. */
-.navbar-collapse.show,
-.navbar-collapse.open-active {
-    max-height: 800px;  /* adjust if your menu is taller */
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-}
-
-/* ------------------------------------
-   MENU ITEM STYLING
------------------------------------- */
-
-.nav-item,
-.nav-sub {
-    font-size: 2rem;
-    background-color: var(--background);
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-    color: var(--accent) !important;  /* Pink color */
-    font-family: "League Spartan", sans-serif;
-    text-transform: uppercase;
-}
-
-.nav-sub {
-    font-size: 1.3rem;
-}
-
-.dropdown-menu {
-    background-color: var(--background);
-    border: none;
-    box-shadow: none;
-    padding: 0px !important
-}
-
-.dropdown-item {
-    color: var(--accent) !important;
-    font-family: "League Spartan", sans-serif;
-    text-transform: uppercase;
-    font-size: 1.3rem;
-    padding: 0px;
-}
-
-.dropdown-item:hover {
-    background-color: transparent;
-    color: var(--accent) !important;
-}
-
-/* ------------------------------------
-   RESPONSIVENESS (Always burger icon)
------------------------------------- */
-
-/* Ensure the navbar stays collapsed with burger icon even on larger screens */
-@media (min-width: 1024px) {
-    .navbar-nav { 
-        display: block;  /* Ensure it displays in column layout */
-    }
-
-    .navbar-collapse {
-        transform: translateY(-6px);  /* Keep menu offscreen */
-    }
-
-    .navbar-collapse.show {
-        transform: translateY(0);  /* Slide in from under toggle */
-    }
-
-    .nav-toggle {
-        display: block;  /* Keep the burger icon visible on larger screens */
-    }
-}
-
-@media (min-width: 1600px) {
-    .nav-menu { width: 16.6vw; } /* Adjust width for larger screens */
-}
-
-/* Ensure staggered animation doesn't interfere with hover */
-.navbar-nav li.staggered-entrance {
-    animation: none; /* Pause any animation when item has been staggered in */
-}
+    /* subtle variation per item so they don't move identically */
+    #navbarNav.show .navbar-nav > li:nth-child(1) > .nav-link { animation-duration: 3.6s; animation-delay: 0s; }
+    #navbarNav.show .navbar-nav > li:nth-child(2) > .nav-link { animation-duration: 3.9s; animation-delay: 0.12s; }
+    #navbarNav.show .navbar-nav > li:nth-child(3) > .nav-link { animation-duration: 4.1s; animation-delay: 0.24s; }
+    #navbarNav.show .navbar-nav > li:nth-child(4) > .nav-link { animation-duration: 3.75s; animation-delay: 0.06s; }
+    /* extend nth-child rules if you have more items */
 
 
-/* Submenu animation duration and easing */
-.submenu li {
-    animation-duration: 0.3s !important;
-    animation-timing-function: ease-out !important;
-}
-
-/* Reduce animation movement for submenus */
-.submenu.open-active li {
-    transform: translateY(0px) !important; /* Less movement */
 }
