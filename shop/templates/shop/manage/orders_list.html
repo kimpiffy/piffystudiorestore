@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Orders</h1>
+
+    {% if orders %}
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>
+                        {% if order.user %}
+                            {{ order.user.username }}
+                        {% else %}
+                            {{ order.email }}
+                        {% endif %}
+                    </td>
+                    <td>£{{ order.total_price }}</td>
+                    <td>
+                        <span class="badge bg-secondary text-uppercase">
+                            {{ order.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'shop:order_detail' order.id %}" class="btn btn-sm btn-dark">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-muted">No orders yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

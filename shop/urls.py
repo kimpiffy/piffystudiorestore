@@ -14,6 +14,11 @@ urlpatterns = [
     path('manage/products/<int:pk>/delete/', views.delete_product, name='delete_product'),
     path('manage/products/bulk-delete/', views.bulk_delete, name='bulk_delete'),
     path('manage/products/<int:pk>/duplicate/', views.duplicate_product, name='duplicate_product'),
+        # Orders (admin)
+    path('manage/orders/', views.manage_orders, name='manage_orders'),
+    path('manage/orders/<int:order_id>/', views.order_detail, name='order_detail'),
+
+
 
     # Image uploads + ordering
     path('manage/products/<int:product_id>/images/upload/', views.upload_product_image, name='upload_product_image'),
@@ -35,6 +40,9 @@ urlpatterns = [
 # ============================
 # PUBLIC SHOP FRONT
 # ============================
+
+    path('webhooks/stripe/', views.stripe_webhook, name='stripe_webhook'),
+
 
 # Shop index / product list
 path('', views.product_list, name='shop_index'),

@@ -103,13 +103,40 @@ class CartItem(models.Model):
 # ============================
 # ORDER
 # ============================
+
+# ============================
+# ORDER
+# ============================
 class Order(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    email = models.EmailField(blank=True, null=True)
+
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    stripe_session_id = models.CharField(max_length=255, blank=True, null=True)
+    stripe_payment_intent = models.CharField(max_length=255, blank=True, null=True)
+
+    STATUS_CHOICES = [
+        ("paid", "Paid"),
+        ("shipped", "Shipped"),
+        ("delivered", "Delivered"),
+        ("cancelled", "Cancelled"),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="paid")
+
+    # shipping info collected from Stripe Checkout
+    shipping_name = models.CharField(max_length=255, blank=True, null=True)
+    shipping_address1 = models.CharField(max_length=255, blank=True, null=True)
+    shipping_address2 = models.CharField(max_length=255, blank=True, null=True)
+    shipping_city = models.CharField(max_length=255, blank=True, null=True)
+    shipping_postcode = models.CharField(max_length=50, blank=True, null=True)
+    shipping_country = models.CharField(max_length=2, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Order #{self.id}"
+
 
 
 class OrderItem(models.Model):
@@ -120,17 +147,3 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity} x {self.product.title}"
 
-# CREATING ORDER STORAGE (after payment success)
-def create_order(session):
-    user = session.customer if isinstance(session.customer, User) else None
-    order = Order.objects.create(user=user, total_price=(session.amount_total / 100) if hasattr(session, 'amount_total') else 0)
-
-    for item in getattr(session, 'line_items', []):
-        product_name = item.get('product_data', {}).get('name')
-        quantity = item.get('quantity', 1)
-
-        product = Product.objects.filter(title=product_name).first() if product_name else None
-        if product:
-            OrderItem.objects.create(order=order, product=product, quantity=quantity)
-
-    return order

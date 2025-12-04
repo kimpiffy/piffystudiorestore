@@ -1,14 +1,25 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
 import stripe
 
 from config import settings
+from shop.forms import CategoryForm, ProductForm, VariantForm
 
-from .models import Product, ProductImage, Category, ProductVariant, Cart, CartItem
-from .forms import ProductForm, CategoryForm, VariantForm
+from .models import (
+    Product,
+    ProductImage,
+    Category,
+    ProductVariant,
+    Cart,
+    CartItem,
+    Order,
+    OrderItem,
+)
 
 
 # ===========================================================
@@ -45,19 +56,16 @@ def add_to_cart(request, product_id):
 
     cart, created = Cart.objects.get_or_create(user=request.user)
 
-    # Check if this product already exists in the cart
     existing_item = CartItem.objects.filter(
         cart=cart,
         product=product
     ).first()
 
     if existing_item:
-        # Increase quantity instead of duplicating item
         existing_item.quantity += 1
         existing_item.save()
         messages.success(request, f"Updated {product.title} quantity.")
     else:
-        # Create new item
         CartItem.objects.create(
             cart=cart,
             product=product,
@@ -67,12 +75,13 @@ def add_to_cart(request, product_id):
 
     return redirect("shop:cart")
 
+
 def success(request):
     return render(request, "shop/success.html")
 
+
 def cancel(request):
     return render(request, "shop/cancel.html")
-
 
 
 # ===========================================================
@@ -123,14 +132,12 @@ def update_cart_item(request, item_id):
 
 # ===========================================================
 # STRIPE CHECKOUT SESSION
-# (Cart → Stripe Checkout directly, no intermediate page)
 # ===========================================================
 
 @login_required
 def create_checkout_session(request):
     print("🔥 VIEW HIT:", request.method, request.POST)
 
-    # STEP 4: if not POST, go back to CART (checkout view removed)
     if request.method != "POST":
         return redirect("shop:cart")
 
@@ -151,7 +158,7 @@ def create_checkout_session(request):
                 "product_data": {
                     "name": item.product.title,
                 },
-                "unit_amount": int(item.product.price * 100),
+                "unit_amount": int(item.product.price * 100),  # £ → pence
             },
             "quantity": item.quantity,
         })
@@ -161,16 +168,23 @@ def create_checkout_session(request):
             payment_method_types=["card"],
             mode="payment",
             line_items=line_items,
+            # collect customer email + address
+            customer_email=request.user.email,
+            billing_address_collection="required",
+            shipping_address_collection={
+                "allowed_countries": ["GB"],  # adjust if you ship elsewhere
+            },
+            metadata={
+                "user_id": request.user.id,  # so webhook can find the user
+            },
             success_url=request.build_absolute_uri(reverse("shop:success")),
             cancel_url=request.build_absolute_uri(reverse("shop:cancel")),
         )
 
-        # Go straight to Stripe-hosted checkout page
         return redirect(session.url)
 
     except Exception as e:
         messages.error(request, f"Stripe error: {e}")
-        # STEP 4 again: on error, go back to CART
         return redirect("shop:cart")
 
 
@@ -181,7 +195,9 @@ def create_checkout_session(request):
 @login_required
 def manage_products(request):
     products = Product.objects.all().order_by('-created_at')
-    return render(request, "shop/manage/manage_products.html", {
+
+    # FIXED: your template is named products_list.html
+    return render(request, "shop/manage/products_list.html", {
         "products": products
     })
 
@@ -197,7 +213,7 @@ def add_product(request):
     else:
         form = ProductForm()
 
-    return render(request, "shop/manage/add_product.html", {
+    return render(request, "shop/manage/product_form.html", {
         "form": form
     })
 
@@ -217,7 +233,7 @@ def edit_product(request, pk):
     images = product.images.all()
     variants = product.variants.all()
 
-    return render(request, "shop/manage/edit_product.html", {
+    return render(request, "shop/manage/product_form.html", {
         "product": product,
         "form": form,
         "images": images,
@@ -291,7 +307,11 @@ def update_image_order(request):
 @login_required
 def manage_categories(request):
     categories = Category.objects.all()
-    return render(request, "shop/manage/manage_categories.html", {"categories": categories})
+
+    # FIXED: your template is named categories_list.html
+    return render(request, "shop/manage/categories_list.html", {
+        "categories": categories
+    })
 
 
 @login_required
@@ -305,7 +325,9 @@ def add_category(request):
     else:
         form = CategoryForm()
 
-    return render(request, "shop/manage/add_category.html", {"form": form})
+    return render(request, "shop/manage/category_form.html", {
+        "form": form
+    })
 
 
 @login_required
@@ -321,7 +343,7 @@ def edit_category(request, pk):
     else:
         form = CategoryForm(instance=category)
 
-    return render(request, "shop/manage/edit_category.html", {
+    return render(request, "shop/manage/category_form.html", {
         "form": form,
         "category": category
     })
@@ -388,3 +410,119 @@ def delete_variant(request, variant_id):
     variant.delete()
     messages.success(request, "Variant deleted.")
     return redirect("shop:edit_product", pk=product_id)
+
+
+# ===========================================================
+# STRIPE WEBHOOK – CREATES ORDERS AFTER PAYMENT
+# ===========================================================
+
+@csrf_exempt
+def stripe_webhook(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    endpoint_secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", None)
+
+    payload = request.body
+    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
+
+    if endpoint_secret is None:
+        # Misconfigured – don't blow up, just ignore
+        return HttpResponse(status=200)
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload=payload,
+            sig_header=sig_header,
+            secret=endpoint_secret,
+        )
+    except (ValueError, stripe.error.SignatureVerificationError):
+        return HttpResponse(status=400)
+
+    # We care about checkout completion
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+
+        # 1) Find the user from metadata
+        User = get_user_model()
+        user = None
+        user_id = session.get("metadata", {}).get("user_id")
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                user = None
+
+        if not user:
+            # Your Order.user cannot be null – bail safely
+            return HttpResponse(status=200)
+
+        # 2) Basic amounts and details
+        amount_total = session.get("amount_total") or 0
+        total_price = amount_total / 100
+
+        customer_details = session.get("customer_details") or {}
+        shipping_details = session.get("shipping_details") or {}
+        address = shipping_details.get("address") or {}
+
+        # 3) Create Order record
+        order = Order.objects.create(
+            user=user,
+            email=customer_details.get("email"),
+            total_price=total_price,
+            stripe_session_id=session.get("id"),
+            stripe_payment_intent=session.get("payment_intent"),
+            shipping_name=shipping_details.get("name") or customer_details.get("name"),
+            shipping_address1=address.get("line1"),
+            shipping_address2=address.get("line2"),
+            shipping_city=address.get("city"),
+            shipping_postcode=address.get("postal_code"),
+            shipping_country=address.get("country"),
+        )
+
+        # 4) Fetch line items from Stripe to build OrderItems
+        line_items = stripe.checkout.Session.list_line_items(session["id"])
+
+        for li in line_items["data"]:
+            product_name = li.get("description")
+            quantity = li.get("quantity", 1)
+
+            product = Product.objects.filter(title=product_name).first()
+            if product:
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=quantity,
+                )
+
+        # 5) Clear the user's cart
+        Cart.objects.filter(user=user).delete()
+
+    return HttpResponse(status=200)
+
+# ===========================================================
+# ORDER MANAGEMENT (ADMIN AREA)
+# ===========================================================
+
+@login_required
+def manage_orders(request):
+    orders = Order.objects.all().order_by("-created_at")
+    return render(request, "shop/manage/orders_list.html", {
+        "orders": orders
+    })
+
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, pk=order_id)
+
+    # Allow status update via POST (dropdown on detail page)
+    if request.method == "POST":
+        new_status = request.POST.get("status")
+        if new_status in dict(Order.STATUS_CHOICES):
+            order.status = new_status
+            order.save()
+            messages.success(request, "Order status updated.")
+            return redirect("shop:order_detail", order_id=order.id)
+
+    return render(request, "shop/manage/order_detail.html", {
+        "order": order,
+    })

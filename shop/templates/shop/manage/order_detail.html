@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-3">Order #{{ order.id }}</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5>Customer</h5>
+            <p class="mb-1">
+                {% if order.user %}
+                    {{ order.user.username }}<br>
+                    {{ order.user.email }}
+                {% else %}
+                    {{ order.email }}
+                {% endif %}
+            </p>
+
+            <h5 class="mt-4">Shipping</h5>
+            <p class="mb-1">
+                {{ order.shipping_name }}<br>
+                {{ order.shipping_address1 }}<br>
+                {% if order.shipping_address2 %}{{ order.shipping_address2 }}<br>{% endif %}
+                {{ order.shipping_city }} {{ order.shipping_postcode }}<br>
+                {{ order.shipping_country }}
+            </p>
+        </div>
+
+        <div class="col-md-6">
+            <h5>Order Info</h5>
+            <p class="mb-1">
+                Placed: {{ order.created_at|date:"Y-m-d H:i" }}<br>
+                Total: <strong>£{{ order.total_price }}</strong><br>
+                Stripe Session: {{ order.stripe_session_id }}<br>
+                Payment Intent: {{ order.stripe_payment_intent }}
+            </p>
+
+            <h5 class="mt-4">Status</h5>
+            <form method="POST" class="d-flex gap-2 align-items-center">
+                {% csrf_token %}
+                <select name="status" class="form-select w-auto">
+                    {% for value, label in order.STATUS_CHOICES %}
+                        <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-dark btn-sm">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Items</h4>
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th style="width: 120px;">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+                <tr>
+                    <td>{{ item.product.title }}</td>
+                    <td>{{ item.quantity }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'shop:manage_orders' %}" class="btn btn-outline-secondary mt-3">
+        ← Back to Orders
+    </a>
+</div>
+{% endblock %}
