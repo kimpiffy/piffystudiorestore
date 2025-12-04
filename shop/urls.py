@@ -57,6 +57,8 @@ path('update-cart-item/<int:item_id>/', views.update_cart_item, name='update_car
 path('create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
 path('thank-you/', views.success, name='success'),
 path('cancel/', views.cancel, name='cancel'),
+path("webhook/stripe/", views.stripe_webhook, name="stripe_webhook"),
+
 
 # Product detail (slug LAST so it doesn’t swallow other routes)
 path('<slug:slug>/', views.product_detail, name='product_detail'),

@@ -158,7 +158,7 @@ def create_checkout_session(request):
                 "product_data": {
                     "name": item.product.title,
                 },
-                "unit_amount": int(item.product.price * 100),  # £ → pence
+                "unit_amount": int(item.product.price * 100),
             },
             "quantity": item.quantity,
         })
@@ -168,15 +168,16 @@ def create_checkout_session(request):
             payment_method_types=["card"],
             mode="payment",
             line_items=line_items,
-            # collect customer email + address
+
             customer_email=request.user.email,
             billing_address_collection="required",
             shipping_address_collection={
-                "allowed_countries": ["GB"],  # adjust if you ship elsewhere
+                "allowed_countries": ["GB"],
             },
             metadata={
-                "user_id": request.user.id,  # so webhook can find the user
+                "user_id": request.user.id,
             },
+
             success_url=request.build_absolute_uri(reverse("shop:success")),
             cancel_url=request.build_absolute_uri(reverse("shop:cancel")),
         )
@@ -195,8 +196,6 @@ def create_checkout_session(request):
 @login_required
 def manage_products(request):
     products = Product.objects.all().order_by('-created_at')
-
-    # FIXED: your template is named products_list.html
     return render(request, "shop/manage/products_list.html", {
         "products": products
     })
@@ -307,8 +306,6 @@ def update_image_order(request):
 @login_required
 def manage_categories(request):
     categories = Category.objects.all()
-
-    # FIXED: your template is named categories_list.html
     return render(request, "shop/manage/categories_list.html", {
         "categories": categories
     })
@@ -425,7 +422,6 @@ def stripe_webhook(request):
     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
 
     if endpoint_secret is None:
-        # Misconfigured – don't blow up, just ignore
         return HttpResponse(status=200)
 
     try:
@@ -437,14 +433,13 @@ def stripe_webhook(request):
     except (ValueError, stripe.error.SignatureVerificationError):
         return HttpResponse(status=400)
 
-    # We care about checkout completion
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
 
-        # 1) Find the user from metadata
         User = get_user_model()
         user = None
         user_id = session.get("metadata", {}).get("user_id")
+
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
@@ -452,10 +447,8 @@ def stripe_webhook(request):
                 user = None
 
         if not user:
-            # Your Order.user cannot be null – bail safely
             return HttpResponse(status=200)
 
-        # 2) Basic amounts and details
         amount_total = session.get("amount_total") or 0
         total_price = amount_total / 100
 
@@ -463,7 +456,6 @@ def stripe_webhook(request):
         shipping_details = session.get("shipping_details") or {}
         address = shipping_details.get("address") or {}
 
-        # 3) Create Order record
         order = Order.objects.create(
             user=user,
             email=customer_details.get("email"),
@@ -478,7 +470,6 @@ def stripe_webhook(request):
             shipping_country=address.get("country"),
         )
 
-        # 4) Fetch line items from Stripe to build OrderItems
         line_items = stripe.checkout.Session.list_line_items(session["id"])
 
         for li in line_items["data"]:
@@ -493,10 +484,10 @@ def stripe_webhook(request):
                     quantity=quantity,
                 )
 
-        # 5) Clear the user's cart
         Cart.objects.filter(user=user).delete()
 
     return HttpResponse(status=200)
+
 
 # ===========================================================
 # ORDER MANAGEMENT (ADMIN AREA)
@@ -514,7 +505,6 @@ def manage_orders(request):
 def order_detail(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
 
-    # Allow status update via POST (dropdown on detail page)
     if request.method == "POST":
         new_status = request.POST.get("status")
         if new_status in dict(Order.STATUS_CHOICES):

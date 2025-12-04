@@ -17,7 +17,12 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') or 'unsafe-default-for-dev'
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+raw_allowed = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
+ALLOWED_HOSTS = [h.strip() for h in raw_allowed.split(",") if h.strip()]
+
+# ensure render host is present (safe if you forget to update .env)
+if "piffystudio.onrender.com" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("piffystudio.onrender.com")
 
 
 # -------------------------------
@@ -28,6 +33,7 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')  # Secret Key (sk_test_...)
 STRIPE_TEST_PUBLIC_KEY = os.getenv('STRIPE_TEST_PUBLIC_KEY')  # Public Key (pk_test_...)
 STRIPE_SUCCESS_URL = os.getenv('STRIPE_SUCCESS_URL')  # URL after successful payment
 STRIPE_CANCEL_URL = os.getenv('STRIPE_CANCEL_URL')  # URL after canceled payment
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")  # Webhook signing secret
 
 # -------------------------------
 # APPLICATIONS
