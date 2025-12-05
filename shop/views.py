@@ -25,6 +25,19 @@ from .models import (
 
 
 # ===========================================================
+# SESSION CART HELPERS (GUEST SUPPORT)
+# ===========================================================
+
+def save_session_cart(request, data):
+    request.session["cart"] = data
+    request.session.modified = True
+
+
+def get_session_cart(request):
+    return request.session.get("cart", {})
+
+
+# ===========================================================
 # PUBLIC SHOP VIEWS
 # ===========================================================
 
@@ -45,36 +58,49 @@ def product_detail(request, slug):
     })
 
 
-@login_required
+# ===========================================================
+# ADD TO CART (GUEST + LOGGED-IN)
+# ===========================================================
+
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    variant_id = request.POST.get("variant_id")
-    variant = None
-    if variant_id:
-        variant = ProductVariant.objects.filter(id=variant_id).first()
+    # LOGGED-IN USER
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        item = CartItem.objects.filter(cart=cart, product=product).first()
 
-    cart, created = Cart.objects.get_or_create(user=request.user)
+        if item:
+            item.quantity += 1
+            item.save()
+        else:
+            CartItem.objects.create(cart=cart, product=product, quantity=1)
 
-    existing_item = CartItem.objects.filter(
-        cart=cart,
-        product=product
-    ).first()
-
-    if existing_item:
-        existing_item.quantity += 1
-        existing_item.save()
-        messages.success(request, f"Updated {product.title} quantity.")
-    else:
-        CartItem.objects.create(
-            cart=cart,
-            product=product,
-            quantity=1
-        )
         messages.success(request, f"{product.title} added to cart.")
+        return redirect("shop:cart")
 
+    # GUEST USER - SESSION CART
+    cart = get_session_cart(request)
+
+    pid = str(product.id)
+
+    if pid in cart:
+        cart[pid]["quantity"] += 1
+    else:
+        cart[pid] = {
+            "title": product.title,
+            "price": float(product.price),
+            "quantity": 1,
+        }
+
+    save_session_cart(request, cart)
+    messages.success(request, f"{product.title} added to cart.")
     return redirect("shop:cart")
 
+
+# ===========================================================
+# SUCCESS / CANCEL
+# ===========================================================
 
 def success(request):
     session_id = request.GET.get("session_id")
@@ -91,14 +117,35 @@ def cancel(request):
 
 
 # ===========================================================
-# CART SYSTEM
+# CART VIEW (GUEST + LOGGED-IN)
 # ===========================================================
 
-@login_required
 def cart_view(request):
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    items = cart.items.all()
-    total = sum(item.total_price for item in items)
+    # LOGGED-IN
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        items = cart.items.all()
+        total = sum(item.total_price for item in items)
+
+        return render(request, "shop/cart.html", {
+            "cart": cart,
+            "items": items,
+            "total": total,
+        })
+
+    # GUEST
+    cart = get_session_cart(request)
+    items = []
+    total = 0
+
+    for pid, data in cart.items():
+        total += data["price"] * data["quantity"]
+        items.append({
+            "id": pid,
+            "title": data["title"],
+            "quantity": data["quantity"],
+            "total_price": data["price"] * data["quantity"],
+        })
 
     return render(request, "shop/cart.html", {
         "cart": cart,
@@ -107,37 +154,65 @@ def cart_view(request):
     })
 
 
-@login_required
+# ===========================================================
+# REMOVE FROM CART (GUEST + USER)
+# ===========================================================
+
 def remove_from_cart(request, item_id):
-    item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
-    item.delete()
-    messages.success(request, "Item removed from cart.")
-    return redirect("shop:cart")
+    # LOGGED-IN
+    if request.user.is_authenticated:
+        item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+        item.delete()
+        messages.success(request, "Item removed.")
+        return redirect("shop:cart")
 
+    # GUEST
+    cart = get_session_cart(request)
+    pid = str(item_id)
 
-@login_required
-def update_cart_item(request, item_id):
-    item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    if pid in cart:
+        del cart[pid]
 
-    if request.method == "POST":
-        new_quantity = request.POST.get("quantity")
-        try:
-            new_quantity = int(new_quantity)
-            if new_quantity > 0:
-                item.quantity = new_quantity
-                item.save()
-                messages.success(request, "Cart updated.")
-            else:
-                item.delete()
-                messages.info(request, "Item removed from cart.")
-        except ValueError:
-            messages.error(request, "Invalid quantity.")
-
+    save_session_cart(request, cart)
+    messages.success(request, "Item removed.")
     return redirect("shop:cart")
 
 
 # ===========================================================
-# STRIPE CHECKOUT SESSION
+# UPDATE CART (GUEST + USER)
+# ===========================================================
+
+def update_cart_item(request, item_id):
+    # LOGGED-IN
+    if request.user.is_authenticated:
+        item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+        qty = int(request.POST.get("quantity", 1))
+
+        if qty > 0:
+            item.quantity = qty
+            item.save()
+        else:
+            item.delete()
+
+        return redirect("shop:cart")
+
+    # GUEST
+    cart = get_session_cart(request)
+    pid = str(item_id)
+    qty = int(request.POST.get("quantity", 1))
+
+    if pid in cart:
+        if qty > 0:
+            cart[pid]["quantity"] = qty
+        else:
+            del cart[pid]
+
+    save_session_cart(request, cart)
+    return redirect("shop:cart")
+
+
+# ===========================================================
+# STRIPE CHECKOUT SESSION (GUEST + USER)
 # ===========================================================
 
 def create_checkout_session(request):
@@ -146,44 +221,62 @@ def create_checkout_session(request):
 
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    items = cart.items.all()
-
-    if not items:
+    # GET ITEMS
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        cart_items = cart.items.all()
+    else:
+        cart_items = request.session.get("cart", {})
+    
+    if not cart_items:
         messages.error(request, "Your cart is empty.")
         return redirect("shop:cart")
 
+    # BUILD LINE ITEMS
     line_items = []
-    for item in items:
-        line_items.append({
-            "price_data": {
-                "currency": "gbp",
-                "product_data": {"name": item.product.title},
-                "unit_amount": int(item.product.price * 100),
-            },
-            "quantity": item.quantity,
-        })
 
-    try:
-        session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            mode="payment",
-            line_items=line_items,
-            customer_email=request.user.email,
-            billing_address_collection="required",
-            shipping_address_collection={"allowed_countries": ["GB"]},
-            metadata={"user_id": request.user.id},
-            success_url=request.build_absolute_uri(
-                reverse("shop:success")
-            ) + "?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url=request.build_absolute_uri(reverse("shop:cancel")),
-        )
+    if request.user.is_authenticated:
+        for item in cart_items:
+            line_items.append({
+                "price_data": {
+                    "currency": "gbp",
+                    "product_data": {"name": item.product.title},
+                    "unit_amount": int(item.product.price * 100),
+                },
+                "quantity": item.quantity,
+            })
+    else:
+        # SESSION CART
+        for pid, data in cart_items.items():
+            line_items.append({
+                "price_data": {
+                    "currency": "gbp",
+                    "product_data": {"name": data["title"]},
+                    "unit_amount": int(float(data["price"]) * 100),
+                },
+                "quantity": data["quantity"],
+            })
 
-        return redirect(session.url)
+    # METADATA
+    metadata = {}
+    if request.user.is_authenticated:
+        metadata["user_id"] = request.user.id
 
-    except Exception as e:
-        messages.error(request, f"Stripe error: {e}")
-        return redirect("shop:cart")
+    session = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        mode="payment",
+        line_items=line_items,
+        customer_email=request.user.email if request.user.is_authenticated else None,
+        billing_address_collection="required",
+        shipping_address_collection={"allowed_countries": ["GB"]},
+        metadata=metadata,
+        success_url=request.build_absolute_uri(
+            reverse("shop:success")
+        ) + "?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url=request.build_absolute_uri(reverse("shop:cancel")),
+    )
+
+    return redirect(session.url)
 
 
 # ===========================================================
@@ -399,7 +492,7 @@ def delete_variant(request, variant_id):
 
 
 # ===========================================================
-# STRIPE WEBHOOK – FIXED + CLEANED
+# STRIPE WEBHOOK – FIXED + EMAIL + CLEAR SESSION CART
 # ===========================================================
 
 @csrf_exempt
@@ -425,7 +518,7 @@ def stripe_webhook(request):
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
 
-        # User from metadata
+        # USER METADATA
         User = get_user_model()
         user = None
         user_id = session.get("metadata", {}).get("user_id")
@@ -436,14 +529,14 @@ def stripe_webhook(request):
             except User.DoesNotExist:
                 user = None
 
-        # Pricing + customer info
+        # CUSTOMER INFO
         total_price = (session.get("amount_total") or 0) / 100
         customer_details = session.get("customer_details") or {}
         collected_info = session.get("collected_information", {}) or {}
         shipping_details = collected_info.get("shipping_details") or {}
         address = shipping_details.get("address") or {}
 
-        # Create order
+        # CREATE ORDER
         order = Order.objects.create(
             user=user,
             email=customer_details.get("email"),
@@ -459,7 +552,7 @@ def stripe_webhook(request):
             shipping_country=address.get("country"),
         )
 
-        # Create order items
+        # CREATE ORDER ITEMS
         line_items = stripe.checkout.Session.list_line_items(session["id"])
         for li in line_items["data"]:
             product = Product.objects.filter(title=li.get("description")).first()
@@ -470,7 +563,7 @@ def stripe_webhook(request):
                     quantity=li.get("quantity", 1),
                 )
 
-        # SEND CONFIRMATION EMAIL
+        # SEND EMAIL
         if order.email:
             subject = "Your Piffy Studio Order Confirmation"
             message = render_to_string("emails/order_confirmation.txt", {
@@ -485,9 +578,13 @@ def stripe_webhook(request):
                 fail_silently=True,
             )
 
-        # Clear cart
+        # CLEAR DB CART
         if user:
             Cart.objects.filter(user=user).delete()
+
+        # CLEAR SESSION CART (GUEST)
+        request.session["cart"] = {}
+        request.session.modified = True
 
     return HttpResponse(status=200)
 
