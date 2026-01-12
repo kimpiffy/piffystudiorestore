@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/kimpiffy/vscode-projects/piffystudio/.venv"
+VIRTUAL_ENV="/Users/kimpiffy/Documents/vscode-projects/piffystudio/.venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

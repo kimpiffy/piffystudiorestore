@@ -1,81 +1,58 @@
-{% extends "base.html" %}
 {% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <title>Piffy Studio</title>
 
+  <!-- Homepage-only styles -->
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
 
-{% block content %}
+<body class="home">
 
-<!-- FULLSCREEN HERO CAROUSEL -->
-<section id="hero-carousel"
-    class="carousel slide carousel-fade"
-    data-bs-ride="carousel"
-    data-bs-interval="4000"
-    data-bs-pause="false"
-    data-bs-touch="false">
+  <main class="tiles">
 
+    <!-- CREATING -->
+    <a
+      class="tile"
+      href="{% url 'portfolio:art' %}"
+      style="--bg: url('{% static 'img/create.png' %}');"
+    >
+      <div class="tile__bg" aria-hidden="true"></div>
+      <div class="tile__word" data-text="create"></div>
+    </a>
 
+    <!-- BUILDING -->
+    <a
+      class="tile"
+      href="{% url 'portfolio:digital' %}"
+      style="--bg: url('{% static 'img/build.png' %}');"
+    >
+      <div class="tile__bg" aria-hidden="true"></div>
+      <div class="tile__word" data-text="build"></div>
+    </a>
 
-    <!-- Hidden controls (functional but not visible) -->
-    <button class="carousel-control-prev d-none" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev"></button>
-    <button class="carousel-control-next d-none" type="button" data-bs-target="#hero-carousel" data-bs-slide="next"></button>
+    <!-- CONNECTING -->
+    <a
+      class="tile"
+      href="{% url 'portfolio:installations' %}"
+      style="--bg: url('{% static 'img/connect.jpg' %}');"
+    >
+      <div class="tile__bg" aria-hidden="true"></div>
+      <div class="tile__word" data-text="connect"></div>
+    </a>
 
-    <div class="carousel-inner">
+  </main>
 
-        <!-- ====================== SLIDE 1 — TRIO STACK ====================== -->
-       <div class="carousel-item active vh-100 position-relative">
-    <div class="container-fluid h-100 d-flex justify-content-center align-items-center">
+  <!-- Blotter vendor files -->
+  <script src="{% static 'js/vendor/blotter.min.js' %}"></script>
+  <script src="{% static 'js/vendor/liquidDistortMaterial.js' %}"></script>
 
-        <div class="hero-stack">
-            <img src="{% static 'img/trio-1.png' %}" class="hero-layer layer-1">
-            <img src="{% static 'img/trio-2.png' %}" class="hero-layer layer-2">
-            <img src="{% static 'img/trio-3.png' %}" class="hero-layer layer-3">
-        </div>
+  <!-- Your Blotter behaviour -->
+  <script src="{% static 'js/home-blotter.js' %}"></script>
 
-    </div>
-
-    <div class="hero-caption">
-        Delinquency, Vanity & Transcendence (Mixed Media, 2019)
-    </div>
-</div>
-
-
-        <!-- ====================== SLIDE 2 — DIPTYCH ====================== -->
-       <div class="carousel-item vh-100 position-relative">
-    <div class="container-fluid h-100 d-flex justify-content-center align-items-center">
-        <div class="row justify-content-center align-items-center g-4 diptych-row">
-
-            <div class="col-12 col-md-6 d-flex justify-content-center">
-                <img src="{% static 'img/phenomenon.png' %}" class="diptych-img img-fluid">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex justify-content-center">
-                <img src="{% static 'img/machine.png' %}" class="diptych-img img-fluid">
-            </div>
-
-        </div>
-    </div>
-
-    <div class="hero-caption">
-        Patterns (Photography & Typography, 2025)
-    </div>
-</div>
-
-
-
-        <!-- ====================== SLIDE 3 — PLACEHOLDER ====================== -->
-        <div class="carousel-item vh-100 position-relative">
-               <div class="container-fluid h-100 d-flex justify-content-end align-items-center">
-        <div class="row justify-content-center align-items-center g-4">
-            <div class="col-12 m-2 p-2 d-flex h-100 justify-content-end align-items-center">
-                <img src="{% static 'img/communion.jpg' %}" class="img-fluid communion" alt="Upcoming work">
-            </div>
- <div class="hero-caption">
-        Communion (Mixed Media, 2023)
-    </div>
-
-        </div>
-
-    </div>
-</section>
-
-{% endblock %}
+</body>
+</html>

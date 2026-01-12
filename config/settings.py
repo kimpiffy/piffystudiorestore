@@ -6,8 +6,11 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load the .env in the project root explicitly
-load_dotenv(BASE_DIR / '.env')
+# Load default env (Render / shared)
+load_dotenv(BASE_DIR / ".env")
+
+# Load local overrides if present (SQLite, test keys, etc.)
+load_dotenv(BASE_DIR / ".env.local", override=True)
 
 # -------------------------------
 # SECURITY

@@ -99,14 +99,10 @@ class CartItem(models.Model):
     def total_price(self):
         return self.product.price * self.quantity
 
-
 # ============================
 # ORDER
 # ============================
 
-# ============================
-# ORDER
-# ============================
 class Order(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     email = models.EmailField(blank=True, null=True)
