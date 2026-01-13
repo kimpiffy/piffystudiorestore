@@ -52,11 +52,10 @@
     // Phrase Animator (fixed intensity)
     // -----------------------------
     let energy = 0;               // current energy 0..1
-    const ENERGY_KICK = 0.85;     // <-- fixed intensity per trigger (tweak 0.6–1.0)
+    const ENERGY_KICK = 0.85;     // fixed intensity per trigger
     const ENERGY_DECAY = 0.3;     // keep your original decay
 
     let raf = null;
-    let lastY = window.scrollY;
 
     const DURATION = 700;
     let phaseStart = 0;
@@ -64,9 +63,13 @@
     const PEAK_VOL = 0.08;
     const PEAK_SPD = 0.1;
 
-    // Trigger control: only start once per snap step
-    const COOLDOWN_MS = 320;      // tweak (250–450). Must be < your snap duration.
+    // Trigger control: only start once per step
+    const COOLDOWN_MS = 320;
     let lastTriggerAt = 0;
+
+    // Direction comes from panel changes now (not scroll position)
+    let currentDir = 1;
+    let lastIndex = 0;
 
     function setRest() {
       items.forEach(({ material }) => {
@@ -87,7 +90,7 @@
       const e = clamp(0, energy, 1) * cfg.motionScale;
 
       // Direction only (not magnitude)
-      const dir = Math.sign(window.scrollY - lastY) || 1;
+      const dir = currentDir;
 
       const speed = bump * PEAK_SPD * e * dir;
       const vol = bump * PEAK_VOL * e;
@@ -98,7 +101,6 @@
       });
 
       if (t >= 1) {
-        // keep your decay behaviour
         energy *= ENERGY_DECAY;
 
         if (energy < 0.02) {
@@ -117,10 +119,9 @@
 
     function triggerPhrase() {
       const now = performance.now();
-      if (now - lastTriggerAt < COOLDOWN_MS) return; // debounce per snap step
+      if (now - lastTriggerAt < COOLDOWN_MS) return;
       lastTriggerAt = now;
 
-      // Fixed kick — NOT based on scroll speed
       energy = Math.max(energy, ENERGY_KICK);
 
       if (!raf) {
@@ -129,19 +130,21 @@
       }
     }
 
-    // Scroll: only triggers phrase (no delta-based energy)
-    window.addEventListener(
-      "scroll",
-      () => {
-        // update lastY for direction to work correctly
-        const y = window.scrollY;
-        lastY = y;
+    // ✅ NEW: Trigger from GSAP swish events (panel changes), not scroll
+    // home-gsap.js should dispatch: window.dispatchEvent(new CustomEvent("panelEnter", { detail: index }));
+    window.addEventListener("panelEnter", (e) => {
+      const idx =
+        typeof e.detail === "number"
+          ? e.detail
+          : (e.detail && typeof e.detail.index === "number" ? e.detail.index : 0);
 
-        triggerPhrase();
-      },
-      { passive: true }
-    );
+      currentDir = idx >= lastIndex ? 1 : -1;
+      lastIndex = idx;
 
+      triggerPhrase();
+    });
+
+    // Keep resize behaviour
     window.addEventListener(
       "resize",
       () => location.reload(),
