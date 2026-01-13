@@ -27,6 +27,7 @@ body {
    Page base
 -------------------------------------------------- */
 body.home {
+  touch-action: none; /* prevents iOS from fighting your custom swish */
   background: #070707;
   overflow-x: hidden;
   overscroll-behavior: none; /* prevents rubber-band weirdness */
