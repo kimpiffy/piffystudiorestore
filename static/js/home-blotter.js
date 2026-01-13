@@ -51,9 +51,9 @@
     // -----------------------------
     // Phrase Animator (fixed intensity)
     // -----------------------------
-    let energy = 0;               // current energy 0..1
-    const ENERGY_KICK = 0.85;     // fixed intensity per trigger
-    const ENERGY_DECAY = 0.3;     // keep your original decay
+    let energy = 0;
+    const ENERGY_KICK = 0.85;
+    const ENERGY_DECAY = 0.3;
 
     let raf = null;
 
@@ -63,13 +63,11 @@
     const PEAK_VOL = 0.08;
     const PEAK_SPD = 0.1;
 
-    // Trigger control: only start once per step
     const COOLDOWN_MS = 320;
     let lastTriggerAt = 0;
 
-    // Direction comes from panel changes now (not scroll position)
+    // direction supplied by GSAP swish
     let currentDir = 1;
-    let lastIndex = 0;
 
     function setRest() {
       items.forEach(({ material }) => {
@@ -89,7 +87,6 @@
 
       const e = clamp(0, energy, 1) * cfg.motionScale;
 
-      // Direction only (not magnitude)
       const dir = currentDir;
 
       const speed = bump * PEAK_SPD * e * dir;
@@ -110,7 +107,6 @@
           return;
         }
 
-        // run another full phrase if energy remains
         phaseStart = now;
       }
 
@@ -130,25 +126,13 @@
       }
     }
 
-    // ✅ NEW: Trigger from GSAP swish events (panel changes), not scroll
-    // home-gsap.js should dispatch: window.dispatchEvent(new CustomEvent("panelEnter", { detail: index }));
+    // ✅ Trigger ONLY from slide changes
     window.addEventListener("panelEnter", (e) => {
-      const idx =
-        typeof e.detail === "number"
-          ? e.detail
-          : (e.detail && typeof e.detail.index === "number" ? e.detail.index : 0);
-
-      currentDir = idx >= lastIndex ? 1 : -1;
-      lastIndex = idx;
-
+      const detail = e.detail || {};
+      if (typeof detail.dir === "number") currentDir = detail.dir || 1;
       triggerPhrase();
     });
 
-    // Keep resize behaviour
-    window.addEventListener(
-      "resize",
-      () => location.reload(),
-      { passive: true }
-    );
+    window.addEventListener("resize", () => location.reload(), { passive: true });
   });
 })();
