@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preload" href="{% static 'fonts/wakaba.woff2' %}" as="font" type="font/woff2" crossorigin>
 
-
   <title>Piffy Studio</title>
 
   <!-- Homepage-only styles -->
@@ -16,89 +15,80 @@
 <body class="home">
 
   <main class="tiles">
-<div class="deck" id="deck">
+    <div class="deck" id="deck">
 
-    <section class="card">
-    <!-- CREATING -->
-    <a
-      class="tile"
-      href="{% url 'portfolio:art' %}"
-      style="--bg: url('{% static 'img/create.png' %}');"
-    >
-      <div class="tile__bg" aria-hidden="true"></div>
-      <div class="tile__word" data-text="create"></div>
-    </a>
-</section>
-    <!-- BUILDING -->
-         <section class="card">
-    <a
-      class="tile"
-      href="{% url 'portfolio:digital' %}"
-      style="--bg: url('{% static 'img/build.png' %}');"
-    >
-      <div class="tile__bg" aria-hidden="true"></div>
-      <div class="tile__word" data-text="build"></div>
-    </a>
-</section>
-    <!-- CONNECTING -->
-     <section class="card">
-    <a
-      class="tile"
-      href="{% url 'portfolio:installations' %}"
-      style="--bg: url('{% static 'img/connect.jpg' %}');"
-    >
-      <div class="tile__bg" aria-hidden="true"></div>
-      <div class="tile__word" data-text="connect"></div>
-    </a>
-    </section>
+      <!-- 1 -->
+      <a
+        class="tile"
+        href="{% url 'portfolio:art' %}"
+        style="--bg: url('{% static 'img/create.png' %}');"
+      >
+        <div class="tile__bg" aria-hidden="true"></div>
+        <div class="tile__word" data-text="create"></div>
+      </a>
 
-        <section class="card">
-    <!-- CREATING -->
-    <a
-      class="tile"
-      href="{% url 'portfolio:art' %}"
-      style="--bg: url('{% static 'img/create2.png' %}');"
-    >
-      <div class="tile__bg" aria-hidden="true"></div>
-      <div class="tile__word" data-text="create"></div>
-    </a>
-</section>
-    <!-- BUILDING -->
-         <section class="card">
-    <a
-      class="tile"
-      href="{% url 'portfolio:digital' %}"
-      style="--bg: url('{% static 'img/build2.png' %}');"
-    >
-      <div class="tile__bg" aria-hidden="true"></div>
-      <div class="tile__word" data-text="build"></div>
-    </a>
-</section>
-    <!-- CONNECTING -->
-     <section class="card">
-    <a
-      class="tile"
-      href="{% url 'portfolio:installations' %}"
-      style="--bg: url('{% static 'img/connect2.png' %}');"
-    >
-      <div class="tile__bg" aria-hidden="true"></div>
-      <div class="tile__word" data-text="connect"></div>
-    </a>
-    </section>
+      <!-- 2 -->
+      <a
+        class="tile"
+        href="{% url 'portfolio:digital' %}"
+        style="--bg: url('{% static 'img/build.png' %}');"
+      >
+        <div class="tile__bg" aria-hidden="true"></div>
+        <div class="tile__word" data-text="build"></div>
+      </a>
+
+      <!-- 3 -->
+      <a
+        class="tile"
+        href="{% url 'portfolio:installations' %}"
+        style="--bg: url('{% static 'img/connect.jpg' %}');"
+      >
+        <div class="tile__bg" aria-hidden="true"></div>
+        <div class="tile__word" data-text="connect"></div>
+      </a>
+
+      <!-- 4 -->
+      <a
+        class="tile"
+        href="{% url 'portfolio:art' %}"
+        style="--bg: url('{% static 'img/create2.png' %}');"
+      >
+        <div class="tile__bg" aria-hidden="true"></div>
+        <div class="tile__word" data-text="create"></div>
+      </a>
+
+      <!-- 5 -->
+      <a
+        class="tile"
+        href="{% url 'portfolio:digital' %}"
+        style="--bg: url('{% static 'img/build2.png' %}');"
+      >
+        <div class="tile__bg" aria-hidden="true"></div>
+        <div class="tile__word" data-text="build"></div>
+      </a>
+
+      <!-- 6 -->
+      <a
+        class="tile"
+        href="{% url 'portfolio:installations' %}"
+        style="--bg: url('{% static 'img/connect2.png' %}');"
+      >
+        <div class="tile__bg" aria-hidden="true"></div>
+        <div class="tile__word" data-text="connect"></div>
+      </a>
 
     </div>
   </main>
 
-<script src="{% static 'js/vendor/gsap.min.js' %}"></script>
-<script src="{% static 'js/vendor/Observer.min.js' %}"></script>
+  <script src="{% static 'js/vendor/gsap.min.js' %}"></script>
+  <script src="{% static 'js/vendor/Observer.min.js' %}"></script>
 
-<script src="{% static 'js/vendor/blotter.min.js' %}"></script>
-<script src="{% static 'js/vendor/liquidDistortMaterial.js' %}"></script>
-<script src="{% static 'js/home-blotter.js' %}"></script>
+  <script src="{% static 'js/vendor/blotter.min.js' %}"></script>
+  <script src="{% static 'js/vendor/liquidDistortMaterial.js' %}"></script>
 
-<script src="{% static 'js/home-gsap.js' %}"></script>
-
-
+  <!-- your blotter file should stay BEFORE the gsap file so it can listen for panelEnter -->
+  <script src="{% static 'js/home-blotter.js' %}"></script>
+  <script src="{% static 'js/home-gsap.js' %}"></script>
 
 </body>
 </html>

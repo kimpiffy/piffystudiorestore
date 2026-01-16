@@ -5,13 +5,7 @@ gsap.registerPlugin(Observer);
   const panels = gsap.utils.toArray(".tile");
   if (!container || panels.length < 2) return;
 
-  // Always start from panel 0 on load
   window.scrollTo(0, 0);
-
-  // Stack order (panel 0 visually on top)
-  panels.forEach((panel, i) => {
-    panel.style.zIndex = String(panels.length - i);
-  });
 
   const bgs = panels.map((p) => p.querySelector(".tile__bg"));
 
@@ -24,8 +18,6 @@ gsap.registerPlugin(Observer);
   const isTouchDevice =
     "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
-  // Read --panel (in vh) from CSS and convert to px.
-  // Example: --panel: 90vh -> 0.9 * window.innerHeight
   function getPanelPx() {
     const raw = getComputedStyle(document.documentElement)
       .getPropertyValue("--panel")
@@ -35,8 +27,6 @@ gsap.registerPlugin(Observer);
     return (vh / 100) * window.innerHeight;
   }
 
-  // Shortest signed distance around a ring, so we can wrap seamlessly.
-  // Returns a number in roughly [-N/2, N/2].
   function ringDistance(i, current) {
     let d = i - current;
     if (d > N / 2) d -= N;
@@ -44,18 +34,19 @@ gsap.registerPlugin(Observer);
     return d;
   }
 
-  // Initial layout: stack panels vertically by panel height (so next one peeks)
-  function layoutPanels() {
-    const step = getPanelPx();
-    gsap.set(panels, { y: (i) => ringDistance(i, index) * step });
-    gsap.set(bgs, { y: 0, scale: 1.05 });
-  }
+  const DURATION = 0.42;
+  const EASE = "power3.out";
+  const PARALLAX_PX = 26;
 
-  layoutPanels();
+  // stack feel
+  const MAX_BEHIND = 3;
+  const BEHIND_SHIFT = 18;
+  const BEHIND_SCALE = 0.985;
 
-  const DURATION = 0.42;      // swish timing
-  const EASE = "power3.out";  // smooth curve
-  const PARALLAX_PX = 26;     // subtle parallax
+  // no scaling on peek card (prevents black fringe)
+  const NEXT_SCALE = 1;
+
+  const FAR_HIDE_Y = 140;
 
   function dispatchPanelEnter(nextIndex, dir) {
     window.dispatchEvent(
@@ -63,58 +54,129 @@ gsap.registerPlugin(Observer);
     );
   }
 
+  // At rest: peek card (d=1) ABOVE active (d=0)
+  function setZ(restIndex) {
+    panels.forEach((panel, i) => {
+      const d = ringDistance(i, restIndex);
+
+      let z;
+      if (d === 1) z = 1200;
+      else if (d === 0) z = 1100;
+      else if (d < 0) z = 1000 + d;
+      else z = 100 - d;
+
+      panel.style.zIndex = String(z);
+    });
+  }
+
+  function targetY(i, activeIndex, step) {
+    const d = ringDistance(i, activeIndex);
+    if (d === 0) return 0;
+    if (d === 1) return step;
+    if (d < 0 && d >= -MAX_BEHIND) return d * BEHIND_SHIFT;
+    return step + FAR_HIDE_Y;
+  }
+
+  function targetScale(i, activeIndex) {
+    const d = ringDistance(i, activeIndex);
+    if (d === 0) return 1;
+    if (d === 1) return NEXT_SCALE;
+    if (d < 0 && d >= -MAX_BEHIND) return Math.pow(BEHIND_SCALE, -d);
+    return 0.98;
+  }
+
+  function targetOpacity(i, activeIndex) {
+    const d = ringDistance(i, activeIndex);
+    if (d === 0) return 1;
+    if (d === 1) return 1;
+    if (d < 0 && d >= -MAX_BEHIND) return 1;
+    return 0;
+  }
+
+  // Set the CSS variable that drives the peek lip shadow
+  function setPeekLip(restIndex) {
+    panels.forEach((el, i) => {
+      const d = ringDistance(i, restIndex);
+      el.style.setProperty("--peekLip", d === 1 ? "1" : "0");
+    });
+  }
+
+  function layoutPanels(instant = true) {
+    const step = getPanelPx();
+    const fn = instant ? gsap.set : gsap.to;
+
+    setZ(index);
+    setPeekLip(index);
+
+    fn(panels, {
+      duration: instant ? 0 : DURATION,
+      ease: EASE,
+      y: (i) => targetY(i, index, step),
+      scale: (i) => targetScale(i, index),
+      opacity: (i) => targetOpacity(i, index),
+      force3D: true,
+    });
+
+    gsap.set(bgs, { y: 0, scale: 1.05, force3D: true });
+  }
+
+  layoutPanels(true);
+
   function goTo(nextIndex) {
     if (animating) return;
 
     const prevIndex = index;
-    const next = wrapIndex(nextIndex); // <-- wraps 0..N-1
+    const next = wrapIndex(nextIndex);
     if (next === prevIndex) return;
 
-    // Direction based on shortest route around the ring
     const d = ringDistance(next, prevIndex);
     const dir = d > 0 ? 1 : -1;
 
     animating = true;
-    index = next;
-
-    dispatchPanelEnter(index, dir);
+    dispatchPanelEnter(next, dir);
 
     const step = getPanelPx();
+
+    // base order from current
+    setZ(prevIndex);
+
+    // ✅ set lip instantly for destination (no class flip repaint)
+    setPeekLip(next);
+
+    // force style flush (keeps first frame consistent on some GPUs)
+    container.offsetHeight;
 
     const tl = gsap.timeline({
       defaults: { duration: DURATION, ease: EASE, overwrite: true },
       onComplete: () => {
+        index = next;
         gsap.set(bgs, { y: 0 });
+        setZ(index);
+        setPeekLip(index);
         animating = false;
       },
     });
 
-    // Panels move by panel height (px) so preview is always visible
+    // keep incoming top-most during transition
+    tl.set(panels[next], { zIndex: 1300 }, 0);
+
     tl.to(
       panels,
       {
-        y: (i) => ringDistance(i, index) * step,
+        y: (i) => targetY(i, next, step),
+        scale: (i) => targetScale(i, next),
+        opacity: (i) => targetOpacity(i, next),
+        force3D: true,
       },
       0
     );
 
-    // Subtle parallax during swish
-    tl.to(
-      bgs,
-      {
-        y: -dir * PARALLAX_PX,
-      },
-      0
-    );
-
-    // Settle back to rest
-    tl.to(bgs, { y: 0 }, ">-0.12");
+    tl.to(bgs, { y: -dir * PARALLAX_PX, force3D: true }, 0);
+    tl.to(bgs, { y: 0, force3D: true }, ">-0.12");
   }
 
-  // Initial event for slide 0 so Blotter can sync
   dispatchPanelEnter(0, 1);
 
-  // One gesture = one slide
   Observer.create({
     target: window,
     type: "wheel,touch,pointer",
@@ -122,7 +184,6 @@ gsap.registerPlugin(Observer);
     allowClicks: true,
     tolerance: isTouchDevice ? 18 : 8,
 
-    // Desktop wheel feels normal; touch feel corrected.
     onDown: () => {
       if (animating) return;
       goTo(isTouchDevice ? index - 1 : index + 1);
@@ -133,6 +194,5 @@ gsap.registerPlugin(Observer);
     },
   });
 
-  // Keep stable on rotation / resize
-  window.addEventListener("resize", layoutPanels);
+  window.addEventListener("resize", () => layoutPanels(true), { passive: true });
 })();
