@@ -156,7 +156,6 @@ body.home {
   height: 100%;
   display: grid;
   place-items: center;
-  padding: 6vw;
 }
 
 /* Ensure Blotter canvas scales correctly */
