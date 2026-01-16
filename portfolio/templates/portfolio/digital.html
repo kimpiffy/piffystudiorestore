@@ -1,2 +1,84 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/digital.css' %}">
+{% endblock %}
+
 {% block content %}
+<main class="wrap">
+  <!-- Header / Mode toggle -->
+  <div class="digital-header">
+    <h1>Digital</h1>
+    <button id="toggleMode" class="btn" type="button">
+      View all
+    </button>
+  </div>
+
+  <!-- MODE A: Blob Showcase (Desktop-first) -->
+  <section id="modeA" class="mode is-active">
+    <div class="showcase" id="showcase">
+
+      <!-- Blob layer -->
+      <div class="blob-layer" id="blobLayer"></div>
+
+      <!-- Center copy -->
+      <div class="showcase-center">
+        <div class="center-card">
+          <h2>Web development projects</h2>
+          <p>
+            Community-led builds, interactive sites, and creative web work.
+            Click a project to learn more.
+          </p>
+          <p class="muted">
+            Interested in working together? I take commissions and collaborations.
+          </p>
+        </div>
+      </div>
+
+      <!-- Navigation arrows -->
+      <div class="nav-arrows">
+        <button id="prevSet" type="button" aria-label="Previous projects">←</button>
+        <button id="nextSet" type="button" aria-label="Next projects">→</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MODE B: All projects (scrollable) -->
+  <section id="modeB" class="mode">
+    <div id="allProjects" class="all-projects"></div>
+  </section>
+</main>
+
+<!-- MODE C: Project overlay -->
+<section id="overlay" class="overlay" aria-hidden="true">
+  <div class="overlay-backdrop" id="overlayBackdrop"></div>
+
+  <article
+    class="overlay-panel"
+    id="overlayPanel"
+    role="dialog"
+    aria-modal="true"
+  >
+    <button
+      id="overlayClose"
+      class="overlay-close"
+      type="button"
+      aria-label="Close"
+    >
+      ✕
+    </button>
+
+    <div id="overlayContent"></div>
+  </article>
+</section>
+
+<!-- Project data from Django -->
+{{ projects|json_script:"projects-data" }}
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/digital.js' %}"></script>
+{% endblock %}

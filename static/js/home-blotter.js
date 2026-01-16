@@ -35,7 +35,7 @@
       const text = new Blotter.Text(holder.dataset.text || "", {
         family: "wakaba",
         size: cfg.size,
-        fill: "#f2f2f2",
+        fill: "#faf9dfff",
         paddingLeft: cfg.padX,
         paddingRight: cfg.padX,
         paddingTop: cfg.padY,
