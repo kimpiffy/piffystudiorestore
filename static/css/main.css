@@ -102,6 +102,7 @@ body {
 
 .navbar {
     padding-left: 1rem;
+    background-color: transparent !important;
 }
 
 .nav-link {

@@ -15,7 +15,7 @@ def digital(request):
                 "A simple, personal site focused on clear presentation, layout fundamentals, and learning-by-doing."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
-            "cover": static("img/machine.png"),
+            "cover": static("img/portfoliohero1.webp"),
             "url": "https://piffy.studio",
             "github": "",  # add later
         },
@@ -28,7 +28,7 @@ def digital(request):
                 "Built with JavaScript and API integrations to generate oracular insights."
             ),
             "stack": ["JavaScript", "APIs", "HTML", "CSS"],
-            "cover": static("img/machine.png"),
+            "cover": static("img/wd.png"),
             "url": "https://webdevination.onrender.com",       # add later if live
             "github": "",    # add later
         },
@@ -41,7 +41,7 @@ def digital(request):
                 "Built with Django to support backend functionality and an informative content experience."
             ),
             "stack": ["Django", "Python", "HTML", "CSS", "JavaScript"],
-            "cover": static("img/machine.png"),
+            "cover": static("img/tes.png"),
             "url": "https://theenglishstudiocorvetto.com",      # add later if live
             "github": "",   # add later
         },
@@ -54,7 +54,7 @@ def digital(request):
                 "Gallery content is pulled from Instagram so new work appears automatically, saving time and keeping the site current."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
-            "cover": static("img/machine.png"),
+            "cover": static("img/pc.png"),
             "url": "https://phoebecollins.co.uk/",
             "github": "",
         },
@@ -67,7 +67,7 @@ def digital(request):
                 "I handled both the website build and the brand direction to create a consistent, confident identity."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
-            "cover": static("img/machine.png"),
+            "cover": static("img/thinkeng.png"),
             "url": "https://thinkeng.it/",
             "github": "",
         },
@@ -80,7 +80,7 @@ def digital(request):
                 "The piece visualizes identity through a sonar-like dial system—part interface, part abstraction—blending data, symbolism, and design."
             ),
             "stack": ["JavaScript", "Creative Coding", "HTML", "CSS"],
-            "cover": static("img/machine.png"),
+            "cover": static("img/bg2.png"),
             "url": "https://kimpiffy.github.io/grimiore/",
             "github": "",
         },

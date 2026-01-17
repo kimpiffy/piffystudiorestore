@@ -1,3 +1,8 @@
+// static/js/digital.js
+// Continuous movement + continuous water-like edge ripples (no discrete states, no pauses).
+// - Desktop/tablet: blobs drift forever; they can go offscreen but are pulled back in sooner.
+// - Mobile (<768px): vertical list (CSS handles layout), edges still ripple.
+
 document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
 
@@ -12,11 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     catch (e) { console.error("[digital] JSON parse failed:", e); return []; }
   }
 
-  if (!window.flubber) {
-    console.error("[digital] Flubber not found. Load flubber.min.js BEFORE digital.js.");
-  }
-
-  // DOM
   const dataEl = $("projects-data");
   const blobLayer = $("blobLayer");
   const allProjects = $("allProjects");
@@ -57,10 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentMode = "A";
   let setIndex = 0;
 
-  let idleTimer = null;
-  let interactionCooldown = null;
-  let isInteracting = false;
-
   // ----------------------------
   // Deterministic RNG
   // ----------------------------
@@ -79,98 +75,143 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ----------------------------
-  // Smooth splat path generator (NO spikes)
-  // - less extreme dents
-  // - tighter radius clamp
-  // - smoother spline (higher tension)
+  // Geometry helpers (super round)
   // ----------------------------
-  function catmullRomToBezier(points, closed = true, tension = 0.85) {
-    const pts = points.slice();
-    const n = pts.length;
-
-    function get(i) {
-      if (closed) return pts[(i + n) % n];
-      return pts[Math.max(0, Math.min(n - 1, i))];
+  function chaikin(points, iterations = 2) {
+    let pts = points.slice();
+    for (let it = 0; it < iterations; it++) {
+      const out = [];
+      const n = pts.length;
+      for (let i = 0; i < n; i++) {
+        const p0 = pts[i];
+        const p1 = pts[(i + 1) % n];
+        out.push(
+          { x: 0.75*p0.x + 0.25*p1.x, y: 0.75*p0.y + 0.25*p1.y },
+          { x: 0.25*p0.x + 0.75*p1.x, y: 0.25*p0.y + 0.75*p1.y }
+        );
+      }
+      pts = out;
     }
+    return pts;
+  }
 
+  function pointsToBezier(points) {
+    const pts = points;
+    const n = pts.length;
+    const t = 0.18;
     let d = `M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
-
     for (let i = 0; i < n; i++) {
-      const p0 = get(i - 1);
-      const p1 = get(i);
-      const p2 = get(i + 1);
-      const p3 = get(i + 2);
+      const p0 = pts[(i - 1 + n) % n];
+      const p1 = pts[i];
+      const p2 = pts[(i + 1) % n];
+      const p3 = pts[(i + 2) % n];
 
-      const t = tension;
-
-      const c1x = p1.x + (p2.x - p0.x) * t / 6;
-      const c1y = p1.y + (p2.y - p0.y) * t / 6;
-      const c2x = p2.x - (p3.x - p1.x) * t / 6;
-      const c2y = p2.y - (p3.y - p1.y) * t / 6;
+      const c1x = p1.x + (p2.x - p0.x) * t;
+      const c1y = p1.y + (p2.y - p0.y) * t;
+      const c2x = p2.x - (p3.x - p1.x) * t;
+      const c2y = p2.y - (p3.y - p1.y) * t;
 
       d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
     }
-
-    if (closed) d += " Z";
-    return d;
+    return d + " Z";
   }
 
-  function generateSmoothSplatPath(rnd) {
-    const cx = 50, cy = 50;
+  // Base radii + ripple params (make ripple unmistakable)
+  function buildBaseRadii(id, N) {
+    const rnd = mulberry32(hashToSeed(id || "x"));
 
-    const n = Math.floor(12 + rnd() * 10);   // 12–22 points (complex but smooth)
-    const baseR = 32 + rnd() * 7;            // 32–39
+    const baseR = 34 + rnd()*5;
+    const amp1 = 4 + rnd()*5;
+    const amp2 = 2 + rnd()*4;
+    const f1 = 3 + Math.floor(rnd()*4);
+    const f2 = 6 + Math.floor(rnd()*4);
+    const p1 = rnd()*Math.PI*2;
+    const p2 = rnd()*Math.PI*2;
 
-    // reduced amplitudes to avoid spikes
-    const amp1 = 8 + rnd() * 10;             // 8–18
-    const amp2 = 4 + rnd() * 8;              // 4–12
-
-    const f1 = Math.floor(3 + rnd() * 5);    // 3–7
-    const f2 = Math.floor(6 + rnd() * 6);    // 6–11
-
-    const p1 = rnd() * Math.PI * 2;
-    const p2 = rnd() * Math.PI * 2;
-
-    // fewer, softer dents
-    const dentChance = 0.18 + rnd() * 0.12;  // ~0.18–0.30
-
-    const points = [];
-    for (let i = 0; i < n; i++) {
-      const a = (i / n) * Math.PI * 2;
-
+    const radii = new Array(N);
+    for (let i = 0; i < N; i++) {
+      const a = (i / N) * Math.PI * 2;
       let r = baseR
-        + Math.sin(a * f1 + p1) * amp1
-        + Math.sin(a * f2 + p2) * amp2;
-
-      // gentle dents only (no spikes)
-      if (rnd() < dentChance) {
-        r *= (0.88 + rnd() * 0.18);          // 0.88–1.06
-      }
-
-      // tighter clamp => no pointy extremes
-      r = Math.max(24, Math.min(46, r));
-
-      points.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
+        + Math.sin(a*f1 + p1)*amp1
+        + Math.sin(a*f2 + p2)*amp2;
+      r = Math.max(30, Math.min(46, r));
+      radii[i] = r;
     }
 
-    // higher tension => rounder curves
-    return catmullRomToBezier(points, true, 0.92);
+    // ✅ Stronger, faster, more complex water ripple (still rounded)
+    const rip = {
+      amps: [
+        2.0 + rnd()*1.2,
+        1.4 + rnd()*1.0,
+        1.0 + rnd()*0.8,
+        0.75 + rnd()*0.7,
+        0.55 + rnd()*0.55
+      ],
+      freqs: [
+        2 + Math.floor(rnd()*4),   // 2–5
+        4 + Math.floor(rnd()*5),   // 4–8
+        7 + Math.floor(rnd()*6),   // 7–12
+        11 + Math.floor(rnd()*7),  // 11–17
+        16 + Math.floor(rnd()*7)   // 16–22
+      ],
+      phases: [
+        rnd()*Math.PI*2,
+        rnd()*Math.PI*2,
+        rnd()*Math.PI*2,
+        rnd()*Math.PI*2,
+        rnd()*Math.PI*2
+      ],
+      speeds: [
+        2.1 + rnd()*1.2,
+        1.8 + rnd()*1.1,
+        1.4 + rnd()*1.0,
+        1.2 + rnd()*0.9,
+        1.0 + rnd()*0.8
+      ],
+      strength: 1.25 + rnd()*0.60
+    };
+
+    return { radii, rip };
   }
 
-  function pickSplatPair(id) {
-    const rnd = mulberry32(hashToSeed(id || "x"));
-    const a = generateSmoothSplatPath(rnd);
-    const b = generateSmoothSplatPath(rnd);
-    return { a, b, rnd };
+  function createBlobModel(id) {
+    const N = 10; // more points = more “water” detail
+    const base = buildBaseRadii(id, N);
+    const angles = new Array(N);
+    for (let i = 0; i < N; i++) angles[i] = (i / N) * Math.PI * 2;
+    return { id, N, angles, baseR: base.radii, rip: base.rip };
+  }
+
+  function computePathFromModel(model, timeSec) {
+    const cx = 50, cy = 50;
+    const pts = [];
+    const { N, angles, baseR, rip } = model;
+
+    for (let i = 0; i < N; i++) {
+      const a = angles[i];
+      let r = baseR[i];
+
+      let dr = 0;
+      for (let k = 0; k < rip.amps.length; k++) {
+        dr += Math.sin(a * rip.freqs[k] + rip.phases[k] + timeSec * rip.speeds[k]) * rip.amps[k];
+      }
+
+      r += dr * rip.strength;
+
+      // Allow ripple room but keep round
+      r = Math.max(26, Math.min(52, r));
+
+      pts.push({ x: cx + Math.cos(a)*r, y: cy + Math.sin(a)*r });
+    }
+
+    const smooth = chaikin(pts, 2);
+    return pointsToBezier(smooth);
   }
 
   // ----------------------------
-  // SVG with morphable clipPath
+  // SVG markup (IMPORTANT: ids must match binder)
   // ----------------------------
-  function makeWarpSVG({ id, cover, title, initialD }) {
-    const safeId = String(id).replace(/[^a-zA-Z0-9_-]/g, "_");
-    const uid = `warp_${safeId}_${Math.floor(Math.random() * 1e9)}`;
-
+  function makeWarpSVG({ uid, cover, title, initialD }) {
     return `
       <svg class="blob-svg" viewBox="0 0 100 100" role="img" aria-label="${escapeHtml(title)}" data-uid="${uid}">
         <defs>
@@ -186,243 +227,266 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         </g>
 
-        <path id="${uid}_outline" d="${initialD}" fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="1.0"></path>
+        <path id="${uid}_outline" d="${initialD}" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="1.0"></path>
       </svg>
     `;
   }
 
-  // Morph controllers
-  let morphStops = [];
-  function stopMorphs() {
-    for (const m of morphStops) { try { m?.stop?.(); } catch {} }
-    morphStops = [];
+  // ----------------------------
+  // Continuous loops
+  // ----------------------------
+  let edgeRAF = null;
+  let moveRAF = null;
+  let edgeRunning = false;
+  let moveRunning = false;
+
+  let blobVisuals = []; // { model, pathEl, outlineEl }
+  let particles = [];   // movement particles
+  let lastMove = performance.now();
+
+  function rebuildBlobVisualsFromDOM() {
+  const buttons = Array.from(blobLayer.querySelectorAll(".blob"));
+  const visuals = [];
+
+  for (const btn of buttons) {
+    const id = btn.getAttribute("data-id");
+    const svg = btn.querySelector("svg[data-uid]");
+    if (!id || !svg) continue;
+
+    const uid = svg.getAttribute("data-uid");
+    const pathEl = svg.querySelector(`#${uid}_path`);
+    const outlineEl = svg.querySelector(`#${uid}_outline`);
+    if (!uid || !pathEl || !outlineEl) continue;
+
+    // IMPORTANT: reuse the same model per id each time
+    const model = createBlobModel(id);
+    visuals.push({ model, pathEl, outlineEl });
   }
 
-  // Smoother morphing: smaller maxSegmentLength removes kinks/spikes
-  function startWarp(pathEl, outlineEl, id) {
-    if (!window.flubber) return null;
+  blobVisuals = visuals;
+}
 
-    const { a, b, rnd } = pickSplatPair(id);
+  function stopEdgeLoop() {
+    edgeRunning = false;
+    if (edgeRAF) cancelAnimationFrame(edgeRAF);
+    edgeRAF = null;
+    blobVisuals = [];
+  }
 
-    const interpAB = window.flubber.interpolate(a, b, { maxSegmentLength: 2.2 });
-    const interpBA = window.flubber.interpolate(b, a, { maxSegmentLength: 2.2 });
+  function stopMoveLoop() {
+    moveRunning = false;
+    if (moveRAF) cancelAnimationFrame(moveRAF);
+    moveRAF = null;
+    // keep particles allocated by renderBlobs
+  }
 
-    const duration = 1400 + rnd() * 1900;
-    const stagger = rnd() * 900;
+ function startEdgeLoop() {
+  stopEdgeLoop();
+  edgeRunning = true;
 
-    let start = performance.now() + stagger;
-    let dir = 1;
-    let running = true;
+  function frame(now) {
+    if (!edgeRunning) return;
 
-    function ease(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2; }
-
-    function step(now) {
-      if (!running) return;
-
-      const t = (now - start) / duration;
-      const p = ease(Math.min(1, Math.max(0, t)));
-      const d = (dir === 1) ? interpAB(p) : interpBA(p);
-
-      pathEl.setAttribute("d", d);
-      if (outlineEl) outlineEl.setAttribute("d", d);
-
-      if (t >= 1) {
-        dir *= -1;
-        start = now;
-      }
-      requestAnimationFrame(step);
+    // ✅ self-heal binding if it's empty (or if something changed)
+    if (!blobVisuals || blobVisuals.length === 0) {
+      rebuildBlobVisualsFromDOM();
     }
 
-    requestAnimationFrame(step);
-    return { stop: () => { running = false; } };
+    // If still nothing, keep trying.
+    if (!blobVisuals || blobVisuals.length === 0) {
+      edgeRAF = requestAnimationFrame(frame);
+      return;
+    }
+
+    const t = now * 0.001;
+
+    for (const bv of blobVisuals) {
+      const d = computePathFromModel(bv.model, t);
+
+      // Use setAttributeNS for robustness in SVG
+      bv.pathEl.setAttributeNS(null, "d", d);
+      bv.outlineEl.setAttributeNS(null, "d", d);
+    }
+
+    edgeRAF = requestAnimationFrame(frame);
   }
 
-  // ----------------------------
-  // Wiggly drift swarm (same as your current good one)
-  // ----------------------------
-  let swarm = null;
-  particles = [];
+  edgeRAF = requestAnimationFrame(frame);
+}
 
-  function stopSwarm() {
-    swarm?.stop?.();
-    swarm = null;
-    particles = [];
-  }
 
-  function startSwarm(containerEl, blobButtons) {
+  function startMoveLoop(containerEl) {
     if (isMobile()) return;
 
+    moveRunning = true;
+    if (moveRAF) cancelAnimationFrame(moveRAF);
+    moveRAF = null;
+    lastMove = performance.now();
+
     const rect = () => containerEl.getBoundingClientRect();
-    const cr0 = rect();
-
-    particles = blobButtons.map(btn => {
-      const id = btn.getAttribute("data-id") || "";
-      const rnd = mulberry32(hashToSeed(id));
-      const size = btn.getBoundingClientRect().width || 420;
-
-      return {
-        btn,
-        id,
-        x: rnd() * cr0.width,
-        y: rnd() * cr0.height,
-        vx: (rnd() - 0.5) * 0.35,
-        vy: (rnd() - 0.5) * 0.35,
-        radius: size * (0.40 + rnd()*0.06),
-
-        grabbed: false,
-
-        moving: rnd() > 0.5,
-        phaseEndsAt: performance.now() + (1500 + rnd()*4200),
-        moveForMs: 1600 + rnd()*2200,
-        restForMs: 3200 + rnd()*5200,
-
-        px: rnd()*1000,
-        py: rnd()*1000,
-        turn: (rnd() - 0.5) * 0.018,
-        kickAt: performance.now() + (2500 + rnd()*6500),
-      };
-    });
-
-    for (const p of particles) {
-      const b = p.btn;
-      const grab = () => { p.grabbed = true; };
-      const rel  = () => { p.grabbed = false; };
-      b.addEventListener("mouseenter", grab);
-      b.addEventListener("mouseleave", rel);
-      b.addEventListener("focus", grab);
-      b.addEventListener("blur", rel);
-      b.addEventListener("touchstart", grab, { passive:true });
-      b.addEventListener("touchend", rel, { passive:true });
-      b.addEventListener("touchcancel", rel, { passive:true });
-    }
-
-    let running = true;
-    let raf = null;
 
     const cfg = {
-      allowOffscreen: true,
+      // pull back inward sooner
+      offLeft: -140,
+      offRight: -140,
+      offTop: -180,
+      offBottom: -30, // bottom tighter
+
       padding: 10,
-      maxSpeed: 0.40,
-      repel: 0.10,
-      edgePush: 0.016,
-      centerPull: 0.0008,
-      wiggle: 0.14,
-      curvature: 0.10,
-      jerk: 0.018,
+      edgePush: 0.020, // stronger edge push
+
+      // always moving
+      flowStrength: 0.26,
+      swirlStrength: 0.10,
+      noiseStrength: 0.14,
+      maxSpeed: 0.60,
+      damping: 0.992,
+      minSpeed: 0.22,
+
+      repel: 0.12,
+
+      // center pull (brings back in sooner without looking “stuck”)
+      centerPull: 0.0009,
+
+      // reduce top-left camping
+      avoidTLStrength: 0.028,
+      avoidTLRadiusFrac: 0.40
     };
 
-    function tick(now) {
-      if (!running) return;
+    function safeNumber(v, fallback) {
+      return Number.isFinite(v) ? v : fallback;
+    }
+
+    function frame(now) {
+      if (!moveRunning) return;
+
+      let dt = (now - lastMove) / 1000;
+      if (dt > 0.06) dt = 0.016;
+      dt = Math.max(0.008, Math.min(0.033, dt));
+      lastMove = now;
 
       const cr = rect();
       const W = cr.width, H = cr.height;
-      const cx = W/2, cy = H/2;
 
-      for (const p of particles) {
-        if (now >= p.phaseEndsAt) {
-          p.moving = !p.moving;
-          p.phaseEndsAt = now + (p.moving ? p.moveForMs : p.restForMs);
-        }
-      }
+      const cx = W * 0.60;
+      const cy = H * 0.48;
 
+      // repulsion
       for (let i = 0; i < particles.length; i++) {
-        for (let j = i+1; j < particles.length; j++) {
+        for (let j = i + 1; j < particles.length; j++) {
           const a = particles[i], b = particles[j];
           const dx = b.x - a.x, dy = b.y - a.y;
           const dist = Math.hypot(dx, dy) || 0.0001;
           const min = a.radius + b.radius;
-
           if (dist < min) {
             const overlap = (min - dist) / min;
             const nx = dx / dist, ny = dy / dist;
-            const push = overlap * cfg.repel * (a.moving || b.moving ? 70 : 45);
-
-            if (!a.grabbed) { a.vx -= nx*push; a.vy -= ny*push; }
-            if (!b.grabbed) { b.vx += nx*push; b.vy += ny*push; }
+            const push = overlap * cfg.repel * 80;
+            if (!a.grabbed) { a.vx -= nx * push; a.vy -= ny * push; }
+            if (!b.grabbed) { b.vx += nx * push; b.vy += ny * push; }
           }
         }
       }
 
+      const tlx = W * 0.18;
+      const tly = H * 0.18;
+      const tlR = Math.min(W, H) * cfg.avoidTLRadiusFrac;
+
       for (const p of particles) {
         const t = now * 0.00055;
+
         const fx =
-          Math.sin(t * 1.6 + p.px * 0.01) +
-          Math.sin(t * 2.3 + (p.y + p.py) * 0.006) +
-          Math.cos(t * 0.9 + (p.x + p.px) * 0.004);
+          Math.sin(t * 1.7 + p.px * 0.01) +
+          Math.sin(t * 2.6 + (p.y + p.py) * 0.006) +
+          Math.cos(t * 1.1 + (p.x + p.px) * 0.004);
 
         const fy =
-          Math.cos(t * 1.4 + p.py * 0.01) -
-          Math.cos(t * 2.1 + (p.x + p.px) * 0.006) +
-          Math.sin(t * 1.1 + (p.y + p.py) * 0.004);
+          Math.cos(t * 1.5 + p.py * 0.01) -
+          Math.cos(t * 2.3 + (p.x + p.px) * 0.006) +
+          Math.sin(t * 1.2 + (p.y + p.py) * 0.004);
 
-        if (now >= p.kickAt && !p.grabbed) {
-          p.vx += (Math.random()-0.5) * cfg.jerk * 18;
-          p.vy += (Math.random()-0.5) * cfg.jerk * 18;
-          p.kickAt = now + (2500 + Math.random()*7500);
-        }
+        const dxC = p.x - cx;
+        const dyC = p.y - cy;
+        const swirlX = -dyC * 0.00065;
+        const swirlY =  dxC * 0.00065;
 
-        const cos = Math.cos(p.turn);
-        const sin = Math.sin(p.turn);
-        const rvx = p.vx * cos - p.vy * sin;
-        const rvy = p.vx * sin + p.vy * cos;
-        p.vx = rvx; p.vy = rvy;
+        const wigX = Math.sin(t * 5.2 + p.ph) * cfg.noiseStrength;
+        const wigY = Math.cos(t * 4.9 + p.ph) * cfg.noiseStrength;
 
         if (p.grabbed) {
-          p.vx *= 0.55;
-          p.vy *= 0.55;
-        } else if (p.moving) {
-          p.vx += fx * cfg.wiggle * 0.06;
-          p.vy += fy * cfg.wiggle * 0.06;
-
-          const sp = Math.hypot(p.vx, p.vy) || 0.0001;
-          p.vx += (-p.vy / sp) * cfg.curvature * 0.02;
-          p.vy += ( p.vx / sp) * cfg.curvature * 0.02;
-
-          p.vx += (cx - p.x) * cfg.centerPull;
-          p.vy += (cy - p.y) * cfg.centerPull;
+          p.vx *= 0.75;
+          p.vy *= 0.75;
         } else {
-          p.vx *= 0.88;
-          p.vy *= 0.88;
-          p.vx += fx * 0.0025;
-          p.vy += fy * 0.0025;
+          p.vx += (fx * cfg.flowStrength + swirlX * cfg.swirlStrength + wigX + p.biasX) * dt * 60;
+          p.vy += (fy * cfg.flowStrength + swirlY * cfg.swirlStrength + wigY + p.biasY) * dt * 60;
         }
 
-        const off = cfg.allowOffscreen ? -160 : 0;
-        const minX = off + cfg.padding;
-        const maxX = W - off - cfg.padding;
-        const minY = off + cfg.padding;
-        const maxY = H - off - cfg.padding;
+        // center pull (brings blobs back in)
+        p.vx += (cx - p.x) * cfg.centerPull;
+        p.vy += (cy - p.y) * cfg.centerPull;
+
+        // avoid top-left
+        const dxTL = p.x - tlx;
+        const dyTL = p.y - tly;
+        const dTL = Math.hypot(dxTL, dyTL) || 0.0001;
+        if (dTL < tlR) {
+          const push = (1 - dTL / tlR) * cfg.avoidTLStrength * 60;
+          p.vx += (dxTL / dTL) * push;
+          p.vy += (dyTL / dTL) * push;
+        }
+
+        p.vx *= cfg.damping;
+        p.vy *= cfg.damping;
+
+        // never-stall injector
+        if (!p.grabbed) {
+          const sp = Math.hypot(p.vx, p.vy) || 0.0001;
+          if (sp < cfg.minSpeed) {
+            const dirx = fx + wigX * 0.5 + 0.0001;
+            const diry = fy + wigY * 0.5 + 0.0001;
+            const dnorm = Math.hypot(dirx, diry) || 1;
+            p.vx += (dirx / dnorm) * (cfg.minSpeed - sp) * 0.9;
+            p.vy += (diry / dnorm) * (cfg.minSpeed - sp) * 0.9;
+          }
+        }
+
+        // bounds (pull in sooner)
+        const minX = cfg.offLeft + cfg.padding;
+        const maxX = W - cfg.offRight - cfg.padding;
+        const minY = cfg.offTop + cfg.padding;
+        const maxY = H - cfg.offBottom - cfg.padding;
 
         if (p.x < minX) p.vx += (minX - p.x) * cfg.edgePush;
         if (p.x > maxX) p.vx -= (p.x - maxX) * cfg.edgePush;
         if (p.y < minY) p.vy += (minY - p.y) * cfg.edgePush;
         if (p.y > maxY) p.vy -= (p.y - maxY) * cfg.edgePush;
 
-        const sp2 = Math.hypot(p.vx, p.vy);
-        const maxS = p.moving ? cfg.maxSpeed : cfg.maxSpeed * 0.35;
-        if (sp2 > maxS) {
-          p.vx = (p.vx/sp2) * maxS;
-          p.vy = (p.vy/sp2) * maxS;
+        const sp2 = Math.hypot(p.vx, p.vy) || 0.0001;
+        if (sp2 > cfg.maxSpeed) {
+          p.vx = (p.vx / sp2) * cfg.maxSpeed;
+          p.vy = (p.vy / sp2) * cfg.maxSpeed;
         }
 
-        p.x += p.vx;
-        p.y += p.vy;
+        p.vx = safeNumber(p.vx, 0.2);
+        p.vy = safeNumber(p.vy, 0.2);
+        p.x  = safeNumber(p.x + p.vx, Math.random()*W);
+        p.y  = safeNumber(p.y + p.vy, Math.random()*H);
 
-        p.btn.style.transform = `translate(${p.x - p.btn.offsetWidth/2}px, ${p.y - p.btn.offsetHeight/2}px)`;
+        p.btn.style.transform =
+          `translate(${(p.x - p.btn.offsetWidth/2).toFixed(2)}px, ${(p.y - p.btn.offsetHeight/2).toFixed(2)}px)`;
       }
 
-      raf = requestAnimationFrame(tick);
+      moveRAF = requestAnimationFrame(frame);
     }
 
-    raf = requestAnimationFrame(tick);
-    swarm = { stop: () => { running = false; cancelAnimationFrame(raf); } };
+    moveRAF = requestAnimationFrame(frame);
   }
 
   // ----------------------------
   // Overlay
   // ----------------------------
   function openOverlay(project) {
-    stopSwarm();
+    stopMoveLoop();
 
     const title = escapeHtml(project.title);
     const blurb = escapeHtml(project.blurb || project.tagline || "");
@@ -455,11 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeOverlay() {
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
-
-    if (currentMode === "A" && !isMobile()) {
-      const buttons = Array.from(blobLayer.querySelectorAll(".blob"));
-      startSwarm(blobLayer, buttons);
-    }
+    if (currentMode === "A" && !isMobile()) startMoveLoop(blobLayer);
   }
 
   overlayBackdrop.addEventListener("click", closeOverlay);
@@ -507,7 +567,6 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleModeBtn.textContent = "View all";
 
       renderBlobs();
-      resetIdleSwap();
     } else {
       modeA.classList.remove("is-active");
       modeB.classList.add("is-active");
@@ -516,10 +575,9 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleModeBtn.setAttribute("aria-label", "Close");
       toggleModeBtn.textContent = "X";
 
-      stopMorphs();
-      stopSwarm();
+      stopEdgeLoop();
+      stopMoveLoop();
       renderAllProjects();
-      stopIdleSwap();
     }
   }
 
@@ -559,68 +617,42 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ----------------------------
-  // Render blobs
+  // Render blobs + start loops
   // ----------------------------
   function renderBlobs() {
-    stopMorphs();
-    stopSwarm();
+    stopEdgeLoop();
+    stopMoveLoop();
 
     const set = getSet(setIndex);
 
-    if (isMobile()) {
-      blobLayer.innerHTML = set.map(p => {
-        const cover = coverUrl(p);
-        const { a } = pickSplatPair(p.id);
-        return `
-          <button class="blob" type="button" data-id="${escapeHtml(p.id)}" aria-label="${escapeHtml(p.title)}">
-            ${makeWarpSVG({ id: p.id, cover, title: p.title, initialD: a })}
-          </button>
-        `;
-      }).join("");
+    // uniform-ish sizing
+    const uniform = isTablet() ? 520 : 560;
 
-      blobLayer.querySelectorAll(".blob").forEach(btn => {
-        const id = btn.getAttribute("data-id");
-        btn.addEventListener("click", () => {
-          if (currentMode !== "A") return;
-          const proj = projects.find(x => x.id === id);
-          if (proj) openOverlay(proj);
-        });
-
-        const svg = btn.querySelector("svg[data-uid]");
-        if (!svg) return;
-        const uid = svg.getAttribute("data-uid");
-        const path = svg.querySelector(`#${uid}_path`);
-        const outline = svg.querySelector(`#${uid}_outline`);
-        if (path) {
-          const ctrl = startWarp(path, outline, id);
-          if (ctrl) morphStops.push(ctrl);
-        }
-      });
-
-      return;
-    }
-
-    const sizes = isTablet()
-      ? [420, 380, 460, 400, 360]
-      : [560, 480, 620, 420, 500, 440, 380];
-
-    blobLayer.innerHTML = set.map((p, idx) => {
+    blobLayer.innerHTML = set.map((p) => {
+        rebuildBlobVisualsFromDOM();
       const cover = coverUrl(p);
-      const size = sizes[idx % sizes.length];
-      const { a } = pickSplatPair(p.id);
+      const size = isMobile() ? 420 : uniform;
+
+      const uid = `b_${String(p.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random()*1e9)}`;
+      const model = createBlobModel(p.id);
+      const initialD = computePathFromModel(model, performance.now() * 0.001);
 
       return `
         <button class="blob" type="button" data-id="${escapeHtml(p.id)}" aria-label="${escapeHtml(p.title)}"
-                style="width:${size}px;height:${size}px;left:0;top:0;">
-          ${makeWarpSVG({ id: p.id, cover, title: p.title, initialD: a })}
+          style="${isMobile() ? "" : `width:${size}px;height:${size}px;left:0;top:0;`}"
+        >
+          ${makeWarpSVG({ uid, cover, title: p.title, initialD })}
         </button>
       `;
     }).join("");
 
     const buttons = Array.from(blobLayer.querySelectorAll(".blob"));
 
+    // bind visuals + click
+    blobVisuals = [];
     buttons.forEach(btn => {
       const id = btn.getAttribute("data-id");
+
       btn.addEventListener("click", () => {
         if (currentMode !== "A") return;
         const proj = projects.find(x => x.id === id);
@@ -629,57 +661,63 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const svg = btn.querySelector("svg[data-uid]");
       if (!svg) return;
+
       const uid = svg.getAttribute("data-uid");
-      const path = svg.querySelector(`#${uid}_path`);
-      const outline = svg.querySelector(`#${uid}_outline`);
-      if (path) {
-        const ctrl = startWarp(path, outline, id);
-        if (ctrl) morphStops.push(ctrl);
-      }
+      const pathEl = svg.querySelector(`#${uid}_path`);
+      const outlineEl = svg.querySelector(`#${uid}_outline`);
+      if (!pathEl || !outlineEl) return;
+
+      const model = createBlobModel(id);
+      blobVisuals.push({ model, pathEl, outlineEl });
     });
 
-    startSwarm(blobLayer, buttons);
+    // movement particles
+    if (!isMobile()) {
+      const r0 = blobLayer.getBoundingClientRect();
+      particles = buttons.map(btn => {
+        const id = btn.getAttribute("data-id") || "";
+        const rnd = mulberry32(hashToSeed(id));
+        const size = btn.getBoundingClientRect().width || uniform;
+
+        return {
+          btn, id,
+          x: rnd() * r0.width,
+          y: rnd() * r0.height,
+          vx: (rnd()-0.5)*0.22,
+          vy: (rnd()-0.5)*0.22,
+          radius: size * (0.42 + rnd()*0.04),
+          grabbed: false,
+          px: rnd()*1000,
+          py: rnd()*1000,
+          ph: rnd()*Math.PI*2,
+          biasX: (rnd()-0.5)*0.08,
+          biasY: (rnd()-0.5)*0.08
+        };
+      });
+
+      // hover freeze
+      particles.forEach(p => {
+        const b = p.btn;
+        const grab = () => { p.grabbed = true; };
+        const rel  = () => { p.grabbed = false; };
+        b.addEventListener("mouseenter", grab);
+        b.addEventListener("mouseleave", rel);
+        b.addEventListener("focus", grab);
+        b.addEventListener("blur", rel);
+        b.addEventListener("touchstart", grab, { passive:true });
+        b.addEventListener("touchend", rel, { passive:true });
+        b.addEventListener("touchcancel", rel, { passive:true });
+      });
+
+      // initial spread
+      particles.forEach(p => {
+        p.btn.style.transform = `translate(${p.x - p.btn.offsetWidth/2}px, ${p.y - p.btn.offsetHeight/2}px)`;
+      });
+    }
+
+    startEdgeLoop();
+    if (!isMobile()) startMoveLoop(blobLayer);
   }
-
-  // ----------------------------
-  // Idle swap
-  // ----------------------------
-  function stopIdleSwap() {
-    if (idleTimer) clearTimeout(idleTimer);
-    idleTimer = null;
-  }
-
-  function resetIdleSwap() {
-    stopIdleSwap();
-    if (isMobile()) return;
-
-    idleTimer = setTimeout(() => {
-      if (!overlay.classList.contains("is-open") && currentMode === "A" && !isInteracting) {
-        setIndex += 1;
-        renderBlobs();
-      }
-      resetIdleSwap();
-    }, 14000);
-  }
-
-  function markInteracting() {
-    isInteracting = true;
-    if (interactionCooldown) clearTimeout(interactionCooldown);
-    interactionCooldown = setTimeout(() => { isInteracting = false; }, 900);
-    if (currentMode === "A") resetIdleSwap();
-  }
-
-  ["mousemove","touchstart","scroll","keydown"].forEach(evt => {
-    window.addEventListener(evt, markInteracting, { passive: true });
-  });
-
-  function rerenderOnBreakpoint() {
-    if (currentMode === "A") { renderBlobs(); resetIdleSwap(); }
-  }
-
-  mqMobile.addEventListener?.("change", rerenderOnBreakpoint);
-  mqTablet.addEventListener?.("change", rerenderOnBreakpoint);
-  window.addEventListener("resize", rerenderOnBreakpoint);
 
   // Boot
   renderAllProjects();
