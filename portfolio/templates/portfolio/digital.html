@@ -9,10 +9,12 @@
 <main class="wrap">
   <!-- Header / Mode toggle -->
   <div class="digital-header">
-    <h1>Digital</h1>
-    <button id="toggleMode" class="btn" type="button">
-      View all
-    </button>
+    <h1 class="visually-hidden">Digital</h1>
+      <!-- This becomes X-in-circle when in Mode B -->
+  <button id="toggleMode" class="top-toggle" type="button" aria-label="View all">
+    View all
+  </button>
+</div>
   </div>
 
   <!-- MODE A: Blob Showcase (Desktop-first) -->
@@ -22,19 +24,7 @@
       <!-- Blob layer -->
       <div class="blob-layer" id="blobLayer"></div>
 
-      <!-- Center copy -->
-      <div class="showcase-center">
-        <div class="center-card">
-          <h2>Web development projects</h2>
-          <p>
-            Community-led builds, interactive sites, and creative web work.
-            Click a project to learn more.
-          </p>
-          <p class="muted">
-            Interested in working together? I take commissions and collaborations.
-          </p>
-        </div>
-      </div>
+
 
       <!-- Navigation arrows -->
       <div class="nav-arrows">
@@ -47,6 +37,17 @@
 
   <!-- MODE B: All projects (scrollable) -->
   <section id="modeB" class="mode">
+
+  <div class="modeB-intro">
+    <h2>Web development projects</h2>
+    <p>Community-led builds, … (paste your paragraph here)</p>
+    <p class="muted">… (paste your second paragraph here)</p>
+  </div>
+
+  <div id="allProjects" class="all-projects"></div>
+</section>
+
+
     <div id="allProjects" class="all-projects"></div>
   </section>
 </main>
@@ -80,5 +81,6 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/flubber@0.4.2/build/flubber.min.js"></script>
 <script src="{% static 'js/digital.js' %}"></script>
 {% endblock %}

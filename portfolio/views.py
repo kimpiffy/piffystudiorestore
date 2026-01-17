@@ -8,7 +8,7 @@ def digital(request):
     projects = [
         {
             "id": "piffy-studio",
-            "title": "Pifey Studio",
+            "title": "Piffy Studio",
             "tagline": "Self-built static portfolio site",
             "blurb": (
                 "My first ever web build: a static portfolio for an aspiring artist transitioning into web development. "
@@ -82,19 +82,6 @@ def digital(request):
             "stack": ["JavaScript", "Creative Coding", "HTML", "CSS"],
             "cover": static("img/machine.png"),
             "url": "https://kimpiffy.github.io/grimiore/",
-            "github": "",
-        },
-        {
-            "id": "kimpiffy",
-            "title": "Kim Piffy",
-            "tagline": "Full-stack portfolio rebuild with e-commerce integration",
-            "blurb": (
-                "A full-stack rebuild of my portfolio into a scalable platform with e-commerce capability. "
-                "Designed for showcasing all areas of my work and selling products, with a Stripe-powered checkout."
-            ),
-            "stack": ["Django", "Python", "Stripe", "HTML", "CSS", "JavaScript"],
-            "cover": static("img/machine.png"),
-            "url": "https://kimpiffy.com/",
             "github": "",
         },
     ]
