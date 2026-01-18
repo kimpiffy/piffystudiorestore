@@ -5,82 +5,45 @@
 <link rel="stylesheet" href="{% static 'css/digital.css' %}">
 {% endblock %}
 
+{% block body_class %}digital-page{% endblock %}
+
 {% block content %}
 <main class="wrap">
-  <!-- Header / Mode toggle -->
   <div class="digital-header">
     <h1 class="visually-hidden">Digital</h1>
-      <!-- This becomes X-in-circle when in Mode B -->
-  <button id="toggleMode" class="top-toggle" type="button" aria-label="View all">
-    View all
-  </button>
-</div>
+    <!-- REMOVE this button entirely -->
+    {# <button id="toggleMode" class="top-toggle" type="button" aria-label="View all">View all</button> #}
   </div>
 
-  <!-- MODE A: Blob Showcase (Desktop-first) -->
   <section id="modeA" class="mode is-active">
     <div class="showcase" id="showcase">
-
-      <!-- Blob layer -->
       <div class="blob-layer" id="blobLayer"></div>
 
-
-
-      <!-- Navigation arrows -->
-      <div class="nav-arrows">
+      <div class="nav-arrows" id="navArrows">
         <button id="prevSet" type="button" aria-label="Previous projects">←</button>
         <button id="nextSet" type="button" aria-label="Next projects">→</button>
       </div>
-
     </div>
-  </section>
-
-  <!-- MODE B: All projects (scrollable) -->
-  <section id="modeB" class="mode">
-
-  <div class="modeB-intro">
-    <h2>Web development projects</h2>
-    <p>Community-led builds, … (paste your paragraph here)</p>
-    <p class="muted">… (paste your second paragraph here)</p>
-  </div>
-
-  <div id="allProjects" class="all-projects"></div>
-</section>
-
-
-    <div id="allProjects" class="all-projects"></div>
   </section>
 </main>
 
-<!-- MODE C: Project overlay -->
+<!-- KEEP overlay if you still want click-to-open project info -->
 <section id="overlay" class="overlay" aria-hidden="true">
   <div class="overlay-backdrop" id="overlayBackdrop"></div>
-
-  <article
-    class="overlay-panel"
-    id="overlayPanel"
-    role="dialog"
-    aria-modal="true"
-  >
-    <button
-      id="overlayClose"
-      class="overlay-close"
-      type="button"
-      aria-label="Close"
-    >
-      ✕
-    </button>
-
+  <article class="overlay-panel" id="overlayPanel" role="dialog" aria-modal="true">
+    <button id="overlayClose" class="overlay-close" type="button" aria-label="Close">x</button>
     <div id="overlayContent"></div>
   </article>
 </section>
 
-<!-- Project data from Django -->
 {{ projects|json_script:"projects-data" }}
-
 {% endblock %}
 
+
 {% block extra_scripts %}
+
 <script src="https://cdn.jsdelivr.net/npm/flubber@0.4.2/build/flubber.min.js"></script>
 <script src="{% static 'js/digital.js' %}"></script>
+
+
 {% endblock %}

@@ -11,8 +11,8 @@ def digital(request):
             "title": "Piffy Studio",
             "tagline": "Self-built static portfolio site",
             "blurb": (
-                "My first ever web build: a static portfolio for an aspiring artist transitioning into web development. "
-                "A simple, personal site focused on clear presentation, layout fundamentals, and learning-by-doing."
+                "A simple, static portfolio website for an artist transitioning into web development. "
+                "A simple, personal site with clear presentation, layout fundamentals, and a focus on learning-by-doing."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
             "cover": static("img/portfoliohero1.webp"),
@@ -24,8 +24,8 @@ def digital(request):
             "title": "WebDevination",
             "tagline": "Web-based tarot game + digital divination tool",
             "blurb": (
-                "A browser-based tarot reading experience with playful interaction design and an AI-powered oracle. "
-                "Built with JavaScript and API integrations to generate oracular insights."
+                "A browser-based tarot reading experience with a retro-futuristic terminal style design, playful interactions and an AI-powered oracle. "
+                "Built with JavaScript and API integrations to generate entertaining insights."
             ),
             "stack": ["JavaScript", "APIs", "HTML", "CSS"],
             "cover": static("img/wd.png"),
@@ -37,8 +37,8 @@ def digital(request):
             "title": "The English Studio",
             "tagline": "Modern full-stack website for an English language school in Corvetto, Milan.",
             "blurb": (
-                "A full-stack web application for an English language school, designed with a clean, modern user experience. "
-                "Built with Django to support backend functionality and an informative content experience."
+                "A full-stack website for an English language school in Corvetto, Milan. Designed to create a clear and intuitive user experience. "
+                "Custom backend functionality lets the school manage their content easily, avoiding unnecessary complexity."
             ),
             "stack": ["Django", "Python", "HTML", "CSS", "JavaScript"],
             "cover": static("img/tes.png"),
@@ -64,7 +64,7 @@ def digital(request):
             "tagline": "Professional website + branding for an academy",
             "blurb": (
                 "A simple, professional web presence for an English language academy in Vigevano, Italy. "
-                "I handled both the website build and the brand direction to create a consistent, confident identity."
+                "Handling both the website build and the brand direction creates a consistent, confident online identity."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
             "cover": static("img/thinkeng.png"),
@@ -76,8 +76,8 @@ def digital(request):
             "title": "Finding Myself",
             "tagline": "Creative-coded self-portrait (conceptual web artwork)",
             "blurb": (
-                "A conceptual, creative-coded self-portrait using astrological placements as inputs. "
-                "The piece visualizes identity through a sonar-like dial system—part interface, part abstraction—blending data, symbolism, and design."
+                "A conceptual, coded self-portrait using astrological placements as data sources. "
+                "The piece visualizes identity through an interactive sonar dial; blending symbolism, and design."
             ),
             "stack": ["JavaScript", "Creative Coding", "HTML", "CSS"],
             "cover": static("img/bg2.png"),

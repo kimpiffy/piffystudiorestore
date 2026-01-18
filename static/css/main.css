@@ -98,6 +98,7 @@ body {
     letter-spacing: 3px;
     font-size: 2rem;
     color: var(--lilac);
+    z-index: 2;
 }
 
 .navbar {

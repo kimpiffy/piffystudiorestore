@@ -1,7 +1,11 @@
 // static/js/digital.js
-// Continuous movement + continuous water-like edge ripples (no discrete states, no pauses).
-// - Desktop/tablet: blobs drift forever; they can go offscreen but are pulled back in sooner.
-// - Mobile (<768px): vertical list (CSS handles layout), edges still ripple.
+// Desktop/tablet: blobs drift forever + edge ripple.
+// Mobile: SINGLE-SLIDE carousel (one blob visible at a time) + edge ripple + wrap.
+// This avoids all flex/track width/max-width fights on small screens.
+//
+// IMPORTANT CHANGE: we FORCE transforms via style.setProperty(..., 'important')
+// so even if your CSS still has `transform: none !important` on mobile blobs,
+// arrow clicks will still move slides.
 
 document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
@@ -17,30 +21,35 @@ document.addEventListener("DOMContentLoaded", () => {
     catch (e) { console.error("[digital] JSON parse failed:", e); return []; }
   }
 
+  // Core nodes
   const dataEl = $("projects-data");
   const blobLayer = $("blobLayer");
-  const allProjects = $("allProjects");
-  const modeA = $("modeA");
-  const modeB = $("modeB");
-  const toggleModeBtn = $("toggleMode");
+  const navArrows = $("navArrows");
+  const prevBtn = $("prevSet");
+  const nextBtn = $("nextSet");
 
+  // Overlay nodes (optional)
   const overlay = $("overlay");
   const overlayBackdrop = $("overlayBackdrop");
   const overlayClose = $("overlayClose");
   const overlayContent = $("overlayContent");
+  const hasOverlay = !!(overlay && overlayBackdrop && overlayClose && overlayContent);
 
-  const prevSetBtn = $("prevSet");
-  const nextSetBtn = $("nextSet");
+  // ensure initial visual state: no orange class, plain lowercase x
+  if (overlayClose) {
+    overlayClose.classList.remove("orange");
+    overlayClose.textContent = "x";
+  }
 
-  const required = [dataEl, blobLayer, allProjects, modeA, modeB, toggleModeBtn, overlay, overlayBackdrop, overlayClose, overlayContent, prevSetBtn, nextSetBtn];
-  if (required.some(x => !x)) {
-    console.warn("[digital] Missing DOM nodes; aborting.");
+  if (!dataEl || !blobLayer || !prevBtn || !nextBtn) {
+    console.warn("[digital] Missing core DOM nodes; aborting.");
     return;
   }
 
   const projects = safeJsonParse(dataEl);
   if (!Array.isArray(projects) || projects.length === 0) {
-    allProjects.innerHTML = `<p style="opacity:.7;">No projects found.</p>`;
+    blobLayer.innerHTML = `<p style="opacity:.7; position:relative; z-index:2;">No projects found.</p>`;
+    if (navArrows) navArrows.style.display = "none";
     return;
   }
 
@@ -48,14 +57,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return (p && p.cover ? String(p.cover) : "").trim();
   }
 
-  // Breakpoint 768
+  // Breakpoints
   const mqMobile = window.matchMedia("(max-width: 767px)");
   const mqTablet = window.matchMedia("(min-width: 768px) and (max-width: 1024px)");
   const isMobile = () => mqMobile.matches;
   const isTablet = () => mqTablet.matches;
 
-  let currentMode = "A";
-  let setIndex = 0;
+  // Paging state
+  const DESKTOP_PAGE_SIZE = 7; // change to 8 later
+  let setIndex = 0;            // desktop pages
+  let mobileIndex = 0;         // mobile slide index
+
+  function mod(n, m) {
+    return ((n % m) + m) % m;
+  }
+
+  // FORCE style helpers (beats CSS !important)
+  function setImportant(el, prop, value) {
+    if (!el) return;
+    el.style.setProperty(prop, value, "important");
+  }
+  function setTransformImportant(el, value) {
+    setImportant(el, "transform", value);
+  }
+  function setTransitionImportant(el, value) {
+    setImportant(el, "transition", value);
+  }
 
   // ----------------------------
   // Deterministic RNG
@@ -75,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ----------------------------
-  // Geometry helpers (super round)
+  // Geometry helpers
   // ----------------------------
   function chaikin(points, iterations = 2) {
     let pts = points.slice();
@@ -116,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return d + " Z";
   }
 
-  // Base radii + ripple params (make ripple unmistakable)
   function buildBaseRadii(id, N) {
     const rnd = mulberry32(hashToSeed(id || "x"));
 
@@ -138,36 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
       radii[i] = r;
     }
 
-    // ✅ Stronger, faster, more complex water ripple (still rounded)
     const rip = {
-      amps: [
-        2.0 + rnd()*1.2,
-        1.4 + rnd()*1.0,
-        1.0 + rnd()*0.8,
-        0.75 + rnd()*0.7,
-        0.55 + rnd()*0.55
-      ],
-      freqs: [
-        2 + Math.floor(rnd()*4),   // 2–5
-        4 + Math.floor(rnd()*5),   // 4–8
-        7 + Math.floor(rnd()*6),   // 7–12
-        11 + Math.floor(rnd()*7),  // 11–17
-        16 + Math.floor(rnd()*7)   // 16–22
-      ],
-      phases: [
-        rnd()*Math.PI*2,
-        rnd()*Math.PI*2,
-        rnd()*Math.PI*2,
-        rnd()*Math.PI*2,
-        rnd()*Math.PI*2
-      ],
-      speeds: [
-        2.1 + rnd()*1.2,
-        1.8 + rnd()*1.1,
-        1.4 + rnd()*1.0,
-        1.2 + rnd()*0.9,
-        1.0 + rnd()*0.8
-      ],
+      amps: [2.0 + rnd()*1.2, 1.4 + rnd()*1.0, 1.0 + rnd()*0.8, 0.75 + rnd()*0.7, 0.55 + rnd()*0.55],
+      freqs: [2 + Math.floor(rnd()*4), 4 + Math.floor(rnd()*5), 7 + Math.floor(rnd()*6), 11 + Math.floor(rnd()*7), 16 + Math.floor(rnd()*7)],
+      phases: [rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2],
+      speeds: [2.1 + rnd()*1.2, 1.8 + rnd()*1.1, 1.4 + rnd()*1.0, 1.2 + rnd()*0.9, 1.0 + rnd()*0.8],
       strength: 1.25 + rnd()*0.60
     };
 
@@ -175,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createBlobModel(id) {
-    const N = 10; // more points = more “water” detail
+    const N = 10;
     const base = buildBaseRadii(id, N);
     const angles = new Array(N);
     for (let i = 0; i < N; i++) angles[i] = (i / N) * Math.PI * 2;
@@ -197,10 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       r += dr * rip.strength;
-
-      // Allow ripple room but keep round
       r = Math.max(26, Math.min(52, r));
-
       pts.push({ x: cx + Math.cos(a)*r, y: cy + Math.sin(a)*r });
     }
 
@@ -208,9 +206,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return pointsToBezier(smooth);
   }
 
-  // ----------------------------
-  // SVG markup (IMPORTANT: ids must match binder)
-  // ----------------------------
   function makeWarpSVG({ uid, cover, title, initialD }) {
     return `
       <svg class="blob-svg" viewBox="0 0 100 100" role="img" aria-label="${escapeHtml(title)}" data-uid="${uid}">
@@ -233,38 +228,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ----------------------------
-  // Continuous loops
+  // Loops
   // ----------------------------
   let edgeRAF = null;
   let moveRAF = null;
   let edgeRunning = false;
   let moveRunning = false;
 
-  let blobVisuals = []; // { model, pathEl, outlineEl }
-  let particles = [];   // movement particles
+  let blobVisuals = [];
+  let particles = [];
   let lastMove = performance.now();
 
   function rebuildBlobVisualsFromDOM() {
-  const buttons = Array.from(blobLayer.querySelectorAll(".blob"));
-  const visuals = [];
+    const buttons = Array.from(blobLayer.querySelectorAll(".blob"));
+    const visuals = [];
 
-  for (const btn of buttons) {
-    const id = btn.getAttribute("data-id");
-    const svg = btn.querySelector("svg[data-uid]");
-    if (!id || !svg) continue;
+    for (const btn of buttons) {
+      const id = btn.getAttribute("data-id");
+      const svg = btn.querySelector("svg[data-uid]");
+      if (!id || !svg) continue;
 
-    const uid = svg.getAttribute("data-uid");
-    const pathEl = svg.querySelector(`#${uid}_path`);
-    const outlineEl = svg.querySelector(`#${uid}_outline`);
-    if (!uid || !pathEl || !outlineEl) continue;
+      const uid = svg.getAttribute("data-uid");
+      const pathEl = svg.querySelector(`#${uid}_path`);
+      const outlineEl = svg.querySelector(`#${uid}_outline`);
+      if (!uid || !pathEl || !outlineEl) continue;
 
-    // IMPORTANT: reuse the same model per id each time
-    const model = createBlobModel(id);
-    visuals.push({ model, pathEl, outlineEl });
+      const model = createBlobModel(id);
+      visuals.push({ model, pathEl, outlineEl });
+    }
+
+    blobVisuals = visuals;
   }
-
-  blobVisuals = visuals;
-}
 
   function stopEdgeLoop() {
     edgeRunning = false;
@@ -277,43 +271,33 @@ document.addEventListener("DOMContentLoaded", () => {
     moveRunning = false;
     if (moveRAF) cancelAnimationFrame(moveRAF);
     moveRAF = null;
-    // keep particles allocated by renderBlobs
   }
 
- function startEdgeLoop() {
-  stopEdgeLoop();
-  edgeRunning = true;
+  function startEdgeLoop() {
+    stopEdgeLoop();
+    edgeRunning = true;
 
-  function frame(now) {
-    if (!edgeRunning) return;
+    function frame(now) {
+      if (!edgeRunning) return;
 
-    // ✅ self-heal binding if it's empty (or if something changed)
-    if (!blobVisuals || blobVisuals.length === 0) {
-      rebuildBlobVisualsFromDOM();
-    }
+      if (!blobVisuals || blobVisuals.length === 0) rebuildBlobVisualsFromDOM();
+      if (!blobVisuals || blobVisuals.length === 0) {
+        edgeRAF = requestAnimationFrame(frame);
+        return;
+      }
 
-    // If still nothing, keep trying.
-    if (!blobVisuals || blobVisuals.length === 0) {
+      const t = now * 0.001;
+      for (const bv of blobVisuals) {
+        const d = computePathFromModel(bv.model, t);
+        bv.pathEl.setAttributeNS(null, "d", d);
+        bv.outlineEl.setAttributeNS(null, "d", d);
+      }
+
       edgeRAF = requestAnimationFrame(frame);
-      return;
-    }
-
-    const t = now * 0.001;
-
-    for (const bv of blobVisuals) {
-      const d = computePathFromModel(bv.model, t);
-
-      // Use setAttributeNS for robustness in SVG
-      bv.pathEl.setAttributeNS(null, "d", d);
-      bv.outlineEl.setAttributeNS(null, "d", d);
     }
 
     edgeRAF = requestAnimationFrame(frame);
   }
-
-  edgeRAF = requestAnimationFrame(frame);
-}
-
 
   function startMoveLoop(containerEl) {
     if (isMobile()) return;
@@ -326,29 +310,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const rect = () => containerEl.getBoundingClientRect();
 
     const cfg = {
-      // pull back inward sooner
       offLeft: -140,
       offRight: -140,
       offTop: -180,
-      offBottom: -30, // bottom tighter
-
+      offBottom: -30,
       padding: 10,
-      edgePush: 0.020, // stronger edge push
-
-      // always moving
+      edgePush: 0.020,
       flowStrength: 0.26,
       swirlStrength: 0.10,
       noiseStrength: 0.14,
       maxSpeed: 0.60,
       damping: 0.992,
       minSpeed: 0.22,
-
       repel: 0.12,
-
-      // center pull (brings back in sooner without looking “stuck”)
       centerPull: 0.0009,
-
-      // reduce top-left camping
       avoidTLStrength: 0.028,
       avoidTLRadiusFrac: 0.40
     };
@@ -421,11 +396,10 @@ document.addEventListener("DOMContentLoaded", () => {
           p.vy += (fy * cfg.flowStrength + swirlY * cfg.swirlStrength + wigY + p.biasY) * dt * 60;
         }
 
-        // center pull (brings blobs back in)
+        // center pull + avoid top-left
         p.vx += (cx - p.x) * cfg.centerPull;
         p.vy += (cy - p.y) * cfg.centerPull;
 
-        // avoid top-left
         const dxTL = p.x - tlx;
         const dyTL = p.y - tly;
         const dTL = Math.hypot(dxTL, dyTL) || 0.0001;
@@ -438,19 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
         p.vx *= cfg.damping;
         p.vy *= cfg.damping;
 
-        // never-stall injector
-        if (!p.grabbed) {
-          const sp = Math.hypot(p.vx, p.vy) || 0.0001;
-          if (sp < cfg.minSpeed) {
-            const dirx = fx + wigX * 0.5 + 0.0001;
-            const diry = fy + wigY * 0.5 + 0.0001;
-            const dnorm = Math.hypot(dirx, diry) || 1;
-            p.vx += (dirx / dnorm) * (cfg.minSpeed - sp) * 0.9;
-            p.vy += (diry / dnorm) * (cfg.minSpeed - sp) * 0.9;
-          }
-        }
-
-        // bounds (pull in sooner)
+        // bounds
         const minX = cfg.offLeft + cfg.padding;
         const maxX = W - cfg.offRight - cfg.padding;
         const minY = cfg.offTop + cfg.padding;
@@ -486,6 +448,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Overlay
   // ----------------------------
   function openOverlay(project) {
+    if (!hasOverlay) return;
+
     stopMoveLoop();
 
     const title = escapeHtml(project.title);
@@ -494,107 +458,150 @@ document.addEventListener("DOMContentLoaded", () => {
     const stack = Array.isArray(project.stack) ? project.stack : [];
 
     overlayContent.innerHTML = `
-      <h2 style="margin:0 0 6px 0; font-family: WAKABA;">${title}</h2>
-      ${blurb ? `<p style="margin:0 0 12px 0; opacity:.75;">${blurb}</p>` : ""}
+      <h2 style="font-size: 3rem; margin:0 0 10px 0; font-family: wakaba; text-transform: lowercase; display: flex; justify-content: center;">${title}</h2>
+      ${blurb ? `<p style="margin:18px 0 12px 0; opacity:.75; display: flex; justify-content: center; text-align:justify;">${blurb}</p>` : ""}
 
       ${stack.length ? `
-        <div style="display:flex; gap:8px; flex-wrap:wrap; margin: 0 0 14px 0;">
-          ${stack.map(s => `<span style="padding:6px 10px; border:1px solid rgba(0,0,0,0.12); border-radius:999px; font-size: 13px;">${escapeHtml(s)}</span>`).join("")}
+        <div style="display:flex; justify-content: center; gap:8px; flex-wrap:wrap; margin: 5px 0 5px 0;">
+          ${stack.map(s => `<span style="padding:6px 10px; border:1px solid #f2f2f2; border-radius:999px; font-size: 13px;">${escapeHtml(s)}</span>`).join("")}
         </div>
       ` : ""}
 
       <div class="cta-row">
-        ${url ? `<a class="btn primary" href="${url}" target="_blank" rel="noopener">View project ↗</a>` : ""}
-        <button class="btn" type="button" id="overlayBackBtn">Back</button>
+        ${url ? `<a class="btn project-cta lilac" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View project</a>` : ""}
       </div>
     `;
 
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
 
-    const backBtn = document.getElementById("overlayBackBtn");
-    if (backBtn) backBtn.addEventListener("click", closeOverlay, { once: true });
-  }
-
-  function closeOverlay() {
-    overlay.classList.remove("is-open");
-    overlay.setAttribute("aria-hidden", "true");
-    if (currentMode === "A" && !isMobile()) startMoveLoop(blobLayer);
-  }
-
-  overlayBackdrop.addEventListener("click", closeOverlay);
-  overlayClose.addEventListener("click", closeOverlay);
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && overlay.classList.contains("is-open")) closeOverlay();
-  });
-
-  // ----------------------------
-  // Mode B cards
-  // ----------------------------
-  let allProjectsRendered = false;
-  function renderAllProjects() {
-    if (allProjectsRendered) return;
-
-    allProjects.innerHTML = projects.map(p => {
-      const cover = coverUrl(p);
-      const url = p.url || "#";
-      return `
-        <a class="proj" href="${url}" target="_blank" rel="noopener">
-          <div class="cover" style="${cover ? `background-image:url('${cover}')` : ""}"></div>
-          <div class="proj-meta">
-            <div class="proj-title">${escapeHtml(p.title)}</div>
-            ${p.tagline ? `<div class="proj-tagline">${escapeHtml(p.tagline)}</div>` : ""}
-          </div>
-        </a>
-      `;
-    }).join("");
-
-    allProjectsRendered = true;
-  }
-
-  // ----------------------------
-  // Modes
-  // ----------------------------
-  function setMode(nextMode) {
-    currentMode = nextMode;
-
-    if (nextMode === "A") {
-      modeB.classList.remove("is-active");
-      modeA.classList.add("is-active");
-
-      toggleModeBtn.classList.remove("is-close");
-      toggleModeBtn.setAttribute("aria-label", "View all");
-      toggleModeBtn.textContent = "View all";
-
-      renderBlobs();
-    } else {
-      modeA.classList.remove("is-active");
-      modeB.classList.add("is-active");
-
-      toggleModeBtn.classList.add("is-close");
-      toggleModeBtn.setAttribute("aria-label", "Close");
-      toggleModeBtn.textContent = "X";
-
-      stopEdgeLoop();
-      stopMoveLoop();
-      renderAllProjects();
+    // ensure close button default state
+    const closeBtn = document.getElementById("overlayClose");
+    if (closeBtn) {
+      closeBtn.classList.remove("orange");
+      closeBtn.textContent = "x";
     }
   }
 
-  toggleModeBtn.addEventListener("click", () => setMode(currentMode === "A" ? "B" : "A"));
+  function closeOverlay() {
+    if (!hasOverlay) return;
+    overlay.classList.remove("is-open");
+    overlay.setAttribute("aria-hidden", "true");
+    const closeBtn = document.getElementById("overlayClose");
+    if (closeBtn) closeBtn.classList.remove("orange");
+    if (!isMobile()) startMoveLoop(blobLayer);
+  }
+
+  if (hasOverlay) {
+    overlayBackdrop.addEventListener("click", closeOverlay);
+    overlayClose.addEventListener("click", closeOverlay);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("is-open")) closeOverlay();
+    });
+  }
 
   // ----------------------------
-  // Paging
+  // Visibility rules for arrows
+  // ----------------------------
+  function updateArrowVisibility() {
+    if (!navArrows) return;
+    if (isMobile()) {
+      navArrows.style.display = "flex";
+    } else {
+      navArrows.style.display = (projects.length > DESKTOP_PAGE_SIZE) ? "flex" : "none";
+    }
+  }
+
+  // ----------------------------
+  // Mobile single-slide carousel (bulletproof + CSS-override-proof)
+  // ----------------------------
+  const MOBILE_TRANSITION = "transform 420ms cubic-bezier(.4,0,.2,1)";
+
+  function renderMobileSlides() {
+    stopMoveLoop();
+    stopEdgeLoop();
+
+    blobLayer.style.position = "absolute";
+    blobLayer.style.inset = "0";
+    blobLayer.style.overflow = "hidden";
+
+    blobLayer.innerHTML = projects.map((p, i) => {
+      const cover = coverUrl(p);
+      const uid = `b_${String(p.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random()*1e9)}`;
+      const model = createBlobModel(p.id);
+      const initialD = computePathFromModel(model, performance.now() * 0.001);
+
+      return `
+        <button class="blob"
+          type="button"
+          data-id="${escapeHtml(p.id)}"
+          data-index="${i}"
+          style="
+            position:absolute;
+            inset:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            will-change: transform;
+          "
+        >
+          ${makeWarpSVG({ uid, cover, title: p.title, initialD })}
+        </button>
+      `;
+    }).join("");
+
+    // bind click → overlay
+    Array.from(blobLayer.querySelectorAll(".blob")).forEach(btn => {
+      const id = btn.getAttribute("data-id");
+      btn.addEventListener("click", () => {
+        const proj = projects.find(x => x.id === id);
+        if (proj) openOverlay(proj);
+      });
+    });
+
+    // FORCE initial positions + transition with !important
+    const blobs = Array.from(blobLayer.querySelectorAll(".blob"));
+    blobs.forEach((b, i) => {
+      setTransitionImportant(b, MOBILE_TRANSITION);
+      if (i === mobileIndex) setTransformImportant(b, "translate3d(0,0,0)");
+      else setTransformImportant(b, "translate3d(100vw,0,0)");
+    });
+
+    rebuildBlobVisualsFromDOM();
+    startEdgeLoop();
+  }
+
+  function updateMobileSlides(dir) {
+    const blobs = Array.from(blobLayer.querySelectorAll(".blob"));
+    const count = blobs.length;
+    if (!count) return;
+
+    const prev = mobileIndex;
+    mobileIndex = mod(mobileIndex + dir, count);
+
+    blobs.forEach((b, i) => {
+      setTransitionImportant(b, MOBILE_TRANSITION);
+
+      if (i === mobileIndex) {
+        setTransformImportant(b, "translate3d(0,0,0)");
+      } else if (i === prev) {
+        setTransformImportant(b, `translate3d(${dir > 0 ? "-100vw" : "100vw"},0,0)`);
+      } else {
+        setTransformImportant(b, `translate3d(${dir > 0 ? "100vw" : "-100vw"},0,0)`);
+      }
+    });
+  }
+
+  // ----------------------------
+  // Desktop paging
   // ----------------------------
   function perSet() {
-    if (isMobile()) return projects.length;
     if (isTablet()) return Math.min(5, projects.length);
-    return Math.min(7, projects.length);
+    return Math.min(DESKTOP_PAGE_SIZE, projects.length);
   }
 
   function getSet(i) {
     const n = perSet();
-    if (isMobile()) return projects;
     if (projects.length <= n) return projects;
 
     const start = (i * n) % projects.length;
@@ -604,34 +611,19 @@ document.addEventListener("DOMContentLoaded", () => {
     return slice;
   }
 
-  prevSetBtn.addEventListener("click", () => {
-    if (isMobile()) return;
-    setIndex = Math.max(0, setIndex - 1);
-    renderBlobs();
-  });
-
-  nextSetBtn.addEventListener("click", () => {
-    if (isMobile()) return;
-    setIndex += 1;
-    renderBlobs();
-  });
-
   // ----------------------------
-  // Render blobs + start loops
+  // Render desktop/tablet blobs
   // ----------------------------
-  function renderBlobs() {
+  function renderDesktopBlobs() {
     stopEdgeLoop();
     stopMoveLoop();
 
     const set = getSet(setIndex);
-
-    // uniform-ish sizing
     const uniform = isTablet() ? 520 : 560;
 
     blobLayer.innerHTML = set.map((p) => {
-        rebuildBlobVisualsFromDOM();
       const cover = coverUrl(p);
-      const size = isMobile() ? 420 : uniform;
+      const size = uniform;
 
       const uid = `b_${String(p.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random()*1e9)}`;
       const model = createBlobModel(p.id);
@@ -639,7 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       return `
         <button class="blob" type="button" data-id="${escapeHtml(p.id)}" aria-label="${escapeHtml(p.title)}"
-          style="${isMobile() ? "" : `width:${size}px;height:${size}px;left:0;top:0;`}"
+          style="width:${size}px;height:${size}px;left:0;top:0;"
         >
           ${makeWarpSVG({ uid, cover, title: p.title, initialD })}
         </button>
@@ -654,7 +646,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = btn.getAttribute("data-id");
 
       btn.addEventListener("click", () => {
-        if (currentMode !== "A") return;
         const proj = projects.find(x => x.id === id);
         if (proj) openOverlay(proj);
       });
@@ -672,54 +663,126 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // movement particles
-    if (!isMobile()) {
-      const r0 = blobLayer.getBoundingClientRect();
-      particles = buttons.map(btn => {
-        const id = btn.getAttribute("data-id") || "";
-        const rnd = mulberry32(hashToSeed(id));
-        const size = btn.getBoundingClientRect().width || uniform;
+    const r0 = blobLayer.getBoundingClientRect();
+    particles = buttons.map(btn => {
+      const id = btn.getAttribute("data-id") || "";
+      const rnd = mulberry32(hashToSeed(id));
+      const size = btn.getBoundingClientRect().width || uniform;
 
-        return {
-          btn, id,
-          x: rnd() * r0.width,
-          y: rnd() * r0.height,
-          vx: (rnd()-0.5)*0.22,
-          vy: (rnd()-0.5)*0.22,
-          radius: size * (0.42 + rnd()*0.04),
-          grabbed: false,
-          px: rnd()*1000,
-          py: rnd()*1000,
-          ph: rnd()*Math.PI*2,
-          biasX: (rnd()-0.5)*0.08,
-          biasY: (rnd()-0.5)*0.08
-        };
-      });
+      return {
+        btn, id,
+        x: rnd() * r0.width,
+        y: rnd() * r0.height,
+        vx: (rnd()-0.5)*0.22,
+        vy: (rnd()-0.5)*0.22,
+        radius: size * (0.42 + rnd()*0.04),
+        grabbed: false,
+        px: rnd()*1000,
+        py: rnd()*1000,
+        ph: rnd()*Math.PI*2,
+        biasX: (rnd()-0.5)*0.08,
+        biasY: (rnd()-0.5)*0.08
+      };
+    });
 
-      // hover freeze
-      particles.forEach(p => {
-        const b = p.btn;
-        const grab = () => { p.grabbed = true; };
-        const rel  = () => { p.grabbed = false; };
-        b.addEventListener("mouseenter", grab);
-        b.addEventListener("mouseleave", rel);
-        b.addEventListener("focus", grab);
-        b.addEventListener("blur", rel);
-        b.addEventListener("touchstart", grab, { passive:true });
-        b.addEventListener("touchend", rel, { passive:true });
-        b.addEventListener("touchcancel", rel, { passive:true });
-      });
+    // hover freeze
+    particles.forEach(p => {
+      const b = p.btn;
+      const grab = () => { p.grabbed = true; };
+      const rel  = () => { p.grabbed = false; };
+      b.addEventListener("mouseenter", grab);
+      b.addEventListener("mouseleave", rel);
+      b.addEventListener("focus", grab);
+      b.addEventListener("blur", rel);
+      b.addEventListener("touchstart", grab, { passive:true });
+      b.addEventListener("touchend", rel, { passive:true });
+      b.addEventListener("touchcancel", rel, { passive:true });
+    });
 
-      // initial spread
-      particles.forEach(p => {
-        p.btn.style.transform = `translate(${p.x - p.btn.offsetWidth/2}px, ${p.y - p.btn.offsetHeight/2}px)`;
-      });
-    }
+    // initial spread
+    particles.forEach(p => {
+      p.btn.style.transform = `translate(${p.x - p.btn.offsetWidth/2}px, ${p.y - p.btn.offsetHeight/2}px)`;
+    });
 
     startEdgeLoop();
-    if (!isMobile()) startMoveLoop(blobLayer);
+    startMoveLoop(blobLayer);
   }
 
+  function renderAll() {
+    updateArrowVisibility();
+
+    if (isMobile()) {
+      mobileIndex = mod(mobileIndex, projects.length);
+      renderMobileSlides();
+    } else {
+      renderDesktopBlobs();
+    }
+  }
+
+  // ----------------------------
+  // Arrow actions
+  // ----------------------------
+  prevBtn.addEventListener("click", () => {
+    if (isMobile()) {
+      updateMobileSlides(-1);
+      return;
+    }
+    setIndex = Math.max(0, setIndex - 1);
+    renderAll();
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (isMobile()) {
+      updateMobileSlides(1);
+      return;
+    }
+    setIndex += 1;
+    renderAll();
+  });
+
+  // Swipe on mobile
+  let touchX0 = null;
+  let touchY0 = null;
+
+  blobLayer.addEventListener("touchstart", (e) => {
+    if (!isMobile()) return;
+    const t = e.touches && e.touches[0];
+    if (!t) return;
+    touchX0 = t.clientX;
+    touchY0 = t.clientY;
+  }, { passive: true });
+
+  blobLayer.addEventListener("touchend", (e) => {
+    if (!isMobile() || touchX0 == null || touchY0 == null) return;
+    const t = e.changedTouches && e.changedTouches[0];
+    if (!t) return;
+
+    const dx = t.clientX - touchX0;
+    const dy = t.clientY - touchY0;
+
+    touchX0 = null;
+    touchY0 = null;
+
+    if (Math.abs(dy) > Math.abs(dx)) return;
+
+    const threshold = 40;
+    if (dx > threshold) prevBtn.click();
+    else if (dx < -threshold) nextBtn.click();
+  }, { passive: true });
+
+  // Re-render on breakpoint changes
+  mqMobile.addEventListener?.("change", () => {
+    stopMoveLoop();
+    mobileIndex = 0;
+    renderAll();
+  });
+  mqTablet.addEventListener?.("change", renderAll);
+
+  window.addEventListener("resize", () => {
+    // on mobile, re-render to keep 100vw transforms consistent
+    renderAll();
+  });
+
   // Boot
-  renderAllProjects();
-  setMode("A");
+  renderAll();
 });
