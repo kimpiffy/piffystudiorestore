@@ -15,7 +15,7 @@ def digital(request):
                 "A simple, personal site with clear presentation, layout fundamentals, and a focus on learning-by-doing."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
-            "cover": static("img/portfoliohero1.webp"),
+            "cover": static("img/IMG_3765.png"),
             "url": "https://piffy.studio",
             "github": "",  # add later
         },
@@ -80,7 +80,7 @@ def digital(request):
                 "The piece visualizes identity through an interactive sonar dial; blending symbolism, and design."
             ),
             "stack": ["JavaScript", "Creative Coding", "HTML", "CSS"],
-            "cover": static("img/bg2.png"),
+            "cover": static("img/IMG_3763.jpeg"),
             "url": "https://kimpiffy.github.io/grimiore/",
             "github": "",
         },
