@@ -111,6 +111,10 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
 .blob-svg path[id$="_outline"] { stroke: transparent; }
 .blob:hover .blob-svg{ transform: scale(1.02); }
 
+.blob-outer { touch-action: pan-y; }
+.blob-inner { -webkit-tap-highlight-color: transparent; }
+
+
 /* Arrows */
 .nav-arrows{
   position:absolute;
@@ -265,9 +269,11 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
 ======================================================= */
 @media (max-width: 767px){
 
+:root { --mobile-blob-top: 0px; } /* try 0, 8, 16, 24... */
+
+
   .wrap{ padding: 0 !important; }
 
-  /* make the blob stage a fixed pane under the site header */
   .showcase{
     position: fixed !important;
     top: var(--site-header-h) !important;
@@ -275,45 +281,35 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
     right: 0 !important;
     bottom: 0 !important;
     height: auto !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
-  }
-
-  /* keep wrap from pushing layout */
-  .wrap{
-    padding: 0 !important;
-  }
-
-  /* horizontal track */
-  #blobLayer{
-    position: absolute !important;
-    inset: 0 !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    height: 100% !important;
-    overflow: hidden !important;
-    will-change: transform;
-    touch-action: pan-y;
-  }
-
-  /* each slide */
-  #blobLayer .blob{
-    position: relative !important;
-    flex: 0 0 100% !important;
-    width: 100% !important;
-    height: 100% !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    transform: none !important;
     overflow: visible !important;
   }
 
-  /* big blob spills off edges */
+  /* blob layer just fills the stage */
+  #blobLayer{
+    position: absolute !important;
+    inset: 0 !important;
+    overflow: visible !important;
+    z-index: 3 !important;
+  }
+
+  /* NEW: top-aligned blob wrapper created by JS */
+  #blobLayer .blob-outer{
+    position: absolute !important;
+    inset: 0 !important;
+
+    display: flex !important;
+    justify-content: flex-start !important; /* TOP */
+    align-items: center !important;         /* horizontal center */
+
+    padding-top: var(--mobile-blob-top, 16px) !important;
+  }
+
+  /* the actual button inside */
+  #blobLayer .blob-inner{
+    position: relative !important;
+  }
+
+  /* blob size */
   #blobLayer .blob-svg{
     width: 130vw !important;
     height: 130vw !important;
@@ -321,25 +317,16 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
     max-height: none !important;
   }
 
-  /* arrows always visible */
+  /* arrows under the blob (not fixed at bottom) */
   #navArrows{
-    position: fixed !important;
+    position: absolute !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    bottom: 18px !important;
-    z-index: 99999 !important;
+    top: calc(var(--mobile-blob-top, 16px) + 130vw + 12px) !important;
+    bottom: auto !important;
+    z-index: 10 !important;
     display: flex !important;
     gap: 14px !important;
     pointer-events: auto !important;
   }
-
-  /* kill any max-width clamps that break carousels */
-#blobLayer{
-  max-width: none !important;
 }
-#blobLayer .blob{
-  max-width: none !important;
-}
-
-}
-
