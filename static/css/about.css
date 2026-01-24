@@ -1,0 +1,249 @@
+/* static/css/about.css */
+
+:root{
+  --cream: #f6f2df;
+  --ink: #141515;
+
+  /* MUST match your navbar height */
+  --site-header-h: 92px;
+
+  --word-size: clamp(2.2rem, 5.2vw, 4.2rem);
+
+  --bio-idle: #141515;
+  --bio-hot:  #e0e446;
+
+  --art-idle: #141515;
+  --art-hot:  #e01f5a;
+
+  --digital-idle:#141515;
+  --digital-hot: #cc2bb0;
+
+  --community-idle:#141515;
+  --community-hot: #2cb7a5;
+}
+
+body.about-page{
+  margin:0;
+  min-height:100vh;
+  background: var(--cream);
+  color: var(--ink);
+  overflow:hidden;
+}
+
+/* Make sure header is always above stage */
+body.about-page header{
+  position: relative;
+  z-index: 100000;
+}
+
+/* Kill random injected UI on About only */
+body.about-page .random-acts,
+body.about-page #randomActs,
+body.about-page .random-acts-button,
+body.about-page #randomActsButton{
+  display:none !important;
+}
+
+/* Stage: IMPORTANT — lives below header so nav stays clickable */
+body.about-page .about-stage{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--site-header-h);
+  height: calc(100vh - var(--site-header-h));
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Portrait blob */
+body.about-page .portrait-blob{
+  position:absolute;
+  border:0;
+  background: transparent;
+  padding:0;
+  cursor: pointer;
+  z-index: 2;
+  outline: none;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+body.about-page .portrait-blob .blob-svg{
+  width: 100%;
+  height: 100%;
+  display:block;
+  overflow: visible;
+  filter: none !important;
+}
+
+body.about-page .portrait-blob .blob-outline{
+  stroke: transparent !important;
+  stroke-width: 0 !important;
+  opacity: 0 !important;
+}
+
+/* Words */
+body.about-page .about-word{
+  position:absolute;
+  font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: var(--word-size);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: lowercase;
+
+  background: transparent !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+
+  cursor: pointer;
+  user-select: none;
+  will-change: transform;
+
+  filter: url(#wobbleFilter);
+  transition: color 140ms ease, transform 140ms ease, text-transform 120ms ease;
+}
+
+body.about-page .about-word:hover,
+body.about-page .about-word:focus{
+  text-transform: uppercase;
+  transform: translateY(-2px);
+}
+
+/* Colour mapping */
+body.about-page .about-word[data-key="bio"]{ color: var(--lilac); }
+body.about-page .about-word[data-key="bio"]:hover,
+body.about-page .about-word[data-key="bio"]:focus{ color: var(--bio-hot); }
+
+body.about-page .about-word[data-key="art"]{ color: var(--lilac); }
+body.about-page .about-word[data-key="art"]:hover,
+body.about-page .about-word[data-key="art"]:focus{ color: var(--art-hot); }
+
+body.about-page .about-word[data-key="digital"]{ color: var(--lilac); }
+body.about-page .about-word[data-key="digital"]:hover,
+body.about-page .about-word[data-key="digital"]:focus{ color: var(--digital-hot); }
+
+body.about-page .about-word[data-key="community"]{ color: var(--lilac); }
+body.about-page .about-word[data-key="community"]:hover,
+body.about-page .about-word[data-key="community"]:focus{ color: var(--community-hot); }
+
+/* Zones (containers) */
+body.about-page .zone{
+  position: absolute;
+  pointer-events: none;
+  z-index: 3;
+}
+body.about-page .zone .about-word{
+  position: absolute;
+  pointer-events: auto;
+}
+
+/* ===== Desktop/tablet layout ===== */
+@media (min-width: 768px){
+  /* JS will move it freely, so set origin at top-left */
+  body.about-page .portrait-blob{
+    left: 0;
+    top: 0;
+    transform: none;
+    width: min(86vmin, 780px);
+    height: min(86vmin, 780px);
+  }
+
+  body.about-page .bio-zone{
+    left: 18px;
+    top: 18px;
+    width: min(520px, 42vw);
+    height: min(220px, 26vh);
+  }
+
+  body.about-page .links-zone{
+    right: 18px;
+    top: 18px;
+    width: min(520px, 34vw);
+    height: calc(100% - 36px); /* 100% of stage height */
+  }
+}
+
+/* ===== Mobile layout: one column / three rows ===== */
+@media (max-width: 767px){
+  /* Blob stays centered in the middle band */
+  body.about-page .portrait-blob{
+    left: 50%;
+    top: 44%;
+    width: min(78vmin, 520px);
+    height: min(78vmin, 520px);
+    transform: translate(-50%, -50%);
+  }
+
+  body.about-page .bio-zone{
+    left: 12px;
+    top: 12px;
+    width: calc(100% - 24px);
+    height: 20%;
+  }
+
+  body.about-page .links-zone{
+    left: 12px;
+    bottom: 12px;
+    width: calc(100% - 24px);
+    height: 26%;
+    top: auto;
+  }
+
+  body.about-page .about-word{
+    font-size: clamp(2rem, 8.5vw, 3.2rem);
+  }
+}
+
+/* Overlay (kept stable) */
+body.about-page .overlay{
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 99999;
+}
+body.about-page .overlay.is-open{ display: block; }
+body.about-page .overlay-backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+}
+body.about-page .overlay-panel{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(860px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  border-radius: 34px;
+  background: #fffaf0;
+  padding: 18px;
+}
+body.about-page .overlay-close{ display:none; }
+body.about-page .overlay.is-open .overlay-close{ display:flex; }
+body.about-page .overlay-panel .overlay-close{
+  position: sticky;
+  top: 8px;
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+/* Make sure zones sit ABOVE the portrait button so words are always clickable */
+body.about-page .bio-zone{ z-index: 10 !important; }
+body.about-page .links-zone{ z-index: 10 !important; }
+
+/* Portrait stays below */
+body.about-page .portrait-blob{ z-index: 5 !important; }
+
+/* Words always on top */
+body.about-page .about-word{ z-index: 20 !important; }
+
+/* Prevent the stage from blocking the header (nav links) */
+body.about-page header{ position: relative; z-index: 100000 !important; }
+body.about-page .about-stage{ z-index: 1 !important; }

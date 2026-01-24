@@ -1,35 +1,49 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block body_class %}about-page{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container aboutcontainer py-5">
-  <div class="row align-items-center gy-4">
-    <!-- Photo (left on md+, stacked on phones) -->
-    <div class="col-12 col-md-6 px-4">
-      <img src="{% static 'img/profike.jpg' %}" alt="Portrait" class="img-fluid profilepic rounded shadow-sm">
-    </div>
+<div class="about-stage" id="aboutStage"
+  data-url-art="{% url 'portfolio:art' %}"
+  data-url-digital="{% url 'portfolio:digital' %}"
+  data-url-community="{% url 'portfolio:installations' %}"
+  data-url-cv="{% static 'kimpiffycv.pdf' %}"
+>
+  <div class="zone bio-zone" id="bioZone"></div>
+  <button class="portrait-blob" id="portraitBlob" type="button"></button>
+  <div class="zone links-zone" id="linksZone"></div>
 
-    <!-- Intro + CV button (right on md+, stacked on phones) -->
-    <div class="col-12 col-md-6 px-4 d-flex flex-column justify-content-center align-items-center">
-      <p class="mb-4 abouttext">
-        I work with a vivid palette, light-responsive materials, and layered media, creating work that ranges from conceptual fine art and immersive installations to interactive web design.
-      </p>
-      <p class="abouttext">I am passionate about exploring the intersection of art and technology, and I strive to create experiences that engage and inspire audiences.</p>
-      <p class="abouttext">To learn more about my work click on the buttons below. You can reach out via the contact page if you'd like to collaborate or learn more.</p>
-      <a class="aboutlink" href="{% static 'files/CV.pdf' %}" target="_blank" rel="noopener">C.V</a>
-       <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
-      <a class="aboutlink" href="{% url 'portfolio:art' %}">Art</a>
-    </div>
-    <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
-      <a class="aboutlink" href="{% url 'portfolio:installations' %}">Installations</a>
-    </div>
-    <!-- Third row: n -->
-    <div class="col-12 col-md-4 mt-3 d-flex justify-content-center align-items-center">
-      <a class="aboutlink" href="{% url 'portfolio:digital' %}">Digital</a>
-    </div>
+  <!-- overlay -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="overlay-backdrop" id="overlayBackdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" id="overlayClose" type="button">x</button>
+      <div id="overlayContent"></div>
     </div>
   </div>
-</div>  
+</div>
 
+
+
+  <button class="portrait-blob" id="portraitBlob" type="button" aria-label="Portrait blob"></button>
+  <div class="about-words" id="aboutWords"></div>
+
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="overlay-backdrop" id="overlayBackdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" id="overlayClose" type="button">x</button>
+      <div id="overlayContent"></div>
+    </div>
+  </div>
+</div>
 {% endblock %}
+
+{% block extra_scripts %}
+<script type="module" src="{% static 'js/about/index.js' %}?v=999"></script>
+{% endblock %}
+
