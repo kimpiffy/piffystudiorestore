@@ -1,11 +1,6 @@
 // static/js/digital.js
 // Desktop/tablet: blobs drift forever + edge ripple.
-// Mobile: SINGLE-SLIDE carousel (one blob visible at a time) + edge ripple + wrap.
-// This avoids all flex/track width/max-width fights on small screens.
-//
-// IMPORTANT CHANGE: we FORCE transforms via style.setProperty(..., 'important')
-// so even if your CSS still has `transform: none !important` on mobile blobs,
-// arrow clicks will still move slides.
+// Mobile: FOOLPROOF carousel = render ONE blob at a time + arrows wrap.
 
 document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
@@ -35,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const overlayContent = $("overlayContent");
   const hasOverlay = !!(overlay && overlayBackdrop && overlayClose && overlayContent);
 
-  // ensure initial visual state: no orange class, plain lowercase x
+  // your close button styling preference
   if (overlayClose) {
     overlayClose.classList.remove("orange");
     overlayClose.textContent = "x";
@@ -63,25 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const isMobile = () => mqMobile.matches;
   const isTablet = () => mqTablet.matches;
 
-  // Paging state
-  const DESKTOP_PAGE_SIZE = 7; // change to 8 later
-  let setIndex = 0;            // desktop pages
-  let mobileIndex = 0;         // mobile slide index
+  const DESKTOP_PAGE_SIZE = 7;
+  let setIndex = 0;       // desktop pages
+  let mobileIndex = 0;    // mobile single-blob index
 
   function mod(n, m) {
     return ((n % m) + m) % m;
-  }
-
-  // FORCE style helpers (beats CSS !important)
-  function setImportant(el, prop, value) {
-    if (!el) return;
-    el.style.setProperty(prop, value, "important");
-  }
-  function setTransformImportant(el, value) {
-    setImportant(el, "transform", value);
-  }
-  function setTransitionImportant(el, value) {
-    setImportant(el, "transition", value);
   }
 
   // ----------------------------
@@ -206,7 +188,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return pointsToBezier(smooth);
   }
 
+  // UPDATED fallback for dark background
   function makeWarpSVG({ uid, cover, title, initialD }) {
+    const hasCover = !!(cover && String(cover).trim().length);
+
     return `
       <svg class="blob-svg" viewBox="0 0 100 100" role="img" aria-label="${escapeHtml(title)}" data-uid="${uid}">
         <defs>
@@ -216,13 +201,15 @@ document.addEventListener("DOMContentLoaded", () => {
         </defs>
 
         <g clip-path="url(#${uid}_clip)">
-          ${cover
-            ? `<image href="${cover}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"></image>`
-            : `<rect x="0" y="0" width="100" height="100" fill="rgba(0,0,0,0.08)"></rect>`
+          ${hasCover
+            ? `<image href="${escapeHtml(cover)}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"></image>`
+            : `<rect x="0" y="0" width="100" height="100" fill="rgba(255,255,255,0.12)"></rect>`
           }
         </g>
 
-        <path id="${uid}_outline" d="${initialD}" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="1.0"></path>
+        ${!hasCover ? `<text x="50" y="54" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="7" font-family="wakaba">${escapeHtml(title)}</text>` : ""}
+
+        <path id="${uid}_outline" d="${initialD}" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.2"></path>
       </svg>
     `;
   }
@@ -463,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       ${stack.length ? `
         <div style="display:flex; justify-content: center; gap:8px; flex-wrap:wrap; margin: 5px 0 5px 0;">
-          ${stack.map(s => `<span style="padding:6px 10px; border:1px solid #f2f2f2; border-radius:999px; font-size: 13px;">${escapeHtml(s)}</span>`).join("")}
+          ${stack.map(s => `<span style="padding:6px 10px; border:1px solid #141515; border-radius:999px; font-size: 13px;">${escapeHtml(s)}</span>`).join("")}
         </div>
       ` : ""}
 
@@ -475,7 +462,6 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
 
-    // ensure close button default state
     const closeBtn = document.getElementById("overlayClose");
     if (closeBtn) {
       closeBtn.classList.remove("orange");
@@ -501,99 +487,71 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ----------------------------
-  // Visibility rules for arrows
-  // ----------------------------
-  function updateArrowVisibility() {
-    if (!navArrows) return;
-    if (isMobile()) {
-      navArrows.style.display = "flex";
-    } else {
-      navArrows.style.display = (projects.length > DESKTOP_PAGE_SIZE) ? "flex" : "none";
-    }
-  }
-
-  // ----------------------------
-  // Mobile single-slide carousel (bulletproof + CSS-override-proof)
+  // Mobile single-blob renderer (truly foolproof)
   // ----------------------------
   const MOBILE_TRANSITION = "transform 420ms cubic-bezier(.4,0,.2,1)";
 
-  function renderMobileSlides() {
+  function renderMobileOne(index, dir) {
+    // dir: +1 next, -1 prev, 0 initial
     stopMoveLoop();
     stopEdgeLoop();
 
+    mobileIndex = mod(index, projects.length);
+
+    const p = projects[mobileIndex];
+    const cover = coverUrl(p);
+    const uid = `b_${String(p.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random()*1e9)}`;
+    const model = createBlobModel(p.id);
+    const initialD = computePathFromModel(model, performance.now() * 0.001);
+
+    // Build 1 blob only
     blobLayer.style.position = "absolute";
     blobLayer.style.inset = "0";
     blobLayer.style.overflow = "hidden";
 
-    blobLayer.innerHTML = projects.map((p, i) => {
-      const cover = coverUrl(p);
-      const uid = `b_${String(p.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random()*1e9)}`;
-      const model = createBlobModel(p.id);
-      const initialD = computePathFromModel(model, performance.now() * 0.001);
+    blobLayer.innerHTML = `
+      <button class="blob"
+        type="button"
+        data-id="${escapeHtml(p.id)}"
+        style="
+          position:absolute;
+          inset:0;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          will-change: transform;
+        "
+      >
+        ${makeWarpSVG({ uid, cover, title: p.title, initialD })}
+      </button>
+    `;
 
-      return `
-        <button class="blob"
-          type="button"
-          data-id="${escapeHtml(p.id)}"
-          data-index="${i}"
-          style="
-            position:absolute;
-            inset:0;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            will-change: transform;
-          "
-        >
-          ${makeWarpSVG({ uid, cover, title: p.title, initialD })}
-        </button>
-      `;
-    }).join("");
+    const btn = blobLayer.querySelector(".blob");
+    if (btn) {
+      // click opens overlay
+      btn.addEventListener("click", () => openOverlay(p));
 
-    // bind click → overlay
-    Array.from(blobLayer.querySelectorAll(".blob")).forEach(btn => {
-      const id = btn.getAttribute("data-id");
-      btn.addEventListener("click", () => {
-        const proj = projects.find(x => x.id === id);
-        if (proj) openOverlay(proj);
-      });
-    });
+      // animate in from the correct side
+      setTransitionImportant(btn, MOBILE_TRANSITION);
 
-    // FORCE initial positions + transition with !important
-    const blobs = Array.from(blobLayer.querySelectorAll(".blob"));
-    blobs.forEach((b, i) => {
-      setTransitionImportant(b, MOBILE_TRANSITION);
-      if (i === mobileIndex) setTransformImportant(b, "translate3d(0,0,0)");
-      else setTransformImportant(b, "translate3d(100vw,0,0)");
-    });
+      if (dir === 0) {
+        setTransformImportant(btn, "translate3d(0,0,0)");
+      } else {
+        // start offscreen
+        setTransformImportant(btn, `translate3d(${dir > 0 ? "100vw" : "-100vw"},0,0)`);
+        // next frame move to center
+        requestAnimationFrame(() => {
+          setTransformImportant(btn, "translate3d(0,0,0)");
+        });
+      }
+    }
 
     rebuildBlobVisualsFromDOM();
     startEdgeLoop();
   }
 
-  function updateMobileSlides(dir) {
-    const blobs = Array.from(blobLayer.querySelectorAll(".blob"));
-    const count = blobs.length;
-    if (!count) return;
-
-    const prev = mobileIndex;
-    mobileIndex = mod(mobileIndex + dir, count);
-
-    blobs.forEach((b, i) => {
-      setTransitionImportant(b, MOBILE_TRANSITION);
-
-      if (i === mobileIndex) {
-        setTransformImportant(b, "translate3d(0,0,0)");
-      } else if (i === prev) {
-        setTransformImportant(b, `translate3d(${dir > 0 ? "-100vw" : "100vw"},0,0)`);
-      } else {
-        setTransformImportant(b, `translate3d(${dir > 0 ? "100vw" : "-100vw"},0,0)`);
-      }
-    });
-  }
-
   // ----------------------------
-  // Desktop paging
+  // Desktop renderer (unchanged)
   // ----------------------------
   function perSet() {
     if (isTablet()) return Math.min(5, projects.length);
@@ -611,9 +569,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return slice;
   }
 
-  // ----------------------------
-  // Render desktop/tablet blobs
-  // ----------------------------
   function renderDesktopBlobs() {
     stopEdgeLoop();
     stopMoveLoop();
@@ -699,7 +654,6 @@ document.addEventListener("DOMContentLoaded", () => {
       b.addEventListener("touchcancel", rel, { passive:true });
     });
 
-    // initial spread
     particles.forEach(p => {
       p.btn.style.transform = `translate(${p.x - p.btn.offsetWidth/2}px, ${p.y - p.btn.offsetHeight/2}px)`;
     });
@@ -708,36 +662,45 @@ document.addEventListener("DOMContentLoaded", () => {
     startMoveLoop(blobLayer);
   }
 
-  function renderAll() {
-    updateArrowVisibility();
+  // ----------------------------
+  // Arrow visibility
+  // ----------------------------
+  function updateArrowVisibility() {
+    if (!navArrows) return;
+    if (isMobile()) navArrows.style.display = "flex";
+    else navArrows.style.display = (projects.length > DESKTOP_PAGE_SIZE) ? "flex" : "none";
+  }
 
+  function renderAll(initialDir = 0) {
+    updateArrowVisibility();
     if (isMobile()) {
-      mobileIndex = mod(mobileIndex, projects.length);
-      renderMobileSlides();
+      renderMobileOne(mobileIndex, initialDir);
     } else {
       renderDesktopBlobs();
     }
   }
 
   // ----------------------------
-  // Arrow actions
+  // Arrows
   // ----------------------------
   prevBtn.addEventListener("click", () => {
     if (isMobile()) {
-      updateMobileSlides(-1);
+      mobileIndex = mod(mobileIndex - 1, projects.length);
+      renderAll(-1);
       return;
     }
     setIndex = Math.max(0, setIndex - 1);
-    renderAll();
+    renderAll(0);
   });
 
   nextBtn.addEventListener("click", () => {
     if (isMobile()) {
-      updateMobileSlides(1);
+      mobileIndex = mod(mobileIndex + 1, projects.length);
+      renderAll(1);
       return;
     }
     setIndex += 1;
-    renderAll();
+    renderAll(0);
   });
 
   // Swipe on mobile
@@ -774,15 +737,12 @@ document.addEventListener("DOMContentLoaded", () => {
   mqMobile.addEventListener?.("change", () => {
     stopMoveLoop();
     mobileIndex = 0;
-    renderAll();
+    renderAll(0);
   });
-  mqTablet.addEventListener?.("change", renderAll);
+  mqTablet.addEventListener?.("change", () => renderAll(0));
 
-  window.addEventListener("resize", () => {
-    // on mobile, re-render to keep 100vw transforms consistent
-    renderAll();
-  });
+  window.addEventListener("resize", () => renderAll(0));
 
   // Boot
-  renderAll();
+  renderAll(0);
 });

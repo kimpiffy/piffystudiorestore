@@ -27,8 +27,8 @@ body.digital-page video{
 /* theme vars (override main.css vars) */
 body.digital-page{
   --background: #141515;
-  --lilac: #3D2BFF;
-  --orange: #b1ff2b;
+  --lilac: #e0e446;
+  --orange: #b099d2;
   background: var(--background);
 }
 
@@ -153,9 +153,9 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
   max-height: calc(100vh - 24px);
   overflow:auto;
   border-radius: 34px;
-  background: #3d2bff;
+  background: var(--orange);
   padding: 18px;
-  color: #f2f2f2;
+  color: #141515;
 }
 
 
@@ -199,7 +199,7 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
   cursor: pointer;
 
   /* typography / default state */
-  color: #f2f2f2;                               /* inactive colour */
+  color: #141515;                            /* inactive colour */
   font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 2rem;
   line-height: 1;
@@ -213,7 +213,7 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
 .overlay-panel .overlay-close:focus,
 .overlay-panel .overlay-close:active,
 .overlay-panel .overlay-close.orange {
-  color: var(--orange);
+  color: var(--lilac);
   text-transform: uppercase;                    /* become 'X' */
   outline: none;
 }
@@ -242,15 +242,15 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
 }
 
 /* color classes (use your CSS variables) */
-.project-cta.lilac{ color: #f2f2f2; }
-.project-cta.orange{ color:  var(--orange); }
+.project-cta.lilac{ color: #141515; }
+.project-cta.orange{ color:  var(--lilac); }
 
 /* hover / focus / active: uppercase and orange */
 .project-cta:hover,
 .project-cta:focus,
 .project-cta:active{
   text-transform: uppercase;
-  color:  var(--orange);
+  color:  var(--lilac);
   outline: none;
 }
 
