@@ -1,0 +1,181 @@
+// static/js/about/orbit.desktop.js
+import { escapeHtml } from "./utils.js";
+import { BIO_TEXT, NAV_ORDER } from "./config.js";
+
+export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
+  let raf = null;
+  let paused = false;
+  let theta = 0;
+  let last = performance.now();
+
+  let collapsing = false;
+  let collapseT = 0; // 0..1
+  let afterCollapse = null;
+
+  // Ensure we use the existing HTML buttons, ordered as desired
+  const nodes = [...wordsLayer.querySelectorAll(".about-word")];
+  const byKey = new Map(nodes.map((el) => [el.dataset.key, el]));
+  const ordered = NAV_ORDER.map((k) => byKey.get(k)).filter(Boolean);
+
+  const tilts = {
+    bio: -12,
+    art: 14,
+    digital: -6,
+    people: 8,
+  };
+
+  function openBio() {
+    const contactHref = routes?.contact || "/contact/";
+    const cvHref = routes?.cv || "#";
+
+    overlay.open(
+      `
+      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 10px 0; text-transform: lowercase; text-align:center;">bio</h2>
+      <p style="opacity:.85; max-width: 62ch; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
+        ${escapeHtml(BIO_TEXT)}
+      </p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top: 14px;">
+        <a class="btn project-cta lilac"
+           href="${escapeHtml(contactHref)}"
+           style="font-family: wakaba; font-size: 2rem; text-decoration:none;">
+          contact
+        </a>
+        ${
+          cvHref && cvHref !== "#"
+            ? `
+          <a class="btn project-cta lilac"
+             href="${escapeHtml(cvHref)}"
+             target="_blank" rel="noopener noreferrer"
+             style="font-family: wakaba; font-size: 2rem; text-decoration:none;">
+            cv
+          </a>`
+            : ""
+        }
+      </div>
+    `,
+      { reason: "bio" }
+    );
+  }
+
+  function navigateTo(key) {
+    const href =
+      key === "art"
+        ? routes?.art
+        : key === "digital"
+        ? routes?.digital
+        : key === "people"
+        ? routes?.people
+        : null;
+
+    if (href) window.location.assign(href);
+  }
+
+  function startCollapse(action) {
+    collapsing = true;
+    collapseT = 0;
+    paused = true;
+    afterCollapse = action;
+
+    // run action after visual collapse
+    window.setTimeout(() => {
+      collapsing = false;
+      collapseT = 0;
+      const fn = afterCollapse;
+      afterCollapse = null;
+      fn?.();
+      paused = false;
+    }, 260);
+  }
+
+  function onClick(key) {
+    startCollapse(() => {
+      if (key === "bio") openBio();
+      else navigateTo(key);
+    });
+  }
+
+  function pauseAll(on) {
+    paused = on;
+  }
+
+  ordered.forEach((el) => {
+    el.addEventListener("mouseenter", () => pauseAll(true));
+    el.addEventListener("mouseleave", () => pauseAll(false));
+    el.addEventListener("focus", () => pauseAll(true));
+    el.addEventListener("blur", () => pauseAll(false));
+    el.addEventListener("click", () => onClick(el.dataset.key));
+  });
+
+  function tick(now) {
+    const dt = now - last;
+    last = now;
+
+    if (!paused) theta += dt * 0.00009; // slow and classy
+    if (collapsing) collapseT = Math.min(1, collapseT + dt / 260);
+
+    const rect = stage.getBoundingClientRect();
+    const blobEl = document.getElementById("portraitBlob");
+    const blobRect = blobEl ? blobEl.getBoundingClientRect() : null;
+
+    // Base orbit distance scales off the actual blob size (best!)
+    const blobSize = blobRect
+      ? Math.min(blobRect.width, blobRect.height)
+      : Math.min(rect.width, rect.height) * 0.6;
+
+    // ellipse radii (imperfect circle) — tuned to sit nicely outside the blob
+    const baseRx = blobSize * 0.78;
+    const baseRy = blobSize * 0.62;
+
+    const shrink = collapsing ? 1 - collapseT : 1;
+    const rx = baseRx * shrink;
+    const ry = baseRy * shrink;
+
+    ordered.forEach((el, i) => {
+      const key = el.dataset.key;
+      const phase = theta + Math.PI * 2 * (i / ordered.length);
+
+      // wobble (per-item personality)
+      const wobX =
+        Math.sin(phase * (6.6 + i * 0.7)) * 18 +
+        Math.sin(phase * (12.4 + i * 0.9)) * 7;
+      const wobY =
+        Math.cos(phase * (8.1 + i * 0.8)) * 12 +
+        Math.cos(phase * (11.2 + i * 0.6)) * 6;
+
+      // subtle per-word radial bias (helps top-left crowding)
+      const bias = key === "bio" ? 1.06 : key === "people" ? 1.05 : 1;
+
+      const x = Math.cos(phase) * rx * bias + wobX * shrink;
+      const y = Math.sin(phase) * ry * bias + wobY * shrink;
+
+      const tilt = tilts[key] ?? 0;
+
+      // During collapse: fade/blur inward
+      if (collapsing) {
+        el.style.opacity = String(1 - collapseT);
+        el.style.filter = `blur(${(8 * collapseT).toFixed(2)}px)`;
+      } else {
+        el.style.opacity = "1";
+        el.style.filter = "url(#wobbleFilter)";
+      }
+
+      el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(
+        2
+      )}px, 0) rotate(${tilt}deg)`;
+    });
+
+    raf = requestAnimationFrame(tick);
+  }
+
+  function mount() {
+    last = performance.now();
+    raf = requestAnimationFrame(tick);
+  }
+
+  function destroy() {
+    if (raf) cancelAnimationFrame(raf);
+    raf = null;
+  }
+
+  return { mount, destroy };
+}

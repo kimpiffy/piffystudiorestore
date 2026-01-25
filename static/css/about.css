@@ -4,22 +4,23 @@
   --cream: #f6f2df;
   --ink: #141515;
 
+  /* Define this because your previous CSS referenced it but never set it */
+  --lilac: #b59cff;
+
   /* MUST match your navbar height */
   --site-header-h: 92px;
 
-  --word-size: clamp(2.2rem, 5.2vw, 4.2rem);
+  /* Word sizing */
+  --word-size: clamp(2.4rem, 5.8vw, 5.2rem);
 
-  --bio-idle: #141515;
-  --bio-hot:  #e0e446;
-
-  --art-idle: #141515;
-  --art-hot:  #e01f5a;
-
-  --digital-idle:#141515;
+  /* Section colours */
+  --bio-hot:     #e0e446;
+  --art-hot:     #e01f5a;
   --digital-hot: #cc2bb0;
+  --people-hot:  #2cb7a5;
 
-  --community-idle:#141515;
-  --community-hot: #2cb7a5;
+  /* Orbit tuning (CSS only — JS will do the motion) */
+  --orbit-pad: 12px;
 }
 
 body.about-page{
@@ -33,7 +34,7 @@ body.about-page{
 /* Make sure header is always above stage */
 body.about-page header{
   position: relative;
-  z-index: 100000;
+  z-index: 100000 !important;
 }
 
 /* Kill random injected UI on About only */
@@ -44,7 +45,7 @@ body.about-page #randomActsButton{
   display:none !important;
 }
 
-/* Stage: IMPORTANT — lives below header so nav stays clickable */
+/* Stage: sits below header so nav stays clickable */
 body.about-page .about-stage{
   position: fixed;
   left: 0;
@@ -52,20 +53,31 @@ body.about-page .about-stage{
   top: var(--site-header-h);
   height: calc(100vh - var(--site-header-h));
   overflow: hidden;
-  z-index: 1;
+  z-index: 1 !important;
 }
 
-/* Portrait blob */
+/* =========================================
+   Portrait blob (centered, does NOT roam)
+   ========================================= */
+
 body.about-page .portrait-blob{
   position:absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(58vmin, 560px);
+  height: min(58vmin, 560px);
+
   border:0;
   background: transparent;
   padding:0;
   cursor: pointer;
-  z-index: 2;
+
   outline: none;
   box-shadow: none !important;
   filter: none !important;
+
+  z-index: 5 !important;
 }
 
 body.about-page .portrait-blob .blob-svg{
@@ -82,9 +94,26 @@ body.about-page .portrait-blob .blob-outline{
   opacity: 0 !important;
 }
 
-/* Words */
+/* =========================================
+   Orbit words layer (desktop/tablet)
+   JS will position each .about-word via transforms
+   ========================================= */
+
+body.about-page .orbit{
+  position:absolute;
+  inset: 0;
+  pointer-events: none; /* words re-enable */
+  z-index: 20 !important;
+}
+
 body.about-page .about-word{
   position:absolute;
+  left: 50%;
+  top: 50%;
+
+  /* JS will override transform with translate3d(x,y,0) rotate(...) */
+  transform: translate3d(0,0,0);
+
   font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   font-size: var(--word-size);
   letter-spacing: 0.02em;
@@ -99,134 +128,143 @@ body.about-page .about-word{
 
   cursor: pointer;
   user-select: none;
+  pointer-events: auto;
   will-change: transform;
 
+  /* subtle wobble on text */
   filter: url(#wobbleFilter);
-  transition: color 140ms ease, transform 140ms ease, text-transform 120ms ease;
+
+  transition:
+    color 140ms ease,
+    transform 160ms ease,
+    text-transform 120ms ease,
+    letter-spacing 160ms ease;
 }
 
 body.about-page .about-word:hover,
 body.about-page .about-word:focus{
   text-transform: uppercase;
-  transform: translateY(-2px);
+  letter-spacing: 0.03em;
 }
 
-/* Colour mapping */
-body.about-page .about-word[data-key="bio"]{ color: var(--lilac); }
+/* default colour */
+body.about-page .about-word{ color: var(--ink); }
+
+/* section hover colours */
 body.about-page .about-word[data-key="bio"]:hover,
 body.about-page .about-word[data-key="bio"]:focus{ color: var(--bio-hot); }
 
-body.about-page .about-word[data-key="art"]{ color: var(--lilac); }
 body.about-page .about-word[data-key="art"]:hover,
 body.about-page .about-word[data-key="art"]:focus{ color: var(--art-hot); }
 
-body.about-page .about-word[data-key="digital"]{ color: var(--lilac); }
 body.about-page .about-word[data-key="digital"]:hover,
 body.about-page .about-word[data-key="digital"]:focus{ color: var(--digital-hot); }
 
-body.about-page .about-word[data-key="community"]{ color: var(--lilac); }
-body.about-page .about-word[data-key="community"]:hover,
-body.about-page .about-word[data-key="community"]:focus{ color: var(--community-hot); }
+body.about-page .about-word[data-key="people"]:hover,
+body.about-page .about-word[data-key="people"]:focus{ color: var(--people-hot); }
 
-/* Zones (containers) */
-body.about-page .zone{
-  position: absolute;
-  pointer-events: none;
-  z-index: 3;
-}
-body.about-page .zone .about-word{
-  position: absolute;
-  pointer-events: auto;
-}
+/* =========================================
+   Mobile carousel (only shown on small screens)
+   ========================================= */
 
-/* ===== Desktop/tablet layout ===== */
-@media (min-width: 768px){
-  /* JS will move it freely, so set origin at top-left */
-  body.about-page .portrait-blob{
-    left: 0;
-    top: 0;
-    transform: none;
-    width: min(86vmin, 780px);
-    height: min(86vmin, 780px);
-  }
-
-  body.about-page .bio-zone{
-    left: 18px;
-    top: 18px;
-    width: min(520px, 42vw);
-    height: min(220px, 26vh);
-  }
-
-  body.about-page .links-zone{
-    right: 18px;
-    top: 18px;
-    width: min(520px, 34vw);
-    height: calc(100% - 36px); /* 100% of stage height */
-  }
+body.about-page .mobile-carousel{
+  display: none;
+  position:absolute;
+  left: 50%;
+  top: calc(50% + min(58vmin, 560px)/2 + 18px); /* sits just below blob */
+  transform: translateX(-50%);
+  align-items: center;
+  gap: 12px;
+  z-index: 30 !important;
+  user-select: none;
 }
 
-/* ===== Mobile layout: one column / three rows ===== */
-@media (max-width: 767px){
-  /* Blob stays centered in the middle band */
-  body.about-page .portrait-blob{
-    left: 50%;
-    top: 44%;
-    width: min(78vmin, 520px);
-    height: min(78vmin, 520px);
-    transform: translate(-50%, -50%);
-  }
-
-  body.about-page .bio-zone{
-    left: 12px;
-    top: 12px;
-    width: calc(100% - 24px);
-    height: 20%;
-  }
-
-  body.about-page .links-zone{
-    left: 12px;
-    bottom: 12px;
-    width: calc(100% - 24px);
-    height: 26%;
-    top: auto;
-  }
-
-  body.about-page .about-word{
-    font-size: clamp(2rem, 8.5vw, 3.2rem);
-  }
+body.about-page .mobile-carousel .arrow{
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: clamp(2.0rem, 8vw, 3.0rem);
+  line-height: 1;
+  padding: 6px 10px;
+  color: var(--ink);
+  filter: url(#wobbleFilter);
+  transition: transform 150ms ease;
 }
 
-/* Overlay (kept stable) */
+body.about-page .mobile-carousel .arrow:active{
+  transform: translateY(1px);
+}
+
+body.about-page .mobile-carousel .arc-svg{
+  width: min(78vw, 520px);
+  height: 90px;
+  overflow: visible;
+}
+
+body.about-page .mobile-carousel .arc-text{
+  font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: 44px;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  fill: var(--ink);
+  filter: url(#wobbleFilter);
+}
+
+/* We’ll animate this in JS later; keep transitions ready */
+body.about-page #mobileArcText{
+  transition: opacity 160ms ease, letter-spacing 160ms ease;
+}
+
+/* =========================================
+   Overlay (kept stable)
+   ========================================= */
+
 body.about-page .overlay{
   position: fixed;
   inset: 0;
   display: none;
   z-index: 99999;
 }
-body.about-page .overlay.is-open{ display: block; }
+
+body.about-page .overlay.is-open{
+  display: block;
+}
+
 body.about-page .overlay-backdrop{
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.45);
 }
+
 body.about-page .overlay-panel{
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+
   width: min(860px, calc(100vw - 24px));
   max-height: calc(100vh - 24px);
   overflow: auto;
+
   border-radius: 34px;
   background: #fffaf0;
   padding: 18px;
 }
-body.about-page .overlay-close{ display:none; }
-body.about-page .overlay.is-open .overlay-close{ display:flex; }
+
+body.about-page .overlay-close{
+  display: none;
+}
+
+body.about-page .overlay.is-open .overlay-close{
+  display: flex;
+}
+
 body.about-page .overlay-panel .overlay-close{
   position: sticky;
   top: 8px;
   margin-left: auto;
+
   background: transparent;
   border: 0;
   width: 30px;
@@ -234,16 +272,50 @@ body.about-page .overlay-panel .overlay-close{
   cursor: pointer;
 }
 
-/* Make sure zones sit ABOVE the portrait button so words are always clickable */
-body.about-page .bio-zone{ z-index: 10 !important; }
-body.about-page .links-zone{ z-index: 10 !important; }
+/* =========================================
+   Responsive rules
+   ========================================= */
 
-/* Portrait stays below */
-body.about-page .portrait-blob{ z-index: 5 !important; }
+/* Desktop/tablet: orbit visible */
+@media (min-width: 768px){
+  body.about-page .portrait-blob{
+    width: min(58vmin, 640px);
+    height: min(58vmin, 640px);
+  }
 
-/* Words always on top */
-body.about-page .about-word{ z-index: 20 !important; }
+  body.about-page .orbit{
+    display: block;
+  }
 
-/* Prevent the stage from blocking the header (nav links) */
-body.about-page header{ position: relative; z-index: 100000 !important; }
-body.about-page .about-stage{ z-index: 1 !important; }
+  body.about-page .mobile-carousel{
+    display: none;
+  }
+}
+
+/* Mobile: orbit hidden, carousel shown */
+@media (max-width: 767px){
+  body.about-page .portrait-blob{
+    width: min(98vmin, 980px);
+    height: min(98vmin, 980px);
+    transform: translateY(-4vh);
+  }
+
+  body.about-page .orbit{
+    display: none;
+  }
+
+  body.about-page .mobile-carousel{
+    display: flex;
+  }
+
+  body.about-page .mobile-carousel .arc-text{
+    font-size: 52px;
+  }
+}
+/* Tablet / iPad: make blob feel hero-sized */
+@media (min-width: 768px) and (max-width: 1180px){
+  body.about-page .portrait-blob{
+    transform: translateY(2vh) scale(1.18);
+    transform-origin: center center;
+  }
+}

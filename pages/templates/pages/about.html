@@ -8,35 +8,65 @@
 {% endblock %}
 
 {% block content %}
-<div class="about-stage" id="aboutStage"
-  data-url-art="{% url 'portfolio:art' %}"
-  data-url-digital="{% url 'portfolio:digital' %}"
-  data-url-community="{% url 'portfolio:installations' %}"
-  data-url-cv="{% static 'kimpiffycv.pdf' %}"
+<div
+  class="about-stage"
+  id="aboutStage"
+ data-url-art="{% url 'portfolio:art' %}"
+data-url-digital="{% url 'portfolio:digital' %}"
+data-url-people="{% url 'portfolio:installations' %}"
+data-url-contact="{% url 'pages:contact' %}"
+data-url-cv="{% static 'kimpiffycv.pdf' %}"
 >
-  <div class="zone bio-zone" id="bioZone"></div>
-  <button class="portrait-blob" id="portraitBlob" type="button"></button>
-  <div class="zone links-zone" id="linksZone"></div>
+  <!-- Center blob (stays fixed in middle of viewport) -->
+  <button
+    class="portrait-blob"
+    id="portraitBlob"
+    type="button"
+    aria-label="Portrait blob"
+  ></button>
 
-  <!-- overlay -->
-  <div class="overlay" id="overlay" aria-hidden="true">
-    <div class="overlay-backdrop" id="overlayBackdrop"></div>
-    <div class="overlay-panel">
-      <button class="overlay-close" id="overlayClose" type="button">x</button>
-      <div id="overlayContent"></div>
-    </div>
+  <!-- Desktop orbit words layer (JS positions these) -->
+  <nav class="orbit" id="aboutWords" aria-label="About navigation">
+    <!-- JS can replace/confirm these, but having them in HTML helps SEO + no-JS fallback -->
+    <button class="about-word" type="button" data-key="bio">bio</button>
+    <button class="about-word" type="button" data-key="people">people</button>
+    <button class="about-word" type="button" data-key="art">art</button>
+    <button class="about-word" type="button" data-key="digital">digital</button>
+  </nav>
+
+  <!-- Mobile carousel (one word at a time on curved arc) -->
+  <div class="mobile-carousel" id="mobileCarousel" aria-label="About navigation mobile">
+    <button class="arrow arrow-left" id="mobilePrev" type="button" aria-label="Previous section">
+      ←
+    </button>
+
+    <svg class="arc-svg" viewBox="0 0 300 90" aria-hidden="true">
+      <path id="mobileArcPath" d="M 30 70 Q 150 10 270 70" fill="none"></path>
+      <text class="arc-text">
+        <textPath
+          href="#mobileArcPath"
+          startOffset="50%"
+          text-anchor="middle"
+          id="mobileArcText"
+        >
+          bio
+        </textPath>
+      </text>
+    </svg>
+
+    <button class="arrow arrow-right" id="mobileNext" type="button" aria-label="Next section">
+      →
+    </button>
   </div>
-</div>
 
-
-
-  <button class="portrait-blob" id="portraitBlob" type="button" aria-label="Portrait blob"></button>
-  <div class="about-words" id="aboutWords"></div>
-
+  <!-- Overlay (kept; we’ll decide what opens here in JS) -->
   <div class="overlay" id="overlay" aria-hidden="true">
     <div class="overlay-backdrop" id="overlayBackdrop"></div>
-    <div class="overlay-panel">
-      <button class="overlay-close" id="overlayClose" type="button">x</button>
+
+    <div class="overlay-panel" role="dialog" aria-modal="true" aria-label="About details panel">
+      <button class="overlay-close" id="overlayClose" type="button" aria-label="Close overlay">
+        x
+      </button>
       <div id="overlayContent"></div>
     </div>
   </div>
@@ -46,4 +76,3 @@
 {% block extra_scripts %}
 <script type="module" src="{% static 'js/about/index.js' %}?v=999"></script>
 {% endblock %}
-

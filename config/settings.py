@@ -18,16 +18,20 @@ load_dotenv(BASE_DIR / ".env.local", override=True)
 # Retrieve the secret key from .env for safety
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') or 'unsafe-default-for-dev'
 
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG", "false").strip().lower() in ("1", "true", "yes", "on")
+
+if DEBUG:
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+else:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
-raw_allowed = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
+raw_allowed = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,.github.dev,.app.github.dev")
 ALLOWED_HOSTS = [h.strip() for h in raw_allowed.split(",") if h.strip()]
 
-# ensure render host is present (safe if you forget to update .env)
+# ensure render host is present
 if "piffystudio.onrender.com" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append("piffystudio.onrender.com")
-
 
 # -------------------------------
 # STRIPE CONFIGURATION
