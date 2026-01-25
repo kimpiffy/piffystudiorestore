@@ -24,6 +24,8 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
     people: 8,
   };
 
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
   function openBio() {
     const contactHref = routes?.contact || "/contact/";
     const cvHref = routes?.cv || "#";
@@ -76,7 +78,6 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
     paused = true;
     afterCollapse = action;
 
-    // run action after visual collapse
     window.setTimeout(() => {
       collapsing = false;
       collapseT = 0;
@@ -110,19 +111,20 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
     const dt = now - last;
     last = now;
 
-    if (!paused) theta += dt * 0.00009; // slow and classy
+    if (!paused) theta += dt * 0.00009;
     if (collapsing) collapseT = Math.min(1, collapseT + dt / 260);
 
     const rect = stage.getBoundingClientRect();
     const blobEl = document.getElementById("portraitBlob");
     const blobRect = blobEl ? blobEl.getBoundingClientRect() : null;
 
-    // Base orbit distance scales off the actual blob size (best!)
     const blobSize = blobRect
       ? Math.min(blobRect.width, blobRect.height)
       : Math.min(rect.width, rect.height) * 0.6;
 
-    // ellipse radii (imperfect circle) — tuned to sit nicely outside the blob
+    // If you want a touch more reach (optional):
+    // const baseRx = blobSize * 0.82;
+    // const baseRy = blobSize * 0.66;
     const baseRx = blobSize * 0.78;
     const baseRy = blobSize * 0.62;
 
@@ -130,27 +132,61 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
     const rx = baseRx * shrink;
     const ry = baseRy * shrink;
 
+    const halfW = rect.width / 2;
+    const halfH = rect.height / 2;
+
+    // Larger pad because rotation + wobble can clip
+    const pad = 34;
+
     ordered.forEach((el, i) => {
       const key = el.dataset.key;
       const phase = theta + Math.PI * 2 * (i / ordered.length);
+// Top-half lift: only applies when word is on upper arc
+const topBias =
+  Math.sin(phase) < 0
+    ? Math.sin(phase) * -18   // tweak: -14 to -24 range
+    : 0;
 
-      // wobble (per-item personality)
       const wobX =
         Math.sin(phase * (6.6 + i * 0.7)) * 18 +
         Math.sin(phase * (12.4 + i * 0.9)) * 7;
+
       const wobY =
         Math.cos(phase * (8.1 + i * 0.8)) * 12 +
         Math.cos(phase * (11.2 + i * 0.6)) * 6;
 
-      // subtle per-word radial bias (helps top-left crowding)
-      const bias = key === "bio" ? 1.06 : key === "people" ? 1.05 : 1;
+      const bias = key === "bio" ? 1.08 : key === "people" ? 1.06 : 1;
 
-      const x = Math.cos(phase) * rx * bias + wobX * shrink;
-      const y = Math.sin(phase) * ry * bias + wobY * shrink;
+      // Use real on-screen size (includes font rendering + rotation effects)
+      const rEl = el.getBoundingClientRect();
+
+      // Safety multiplier because rotation can extend beyond rect between frames
+      const ew = Math.max(10, rEl.width) * 1.15;
+      const eh = Math.max(10, rEl.height) * 1.15;
+
+      // Available space from center to each edge
+      const availX = Math.max(10, halfW - ew - pad);
+      const availY = Math.max(10, halfH - eh - pad);
+const centerYOffset = rect.height * 0.05; // try 0.05, tweak 0.04–0.07
+
+      // Shrink orbit radii so this element never has a target outside viewport
+      const rxEff = Math.min(rx * bias, availX);
+      const ryEff = Math.min(ry * bias, availY);
+
+      let x = Math.cos(phase) * rxEff + wobX * shrink;
+let y =
+  Math.sin(phase) * ryEff +
+  wobY * shrink -
+  centerYOffset +
+  topBias;
+
+
+      // Final clamp (belt + braces)
+      x = clamp(x, -availX, availX);
+      y = clamp(y, -availY, availY);
 
       const tilt = tilts[key] ?? 0;
 
-      // During collapse: fade/blur inward
       if (collapsing) {
         el.style.opacity = String(1 - collapseT);
         el.style.filter = `blur(${(8 * collapseT).toFixed(2)}px)`;

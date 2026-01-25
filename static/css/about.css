@@ -1,8 +1,8 @@
 /* static/css/about.css */
 
 :root{
-  --cream: #f6f2df;
-  --ink: #141515;
+  --cream: #f6f1e6;
+  --ink: #141414;
 
   /* Define this because your previous CSS referenced it but never set it */
   --lilac: #b59cff;
@@ -15,9 +15,9 @@
 
   /* Section colours */
   --bio-hot:     #e0e446;
-  --art-hot:     #e01f5a;
-  --digital-hot: #cc2bb0;
-  --people-hot:  #2cb7a5;
+  --art-hot:     #ff6a1a;
+  --digital-hot: #ff4fb3;
+  --people-hot:  #3a8dff;
 
   /* Orbit tuning (CSS only — JS will do the motion) */
   --orbit-pad: 12px;
@@ -26,8 +26,8 @@
 body.about-page{
   margin:0;
   min-height:100vh;
-  background: var(--cream);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--cream);
   overflow:hidden;
 }
 
@@ -52,7 +52,7 @@ body.about-page .about-stage{
   right: 0;
   top: var(--site-header-h);
   height: calc(100vh - var(--site-header-h));
-  overflow: hidden;
+  overflow: visible;
   z-index: 1 !important;
 }
 
@@ -64,9 +64,9 @@ body.about-page .portrait-blob{
   position:absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  width: min(58vmin, 560px);
-  height: min(58vmin, 560px);
+  transform: translate(-50%, calc(-50% - 60px)); /* Added -60px offset */
+  width: min(74vmin, 760px);
+  height: min(74vmin, 760px);
 
   border:0;
   background: transparent;
@@ -148,7 +148,7 @@ body.about-page .about-word:focus{
 }
 
 /* default colour */
-body.about-page .about-word{ color: var(--ink); }
+body.about-page .about-word{ color: var(--cream); }
 
 /* section hover colours */
 body.about-page .about-word[data-key="bio"]:hover,
@@ -248,7 +248,7 @@ body.about-page .overlay-panel{
   overflow: auto;
 
   border-radius: 34px;
-  background: #fffaf0;
+  background: var(--cream);
   padding: 18px;
 }
 

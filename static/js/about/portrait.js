@@ -21,20 +21,34 @@ export function createPortraitController(portraitBtn) {
   }
 
   // iPad/tablet: make blob bigger + slightly higher
-  function applyLayout() {
-    const isTablet = window.matchMedia(
-      "(min-width: 768px) and (max-width: 1180px)"
-    ).matches;
+function applyLayout() {
+const w = window.innerWidth;
+const h = window.innerHeight;
 
-    // tweak these two numbers to taste
-    const scale = isTablet ? 1.35 : 1;
-    const top = isTablet ? "46%" : "50%";
+const isLandscape = w > h;
 
-    portraitBtn.style.left = "50%";
-    portraitBtn.style.top = top;
-    portraitBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
-    portraitBtn.style.transformOrigin = "center center";
-  }
+// iPad/tablet-like: coarse pointer OR no hover, plus a decent minimum size
+const isTabletLike =
+  (window.matchMedia("(pointer: coarse)").matches ||
+   window.matchMedia("(hover: none)").matches) &&
+  Math.min(w, h) >= 700;
+
+const scale =
+  isTabletLike && isLandscape ? 2.15 :
+  isTabletLike ? 1.65 :
+  1;
+
+const top =
+  isTabletLike && isLandscape ? "40%" :
+  isTabletLike ? "44%" :
+  "50%";
+
+portraitBtn.style.left = "50%";
+portraitBtn.style.top = top;
+portraitBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
+portraitBtn.style.transformOrigin = "center center";
+}
+
 
   function renderSVG() {
     const d0 = computePathFromModel(model, performance.now() * 0.001);
