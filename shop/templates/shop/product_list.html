@@ -1,22 +1,70 @@
+{# shop/templates/shop/product_list.html #}
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Shop — Piffystudio{% endblock %}
+{% block body_class %}shop-page{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/shop.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        {% for product in products %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                   {% if product.images.first %}
-    <img src="{{ product.images.first.image.url }}" class="card-img-top" alt="{{ product.title }}">
-{% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.title }}</h5>
-                        <p class="card-text">£{{ product.price }}</p>
-                        <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-primary">View Details</a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-</div>
+<main class="shop-stage">
+  <div class="shop-grid" id="shopGrid">
+    {% for product in products %}
+      {% with imgs=product.images.all|slice:"0:2" %}
+      <article class="product-card" data-blob-id="p{{ product.id }}">
+        <a class="blob" href="{% url 'shop:product_detail' slug=product.slug %}" aria-label="{{ product.title }}">
+          <svg class="blob-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+              <clipPath id="clip-p{{ product.id }}">
+                <path class="blob-path" d="M50 0 L100 50 L50 100 L0 50 Z"></path>
+              </clipPath>
+            </defs>
+
+            {% if imgs|length >= 1 %}
+              <image class="blob-img blob-img--a"
+                href="{{ imgs.0.image.url }}"
+                xlink:href="{{ imgs.0.image.url }}"
+                width="100" height="100"
+                preserveAspectRatio="xMidYMid slice"
+                clip-path="url(#clip-p{{ product.id }})"
+              />
+            {% else %}
+              <rect width="100" height="100" clip-path="url(#clip-p{{ product.id }})"></rect>
+              <text x="50" y="52" text-anchor="middle" dominant-baseline="middle">no image</text>
+            {% endif %}
+
+            {% if imgs|length >= 2 %}
+              <image class="blob-img blob-img--b"
+                href="{{ imgs.1.image.url }}"
+                xlink:href="{{ imgs.1.image.url }}"
+                width="100" height="100"
+                preserveAspectRatio="xMidYMid slice"
+                clip-path="url(#clip-p{{ product.id }})"
+              />
+            {% endif %}
+          </svg>
+        </a>
+
+        <div class="meta-row">
+          <div class="price">
+            {{ product.title }} — £{{ product.price }}
+          </div>
+
+          <button class="like" type="button" data-product="{{ product.id }}" aria-label="Like {{ product.title }}">
+            <span class="like-heart" aria-hidden="true">♡</span>
+            <span class="like-count">{{ product.likes.count }}</span>
+          </button>
+        </div>
+      </article>
+      {% endwith %}
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="module" src="{% static 'js/shop/blobs.js' %}"></script>
 {% endblock %}

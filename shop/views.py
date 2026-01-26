@@ -12,6 +12,9 @@ import stripe
 from config import settings
 from shop.forms import CategoryForm, ProductForm, VariantForm
 
+from django.views.decorators.http import require_POST
+from .models import ProductLike
+
 from .models import (
     Product,
     ProductImage,
@@ -227,7 +230,7 @@ def create_checkout_session(request):
         cart_items = cart.items.all()
     else:
         cart_items = request.session.get("cart", {})
-    
+
     if not cart_items:
         messages.error(request, "Your cart is empty.")
         return redirect("shop:cart")
@@ -262,11 +265,14 @@ def create_checkout_session(request):
     if request.user.is_authenticated:
         metadata["user_id"] = request.user.id
 
+    customer_email = (
+        request.user.email if request.user.is_authenticated else None
+    )
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
         mode="payment",
         line_items=line_items,
-        customer_email=request.user.email if request.user.is_authenticated else None,
+        customer_email=customer_email,
         billing_address_collection="required",
         shipping_address_collection={"allowed_countries": ["GB"]},
         metadata=metadata,
@@ -286,7 +292,11 @@ def create_checkout_session(request):
 @login_required
 def manage_products(request):
     products = Product.objects.all().order_by('-created_at')
-    return render(request, "shop/manage/products_list.html", {"products": products})
+    return render(
+        request,
+        "shop/manage/products_list.html",
+        {"products": products}
+    )
 
 
 @login_required
@@ -392,7 +402,11 @@ def update_image_order(request):
 @login_required
 def manage_categories(request):
     categories = Category.objects.all()
-    return render(request, "shop/manage/categories_list.html", {"categories": categories})
+    return render(
+        request,
+        "shop/manage/categories_list.html",
+        {"categories": categories}
+    )
 
 
 @login_required
@@ -544,7 +558,10 @@ def stripe_webhook(request):
             stripe_session_id=session.get("id"),
             stripe_payment_intent=session.get("payment_intent"),
 
-            shipping_name=shipping_details.get("name") or customer_details.get("name"),
+            shipping_name=(
+                shipping_details.get("name") or
+                customer_details.get("name")
+            ),
             shipping_address1=address.get("line1"),
             shipping_address2=address.get("line2"),
             shipping_city=address.get("city"),
@@ -555,7 +572,9 @@ def stripe_webhook(request):
         # CREATE ORDER ITEMS
         line_items = stripe.checkout.Session.list_line_items(session["id"])
         for li in line_items["data"]:
-            product = Product.objects.filter(title=li.get("description")).first()
+            product = Product.objects.filter(
+                title=li.get("description")
+            ).first()
             if product:
                 OrderItem.objects.create(
                     order=order,
@@ -612,3 +631,24 @@ def order_detail(request, order_id):
             return redirect("shop:order_detail", order_id=order.id)
 
     return render(request, "shop/manage/order_detail.html", {"order": order})
+
+
+@require_POST
+def toggle_like(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    anon = request.POST.get("anon_token", "")[:64]
+    if not anon:
+        return JsonResponse({"error": "missing token"}, status=400)
+
+    like, created = ProductLike.objects.get_or_create(
+        product=product,
+        anon_token=anon
+    )
+    if not created:
+        like.delete()
+        liked = False
+    else:
+        liked = True
+
+    count = ProductLike.objects.filter(product=product).count()
+    return JsonResponse({"liked": liked, "count": count})
