@@ -52,10 +52,17 @@ body.about-page .about-stage{
   left: 0;
   right: 0;
   top: var(--site-header-h);
-  height: calc(100vh - var(--site-header-h));
-  overflow: visible; /* IMPORTANT: clip blob spill, no scroll */
+
+  /* Use dynamic viewport height */
+  height: calc(100dvh - var(--site-header-h));
+
+  /* Prevent browser UI overlap */
+  padding-bottom: env(safe-area-inset-bottom);
+
+  overflow: hidden;
   z-index: 1 !important;
 }
+
 
 body.about-page .about-word .wobble-span{
   display:inline-block;
