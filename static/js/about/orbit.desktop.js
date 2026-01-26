@@ -122,9 +122,6 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
       ? Math.min(blobRect.width, blobRect.height)
       : Math.min(rect.width, rect.height) * 0.6;
 
-    // If you want a touch more reach (optional):
-    // const baseRx = blobSize * 0.82;
-    // const baseRy = blobSize * 0.66;
     const baseRx = blobSize * 0.78;
     const baseRy = blobSize * 0.62;
 
@@ -141,11 +138,20 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
     ordered.forEach((el, i) => {
       const key = el.dataset.key;
       const phase = theta + Math.PI * 2 * (i / ordered.length);
-// Top-half lift: only applies when word is on upper arc
-const topBias =
-  Math.sin(phase) < 0
-    ? Math.sin(phase) * -18   // tweak: -14 to -24 range
-    : 0;
+
+      // ------------------------------------
+      // NEW: gentle bob + sway + pulse
+      // ------------------------------------
+      const bob = Math.sin(phase * 0.6 + now * 0.0012) * 8;       // px
+      const sway = Math.sin(phase * 0.9 + now * 0.0010) * 1.8;    // deg
+      const pulse = 1 + Math.sin(phase * 0.7 + now * 0.0011) * 0.025; // scale
+      // ------------------------------------
+
+      // Top-half lift: only applies when word is on upper arc
+      const topBias =
+        Math.sin(phase) < 0
+          ? Math.sin(phase) * -18
+          : 0;
 
       const wobX =
         Math.sin(phase * (6.6 + i * 0.7)) * 18 +
@@ -167,19 +173,20 @@ const topBias =
       // Available space from center to each edge
       const availX = Math.max(10, halfW - ew - pad);
       const availY = Math.max(10, halfH - eh - pad);
-const centerYOffset = rect.height * 0.05; // try 0.05, tweak 0.04–0.07
+
+      const centerYOffset = rect.height * 0.05;
 
       // Shrink orbit radii so this element never has a target outside viewport
       const rxEff = Math.min(rx * bias, availX);
       const ryEff = Math.min(ry * bias, availY);
 
       let x = Math.cos(phase) * rxEff + wobX * shrink;
-let y =
-  Math.sin(phase) * ryEff +
-  wobY * shrink -
-  centerYOffset +
-  topBias;
-
+      let y =
+        Math.sin(phase) * ryEff +
+        wobY * shrink -
+        centerYOffset +
+        topBias +
+        bob; // NEW: add bob
 
       // Final clamp (belt + braces)
       x = clamp(x, -availX, availX);
@@ -195,9 +202,12 @@ let y =
         el.style.filter = "url(#wobbleFilter)";
       }
 
-      el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(
-        2
-      )}px, 0) rotate(${tilt}deg)`;
+      // NEW: add sway rotation + pulse scale (safe because it’s all one transform)
+      el.style.transform = `
+        translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)
+        rotate(${(tilt + sway).toFixed(2)}deg)
+        scale(${pulse.toFixed(4)})
+      `;
     });
 
     raf = requestAnimationFrame(tick);

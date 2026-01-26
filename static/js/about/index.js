@@ -4,16 +4,12 @@ import { injectWobbleFilter } from "./wobbleFilter.js";
 import { createOverlay } from "./overlay.js";
 import { createPortraitController } from "./portrait.js";
 import { createOrbitController } from "./orbit.desktop.js";
-import { createCarouselController } from "./carousel.mobile.js";
+import { createMobileStaticController } from "./orbit.mobile.static.js"; // NEW
 
 document.addEventListener("DOMContentLoaded", () => {
   const stage = $("aboutStage");
   const portraitBlob = $("portraitBlob");
   const wordsLayer = $("aboutWords");
-
-  const mobilePrev = $("mobilePrev");
-  const mobileNext = $("mobileNext");
-  const mobileArcText = $("mobileArcText");
 
   if (!stage || !portraitBlob || !wordsLayer) return;
 
@@ -46,15 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
     controller = null;
 
     if (mq.matches) {
-      if (!mobilePrev || !mobileNext || !mobileArcText) return;
-      controller = createCarouselController({
+      // MOBILE: no orbit animation, static corner tags (CSS positions them)
+      controller = createMobileStaticController({
         overlay,
         routes,
-        arcTextEl: mobileArcText,
-        prevBtn: mobilePrev,
-        nextBtn: mobileNext,
+        wordsLayer,
       });
     } else {
+      // TABLET/DESKTOP: orbit animation
       controller = createOrbitController({
         stage,
         overlay,

@@ -11,11 +11,12 @@
   --site-header-h: 92px;
 
   /* Word sizing */
-  --word-size: clamp(2.4rem, 5.8vw, 5.2rem);
+  --word-size: clamp(5rem, 5vw, 10rem);
+
 
   /* Section colours */
   --bio-hot:     #e0e446;
-  --art-hot:     #ff6a1a;
+  --art-hot:     #ff4fb3;
   --digital-hot: #ff4fb3;
   --people-hot:  #3a8dff;
 
@@ -52,22 +53,31 @@ body.about-page .about-stage{
   right: 0;
   top: var(--site-header-h);
   height: calc(100vh - var(--site-header-h));
-  overflow: visible;
+  overflow: visible; /* IMPORTANT: clip blob spill, no scroll */
   z-index: 1 !important;
 }
 
+body.about-page .about-word .wobble-span{
+  display:inline-block;
+  transform-origin:center;
+}
+body.about-page .about-word.is-wobbling .wobble-span{
+  animation: navWobbleTouch 420ms ease;
+}
+
+
 /* =========================================
    Portrait blob (centered, does NOT roam)
+   Transform is controlled by portrait.js
    ========================================= */
 
 body.about-page .portrait-blob{
   position:absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, calc(-50% - 60px)); /* Added -60px offset */
-  width: min(74vmin, 760px);
-  height: min(74vmin, 760px);
 
+  /* IMPORTANT: do not set transform here;
+     portrait.js sets translate/scale consistently */
   border:0;
   background: transparent;
   padding:0;
@@ -164,14 +174,14 @@ body.about-page .about-word[data-key="people"]:hover,
 body.about-page .about-word[data-key="people"]:focus{ color: var(--people-hot); }
 
 /* =========================================
-   Mobile carousel (only shown on small screens)
+   Mobile carousel (kept but hidden on mobile now)
    ========================================= */
 
 body.about-page .mobile-carousel{
   display: none;
   position:absolute;
   left: 50%;
-  top: calc(50% + min(58vmin, 560px)/2 + 18px); /* sits just below blob */
+  top: calc(50% + min(58vmin, 560px)/2 + 18px); /* legacy; hidden */
   transform: translateX(-50%);
   align-items: center;
   gap: 12px;
@@ -272,6 +282,17 @@ body.about-page .overlay-panel .overlay-close{
   cursor: pointer;
 }
 
+body.about-page .about-word .wobble-span{
+  display: inline-block;
+  transform-origin: center;
+}
+
+/* assumes you already have @keyframes navWobbleTouch somewhere */
+body.about-page .about-word.is-wobbling .wobble-span{
+  animation: navWobbleTouch 420ms ease;
+}
+
+
 /* =========================================
    Responsive rules
    ========================================= */
@@ -279,8 +300,8 @@ body.about-page .overlay-panel .overlay-close{
 /* Desktop/tablet: orbit visible */
 @media (min-width: 768px){
   body.about-page .portrait-blob{
-    width: min(58vmin, 640px);
-    height: min(58vmin, 640px);
+    width: min(62vmin, 760px);
+    height: min(62vmin, 760px);
   }
 
   body.about-page .orbit{
@@ -292,30 +313,113 @@ body.about-page .overlay-panel .overlay-close{
   }
 }
 
-/* Mobile: orbit hidden, carousel shown */
+/* Mobile: static tags + huge blob spill */
 @media (max-width: 767px){
-  body.about-page .portrait-blob{
-    width: min(98vmin, 980px);
-    height: min(98vmin, 980px);
-    transform: translateY(-4vh);
+
+  /* extra safety: no scrollbars */
+  html, body{
+    height: 100%;
+    overflow: hidden;
   }
 
-  body.about-page .orbit{
-    display: none;
+  body.about-page{
+    overflow: hidden;
   }
 
+  body.about-page .about-stage{
+    overflow: visible !important;
+  }
+
+  /* carousel off */
   body.about-page .mobile-carousel{
-    display: flex;
+    display: none !important;
   }
 
-  body.about-page .mobile-carousel .arc-text{
-    font-size: 52px;
+  /* orbit layer on, but words are statically placed */
+  body.about-page .orbit{
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 30 !important;
+    pointer-events: none;
+  }
+
+    body.about-page .orbit .about-word{
+    position: absolute;
+    pointer-events: auto;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+
+    font-size: 2.5rem !important;   /* phones */
+    line-height: 1;
+    padding: 8px 10px !important;
+  }
+
+  /* Slightly higher */
+  body.about-page .orbit .about-word[data-key="bio"]{
+    top: 6.5%;
+    left: 10%;
+  }
+
+  body.about-page .orbit .about-word[data-key="people"]{
+    top: 75%;
+    left: 15%;
+  }
+
+  /* Just below the blob, can overlap a touch */
+  body.about-page .orbit .about-word[data-key="digital"]{
+    top: 11.5%;
+    right: 10%;
+  }
+
+  /* Lower + a bit to the right (staggered) */
+  body.about-page .orbit .about-word[data-key="art"]{
+    top: 85%;
+    left: 75%;
+    transform: translateX(-50%) !important;
+  }
+
+
+  /* Blob should spill off sides, but stage clips it */
+  body.about-page .portrait-blob{
+    width: 150vmin;
+    height: 150vmin;
   }
 }
+
 /* Tablet / iPad: make blob feel hero-sized */
 @media (min-width: 768px) and (max-width: 1180px){
   body.about-page .portrait-blob{
-    transform: translateY(2vh) scale(1.18);
     transform-origin: center center;
   }
 }
+
+/* Big desktop / 2K+ */
+@media (min-width: 750px){
+  body.about-page .portrait-blob{
+    width: min(175vmin, 1580px);
+    height: min(175vmin, 1580px);
+  }
+}
+
+
+/* Big desktop / 2K+ */
+@media (min-width: 1600px){
+  body.about-page .portrait-blob{
+    width: min(202vmin, 1980px);
+    height: min(202vmin, 1980px);
+  }
+}
+
+/* 4K-ish and up */
+@media (min-width: 2560px){
+  body.about-page .portrait-blob{
+    width: min(202min, 2320px);
+    height: min(202vmin, 2320px);
+  }
+  :root{
+    --word-size: clamp(4.2rem, 3.2vw, 10.5rem);
+  }
+}
+

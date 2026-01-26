@@ -1,6 +1,6 @@
 // static/js/about/portrait.js
 import { escapeHtml } from "./utils.js";
-import { PORTRAITS, HOVER_IMAGE, PORTRAIT_FIT } from "./config.js";
+import { PORTRAITS, PORTRAIT_FIT } from "./config.js";
 import { createBlobModel, computePathFromModel } from "./blob/model.js";
 
 export function createPortraitController(portraitBtn) {
@@ -9,7 +9,9 @@ export function createPortraitController(portraitBtn) {
 
   let index = 0;
   let edgeRAF = null;
-  let isHovering = false;
+
+  let rotateTimer = null;
+  const ROTATE_MS = 5000;
 
   const currentPortrait = () => PORTRAITS[index % PORTRAITS.length];
 
@@ -20,35 +22,43 @@ export function createPortraitController(portraitBtn) {
     imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", src);
   }
 
-  // iPad/tablet: make blob bigger + slightly higher
-function applyLayout() {
-const w = window.innerWidth;
-const h = window.innerHeight;
+  // Layout: tablet gets your hero scale; big desktops get extra scale
+  function applyLayout() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-const isLandscape = w > h;
+    const isLandscape = w > h;
 
-// iPad/tablet-like: coarse pointer OR no hover, plus a decent minimum size
-const isTabletLike =
-  (window.matchMedia("(pointer: coarse)").matches ||
-   window.matchMedia("(hover: none)").matches) &&
-  Math.min(w, h) >= 700;
+    // Tablet-like: coarse pointer OR no hover, plus a decent minimum size
+    const isTabletLike =
+      (window.matchMedia("(pointer: coarse)").matches ||
+        window.matchMedia("(hover: none)").matches) &&
+      Math.min(w, h) >= 700;
 
-const scale =
-  isTabletLike && isLandscape ? 2.15 :
-  isTabletLike ? 1.65 :
-  1;
+    const base = Math.min(w, h);
 
-const top =
-  isTabletLike && isLandscape ? "40%" :
-  isTabletLike ? "44%" :
-  "50%";
+    let scale =
+      isTabletLike && isLandscape ? 2.15 :
+      isTabletLike ? 1.65 :
+      1;
 
-portraitBtn.style.left = "50%";
-portraitBtn.style.top = top;
-portraitBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
-portraitBtn.style.transformOrigin = "center center";
-}
+    // Big screens: make the blob feel properly massive.
+    if (!isTabletLike) {
+      if (base >= 1400) scale = 1.18;
+      if (base >= 1800) scale = 1.30;
+      if (base >= 2200) scale = 1.45;
+    }
 
+    const top =
+      isTabletLike && isLandscape ? "40%" :
+      isTabletLike ? "44%" :
+      "50%";
+
+    portraitBtn.style.left = "50%";
+    portraitBtn.style.top = top;
+    portraitBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    portraitBtn.style.transformOrigin = "center center";
+  }
 
   function renderSVG() {
     const d0 = computePathFromModel(model, performance.now() * 0.001);
@@ -83,21 +93,30 @@ portraitBtn.style.transformOrigin = "center center";
 
   function nextPortrait() {
     index = (index + 1) % PORTRAITS.length;
-    if (!isHovering) setImage(currentPortrait());
-  }
-
-  function onEnter() {
-    isHovering = true;
-    if (HOVER_IMAGE) setImage(HOVER_IMAGE);
-  }
-
-  function onLeave() {
-    isHovering = false;
     setImage(currentPortrait());
+  }
+
+  function startAutoRotate() {
+    stopAutoRotate();
+
+    // If only 0/1 portrait, don't schedule
+    if (!PORTRAITS || PORTRAITS.length <= 1) return;
+
+    rotateTimer = window.setInterval(() => {
+      nextPortrait();
+    }, ROTATE_MS);
+  }
+
+  function stopAutoRotate() {
+    if (rotateTimer) {
+      window.clearInterval(rotateTimer);
+      rotateTimer = null;
+    }
   }
 
   function startEdgeWarp() {
     stopEdgeWarp();
+
     function frame(now) {
       const t = now * 0.001;
       const d = computePathFromModel(model, t);
@@ -109,6 +128,7 @@ portraitBtn.style.transformOrigin = "center center";
 
       edgeRAF = requestAnimationFrame(frame);
     }
+
     edgeRAF = requestAnimationFrame(frame);
   }
 
@@ -117,29 +137,18 @@ portraitBtn.style.transformOrigin = "center center";
     edgeRAF = null;
   }
 
-  function bindInteractions() {
-    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
-    if (canHover) {
-      portraitBtn.addEventListener("mouseenter", onEnter);
-      portraitBtn.addEventListener("mouseleave", onLeave);
-    }
-
-    // click cycles portraits
-    portraitBtn.addEventListener("click", nextPortrait);
-  }
-
   function mount() {
     renderSVG();
     applyLayout();
-    bindInteractions();
     startEdgeWarp();
+    startAutoRotate();
 
     window.addEventListener("resize", applyLayout);
     window.addEventListener("orientationchange", applyLayout);
   }
 
   function destroy() {
+    stopAutoRotate();
     stopEdgeWarp();
     window.removeEventListener("resize", applyLayout);
     window.removeEventListener("orientationchange", applyLayout);
