@@ -62,17 +62,17 @@
 
 :root {
     --background: #fffeec;
-    --lilac: #b099d2;  /* Lilac accent color */
-    --orange: #fe5e00; /* Orange accent color */
-    --charcoal: #222223;
+    --lilac: #ff4fb3;  /* Lilac accent color */
+    --orange: #ccfc04; /* Orange accent color */
+    --charcoal: #141414;
 }
 
 .lilac {
-    color:#b099d2;
+    color: #ff4fb3;
 }
 
 .orange {
-    color: #fe5e00;
+    color: #ccfc04;
 }
 
 .uppercase {

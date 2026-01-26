@@ -8,9 +8,9 @@ To learn more about my work click on the buttons below. You can reach out via th
 
 // portraits cycle on click (keep as many as you want)
 export const PORTRAITS = [
-  "/static/img/about/portrait1.JPG",
-  "/static/img/about/portrait2.JPG",
-  "/static/img/about/portrait3.JPG",
+  "/static/img/about/portrait1.jpeg",
+  "/static/img/about/portrait1.jpeg",
+  "/static/img/about/portrait1.jpeg",
 ];
 
 // blob hover image (“it’s nice to meet you!”)

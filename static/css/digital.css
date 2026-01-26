@@ -12,7 +12,7 @@ html,
 body.digital-page{
   height: 100%;
   margin: 0;
-  background: #261230;
+  background: #141414;
   overflow: hidden;
 }
 
@@ -26,9 +26,9 @@ body.digital-page video{
 
 /* theme vars (override main.css vars) */
 body.digital-page{
-  --background: #141515;
-  --lilac: #e0e446;
-  --orange: #b099d2;
+  --background: #141414;
+  --lilac: #ff4fb3;
+  --orange: #ccfc04;
   background: var(--background);
 }
 
@@ -203,7 +203,7 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
   cursor: pointer;
 
   /* typography / default state */
-  color: #141515;                            /* inactive colour */
+  color: #141414;                            /* inactive colour */
   font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 2rem;
   line-height: 1;
@@ -246,7 +246,7 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
 }
 
 /* color classes (use your CSS variables) */
-.project-cta.lilac{ color: #141515; }
+.project-cta.lilac{ color: #141414; }
 .project-cta.orange{ color:  var(--lilac); }
 
 /* hover / focus / active: uppercase and orange */

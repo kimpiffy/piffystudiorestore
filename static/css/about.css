@@ -5,7 +5,7 @@
   --ink: #141414;
 
   /* Define this because your previous CSS referenced it but never set it */
-  --lilac: #b59cff;
+  --lilac: #ff4fb3;
 
   /* MUST match your navbar height */
   --site-header-h: 92px;
@@ -15,10 +15,10 @@
 
 
   /* Section colours */
-  --bio-hot:     #e0e446;
-  --art-hot:     #ff4fb3;
-  --digital-hot: #ff4fb3;
-  --people-hot:  #3a8dff;
+  --bio-hot:     #ccfc04;
+  --art-hot:     #ccfc04;
+  --digital-hot: #ccfc04;
+  --people-hot:  #ccfc04;
 
   /* Orbit tuning (CSS only — JS will do the motion) */
   --orbit-pad: 12px;
@@ -28,7 +28,7 @@ body.about-page{
   margin:0;
   min-height:100vh;
   background: var(--ink);
-  color: var(--cream);
+  color: var(--lilac);
   overflow:hidden;
 }
 
@@ -59,7 +59,7 @@ body.about-page .about-stage{
   /* Prevent browser UI overlap */
   padding-bottom: env(safe-area-inset-bottom);
 
-  overflow: hidden;
+  overflow: visible;
   z-index: 1 !important;
 }
 
@@ -165,7 +165,7 @@ body.about-page .about-word:focus{
 }
 
 /* default colour */
-body.about-page .about-word{ color: var(--cream); }
+body.about-page .about-word{ color: var(--lilac); }
 
 /* section hover colours */
 body.about-page .about-word[data-key="bio"]:hover,
@@ -405,11 +405,17 @@ body.about-page .about-word.is-wobbling .wobble-span{
 /* Big desktop / 2K+ */
 @media (min-width: 750px){
   body.about-page .portrait-blob{
-    width: min(175vmin, 1580px);
-    height: min(175vmin, 1580px);
+    width: min(70vmin, 820px);
+    height: min(70vmin, 820px);
   }
 }
 
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: landscape){
+  body.about-page .portrait-blob{
+    width: min(55vmin, 700px);
+    height: min(55vmin, 700px);
+  }
+}
 
 /* Big desktop / 2K+ */
 @media (min-width: 1600px){
@@ -422,7 +428,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
 /* 4K-ish and up */
 @media (min-width: 2560px){
   body.about-page .portrait-blob{
-    width: min(202min, 2320px);
+    width: min(202vmin, 2320px);
     height: min(202vmin, 2320px);
   }
   :root{
