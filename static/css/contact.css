@@ -54,7 +54,7 @@ body.contact-body{
 overflow: visible !important;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 45%;
   width: 160%;
   height: 95%;
   transform: translate(-50%, -50%);
@@ -80,16 +80,18 @@ overflow: visible !important;
   position: relative;
   z-index: 2;
 
-  /* BIG safety padding so wiggle never touches fields */
-  padding: clamp(3.2rem, 7vw, 5rem);
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1.2rem;
 
   color: var(--text);
+
+  padding: clamp(3.2rem, 7vw, 5rem);
+  padding-bottom: clamp(6rem, 12vw, 9rem);  /* NEW: extra space for checkbox + send */
 }
+
+
 
 .contact-title{
   text-align: center;
@@ -245,4 +247,19 @@ overflow: visible !important;
 
 .honeypot{
   display: none !important;
+}
+
+@media (max-width: 768px){
+    .contact-page{
+ padding-top: clamp(3rem, 8vh, 6rem);
+}
+
+.blob-svg {
+    top: 45%;
+    height: 90%;
+}
+
+ .actions{
+    margin-bottom: 4.5rem;
+  }
 }

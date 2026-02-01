@@ -87,7 +87,7 @@ function buildModel(id) {
     freqs:    [2 + Math.floor(rnd()*4), 4 + Math.floor(rnd()*5), 7 + Math.floor(rnd()*6), 11 + Math.floor(rnd()*7)],
     phases:   [rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2],
     speeds:   [1.6 + rnd()*0.9, 1.2 + rnd()*0.8, 0.95 + rnd()*0.7, 0.75 + rnd()*0.6],
-    strength: 1.25 + rnd()*0.55
+    strength: 0.65 + rnd()*0.20
   };
 
   return { N, angles, radii, rip };
@@ -109,7 +109,9 @@ function computeBlobPath(model, tSec) {
     r += dr * model.rip.strength;
 
     // IMPORTANT: don’t let it pinch inward too hard (protect content)
-    r = Math.max(44, Math.min(78, r));
+    r = Math.max(52, Math.min(72, r));
+
+
 
     pts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
   }
