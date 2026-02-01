@@ -1,28 +1,57 @@
 {% load static %}
-<nav id="navbar" class="navbar navbar-expand-lg navbar-light" role="navigation" aria-label="Primary">
-    <!-- Navbar toggle button for mobile screens -->
-    <!-- Navbar links -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'pages:about' %}">About</a>
-            </li>
 
+<nav id="navbar" class="navbar p-0" role="navigation" aria-label="Primary">
 
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'shop:shop_index' %}">Shop</a>
-            </li>
+  <!-- X TOGGLE (top-left) -->
+ <button
+  class="navbar-toggler nav-x"
+  type="button"
+  data-bs-toggle="collapse"
+  data-bs-target="#navbarNav"
+  aria-controls="navbarNav"
+  aria-expanded="false"
+  aria-label="Open menu"
+>
+  <span class="nav-x__stack" aria-hidden="true">
+    <span class="nav-x__lower">x</span>
+    <span class="nav-x__upper">X</span>
+  </span>
+</button>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'pages:contact' %}">Contact</a>
-            </li>
+  <!-- COLLAPSE MENU -->
+  <div class="collapse navbar-collapse nav-panel" id="navbarNav">
+    <ul class="navbar-nav nav-links">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'pages:about' %}">About</a>
+      </li>
 
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="workDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Work
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="workDropdown">
+          <li><a class="dropdown-item" href="{% url 'portfolio:art' %}">Art</a></li>
+          <li><a class="dropdown-item" href="{% url 'portfolio:digital' %}">Digital</a></li>
+          <li><a class="dropdown-item" href="{% url 'portfolio:installations' %}">People</a></li>
         </ul>
+      </li>
 
-               {% if request.path|slice:":6" == "/shop/" %}
-  <a href="{% url 'shop:cart' %}" class="cart-icon-nav ms-auto d-flex align-items-center justify-content-end" aria-label="Cart">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'shop:shop_index' %}">Shop</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'pages:contact' %}">Contact</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+{% if request.path|slice:":6" == "/shop/" %}
+  <a href="{% url 'shop:cart' %}"
+     class="cart-icon-fixed"
+     aria-label="Cart">
     <span class="cart-icon" role="img" aria-hidden="true"></span>
   </a>
 {% endif %}
-    </div>
-</nav>
+

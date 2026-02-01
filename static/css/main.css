@@ -2,15 +2,11 @@
    FONTS
 ------------------------------------ */
 
-/* Body font */
+/* Body / menu font */
 @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;600&display=swap');
-
-/* Menu + Headers — Futura style, geometric, uppercase */
-@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap');
 
 @font-face {
   font-family: "wakaba";
-  /* paths relative to this CSS file (static/css/) -> ../fonts/ */
   src: url('../fonts/wakaba.woff2') format('woff2'),
        url('../fonts/wakaba.woff') format('woff');
   font-weight: 700;
@@ -18,535 +14,541 @@
   font-display: swap;
 }
 
-
-/* ---------- MOVED KEYFRAMES (placed near the top of the file) ---------- */
-/* main wobble (desktop) */
-@keyframes navWobble {
-    0%   { transform: translate3d(-1px,-1px,0) rotate(-0.35deg) scale(1); }
-    25%  { transform: translate3d( 2px,-2px,0) rotate( 0.55deg) scale(1.003); }
-    50%  { transform: translate3d(-2px, 2px,0) rotate(-0.45deg) scale(1); }
-    75%  { transform: translate3d( 1px, 2px,0) rotate( 0.45deg) scale(1.002); }
-    100% { transform: translate3d(-1px,-1px,0) rotate(-0.35deg) scale(1); }
-}
-
-/* subtler submenu wobble */
-@keyframes navWobbleSub {
-    0%   { transform: translate3d(-0.4px,-0.4px,0) rotate(-0.12deg) scale(1); }
-    25%  { transform: translate3d( 0.8px,-0.8px,0) rotate( 0.18deg) scale(1.001); }
-    50%  { transform: translate3d(-0.8px, 0.8px,0) rotate(-0.16deg) scale(1); }
-    75%  { transform: translate3d( 0.4px, 0.8px,0) rotate( 0.16deg) scale(1.0005); }
-    100% { transform: translate3d(-0.4px,-0.4px,0) rotate(-0.12deg) scale(1); }
-}
-
-/* stronger wobble for touch devices */
-@keyframes navWobbleTouch {
-    0%   { transform: translate3d(-3px,-3px,0) rotate(-0.6deg) scale(1); }
-    25%  { transform: translate3d( 5px,-4px,0) rotate( 0.9deg) scale(1.004); }
-    50%  { transform: translate3d(-5px, 5px,0) rotate(-0.9deg) scale(1); }
-    75%  { transform: translate3d( 3px, 4px,0) rotate( 0.7deg) scale(1.003); }
-    100% { transform: translate3d(-3px,-3px,0) rotate(-0.6deg) scale(1); }
-}
-/* ---------- end keyframes ---------- */
-
 /* ------------------------------------
-   GLOBAL SMOOTHING
+   GLOBAL SMOOTHING + BOX MODEL
 ------------------------------------ */
 
 * {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Normalize */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 /* ------------------------------------
-   THEME VARIABLES
+   THEME VARIABLES (TIDY)
 ------------------------------------ */
 
 :root {
-    --background: #fffeec;
-    --lilac: #ff4fb3;  /* Lilac accent color */
-    --orange: #ccfc04; /* Orange accent color */
-    --charcoal: #141414;
+  --background: #fffeec;
+
+  /* the ONLY colors you asked for */
+  --pink: #ff4fb3;
+  --green: #ccfc04;
+  --charcoal: #141414;
 }
 
-.lilac {
-    color: #ff4fb3;
-}
-
-.orange {
-    color: #ccfc04;
-}
-
-.uppercase {
-    text-transform: uppercase;
-}
+/* Optional helpers */
+.pink { color: var(--pink); }
+.green { color: var(--green); }
 
 /* ------------------------------------
    GLOBAL BASE
 ------------------------------------ */
 
 body {
-    background-color: var(--background);
-    font-family: "Inconsolata", monospace;
-    font-size: 13px;
-    letter-spacing: 2px;
-}   
-
-/* Nav typography: use the imported League Spartan for menu/headers, fallback to Wakaba */
-.navbar, #navbar, .navbar-nav, .nav-link, .aboutlink {
-    font-family: 'wakaba', sans-serif;
-    text-decoration: none;
-    text-transform: lowercase;
-    letter-spacing: 3px;
-    font-size: 2rem;
-    color: var(--lilac);
-    z-index: 2;
+  background-color: var(--background);
+  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  overscroll-behavior-y: none;
 }
 
-.navbar {
-    padding-left: 1rem;
-    background-color: transparent !important;
-}
-
-.nav-link {
-    padding: 0 10px !important;
-}
-
-.nav-link:hover, .nav-link:focus, .aboutlink:hover, .aboutlink:focus {
-    color: var(--orange);
-    text-transform: uppercase;
-}
-.page-content {
-    padding: 0;
-    margin: 0;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-/* wobble / breathe animation for top-level nav links (subtle, 2D motion) */
-@media (hover: hover) and (pointer: fine) {
-    /* apply wobble to all top-level nav links immediately (no .show dependency) */
-    .navbar-nav > li > .nav-link, .aboutlink, .product-description {
-        animation-name: navWobble;
-        animation-duration: 3.8s;
-        animation-timing-function: ease-in-out;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
-        will-change: transform;
-        transform-origin: center center;
-    }
-
-    /* subtle variation per item so they don't move identically */
-    .navbar-nav > li:nth-child(1) > .nav-link { animation-duration: 3.6s; animation-delay: 0s; }
-    .navbar-nav > li:nth-child(2) > .nav-link { animation-duration: 3.9s; animation-delay: 0.12s; }
-    .navbar-nav > li:nth-child(3) > .nav-link { animation-duration: 4.1s; animation-delay: 0.24s; }
-    .navbar-nav > li:nth-child(4) > .nav-link { animation-duration: 3.75s; animation-delay: 0.06s; }
-    /* extend nth-child rules if you have more items */
-
-
-}
-/* stronger wobble on touch / small-screen devices (pointer: coarse) */
-@media (hover: none), (pointer: coarse) {
-    .navbar-nav > li > .nav-link, .aboutlink, .product-description {
-        animation-name: navWobbleTouch !important;
-        animation-duration: 3.8s !important;
-        animation-timing-function: ease-in-out !important;
-        animation-iteration-count: infinite !important;
-        animation-direction: alternate !important;
-        will-change: transform;
-        transform-origin: center center;
-    }
-
-    /* small per-item phase offsets so items don't move exactly together */
-    .navbar-nav > li:nth-child(1) > .nav-link { animation-delay: 0s !important; }
-    .navbar-nav > li:nth-child(2) > .nav-link { animation-delay: 0.08s !important; }
-    .navbar-nav > li:nth-child(3) > .nav-link { animation-delay: 0.16s !important; }
-    .navbar-nav > li:nth-child(4) > .nav-link { animation-delay: 0.24s !important; }
-}
-
-/* Keep navbar items in a horizontal row on phones/tablets (<= 991.98px) */
-@media (max-width: 991.98px) {
-  /* Ensure the collapsed navbar is visible and laid out in a row on small screens */
-  #navbar .navbar-collapse.collapse {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    width: 100%;
-  }
-
-  /* Keep the nav list horizontal and scrollable if needed */
-  #navbar .navbar-nav {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  #navbar .navbar-nav .nav-item {
-    display: inline-flex;
-  }
-
-  /* Keep dropdown menus positioned above the flow (adjust if you want them inline) */
-  #navbar .navbar-nav .dropdown-menu {
-    position: absolute;
-    left: 0;
-  }
-}
-
-/* Normalize page edges and avoid 1px hairlines */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background: var(--background);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-/* ensure consistent box model */
-*, *::before, *::after {
-    box-sizing: border-box;
+img, svg, video {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 /* remove stray borders/shadows on main layout containers */
 #navbar, .page-content, .container, header, main {
-    border: none !important;
-    box-shadow: none !important;
-    background-clip: padding-box;
+  border: none !important;
+  box-shadow: none !important;
+  background-clip: padding-box;
 }
 
-/* hide accidental body scroll gutters on small overflows */
-body {
-    overscroll-behavior-y: none;
+/* ------------------------------------
+   PAGE CONTENT WRAPPER
+------------------------------------ */
+
+.page-content {
+  padding: 0;
+  margin: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-/* make images and inline elements not produce subpixel hairlines */
-img, svg, video {
-    display: block;
-    max-width: 100%;
-    height: auto;
+/* ------------------------------------
+   NEW NAV (X TOGGLE + DROPDOWN)
+   Requires HTML:
+   button.nav-x contains:
+     span.nav-x__stack
+       span.nav-x__lower
+       span.nav-x__upper
+   plus:
+   div.collapse.navbar-collapse.nav-panel
+   ul.navbar-nav.nav-links
+------------------------------------ */
+
+#navbar {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 2000;
+  padding: 0 !important;
+  background: transparent !important;
 }
 
-/* ---------- MOVED MEDIA QUERIES (place all @media rules here at the end of the file) ---------- */
+/* Bootstrap toggler reset */
+.nav-x {
+  border: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
 
-/* keep navbar horizontal on small screens and ensure collapsed area is visible */
-@media (max-width: 991.98px) {
-  #navbar .navbar-collapse.collapse {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center;
-    gap: 0.5rem;
-    width: 100%;
+/* kill Bootstrap toggler icon */
+.nav-x.navbar-toggler {
+  background-image: none !important;
+}
+
+/* stacked glyph container so x/X share the same centre */
+.nav-x__stack{
+  position: relative;
+  width: 34px;     /* controls alignment + tap target */
+  height: 34px;
+  display: inline-block;
+}
+
+/* both glyphs are centered exactly */
+.nav-x__lower,
+.nav-x__upper{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+
+  font-family: "wakaba", system-ui;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+
+  color: var(--pink);
+
+  transition: opacity 140ms ease, transform 160ms ease, color 160ms ease, filter 160ms ease;
+}
+
+/* start state: show lowercase */
+.nav-x__upper{
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.88);
+}
+.nav-x__lower{
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* hover/focus/open: show uppercase and scale from centre */
+.nav-x:hover .nav-x__lower,
+.nav-x:focus-visible .nav-x__lower,
+.nav-x[aria-expanded="true"] .nav-x__lower{
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.88);
+}
+
+.nav-x:hover .nav-x__upper,
+.nav-x:focus-visible .nav-x__upper,
+.nav-x[aria-expanded="true"] .nav-x__upper{
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.15);
+  color: var(--green);
+}
+
+/* mobile tap highlight fix */
+.nav-x,
+.nav-x * {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.nav-x:active .nav-x__upper {
+  color: var(--green);
+}
+
+/* dropdown panel: tight width, charcoal bg, green text, directly under X */
+.nav-panel{
+  position: absolute;        /* anchor to #navbar */
+  top: calc(100% + 6px);     /* just below the X */
+  left: 0;
+  margin-top: 0 !important;
+
+  display: none;             /* hidden by default */
+  width: fit-content;
+  min-width: 0 !important;
+  max-width: 100px;          /* limit width to about 2/3 of original */
+
+  background: var(--charcoal);
+  border-radius: 18px;
+  padding: 10px 8px 16px 12px; /* increased bottom padding from 0px to 16px */
+  
+  opacity: 0;
+  transform: translateY(-15px) scale(0.95);
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+/* show nav panel when active */
+.nav-panel.show {
+  display: inline-block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* cascade animation for nav items */
+.nav-links .nav-item {
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.nav-panel:not(.show) .nav-links .nav-item {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.nav-panel.show .nav-links .nav-item {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* stagger the nav items animation */
+.nav-panel.show .nav-links .nav-item:nth-child(1) { transition-delay: 50ms; }
+.nav-panel.show .nav-links .nav-item:nth-child(2) { transition-delay: 100ms; }
+.nav-panel.show .nav-links .nav-item:nth-child(3) { transition-delay: 150ms; }
+.nav-panel.show .nav-links .nav-item:nth-child(4) { transition-delay: 200ms; }
+
+/* cascade animation for nav items */
+.nav-links .nav-item {
+  opacity: 0;
+  transform: translateY(-15px) scale(0.95);
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.nav-panel.show .nav-links .nav-item {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* stagger the nav items animation */
+.nav-panel.show .nav-links .nav-item:nth-child(1) { transition-delay: 50ms; }
+.nav-panel.show .nav-links .nav-item:nth-child(2) { transition-delay: 100ms; }
+.nav-panel.show .nav-links .nav-item:nth-child(3) { transition-delay: 150ms; }
+.nav-panel.show .nav-links .nav-item:nth-child(4) { transition-delay: 200ms; }
+
+/* prevent ul stretching */
+.nav-links{
+  margin: 0;
+  padding: 0;
+  width: fit-content;
+}
+
+/* menu links: smaller + tighter */
+.nav-links .nav-link{
+  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  line-height: 1.0;
+
+  color: var(--green) !important;
+  text-decoration: none;
+  text-transform: none;
+
+  padding: 5px 0px !important;
+  margin: 0;
+
+  border-radius: 12px;
+  width: fit-content;
+
+  transition: text-decoration 150ms ease;
+}
+
+.nav-links .nav-link:hover,
+.nav-links .nav-link:focus-visible{
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--green);
+  text-underline-offset: 4px;
+  outline: none;
+}
+
+/* keep dropdown from going offscreen on small devices */
+@media (max-width: 576px){
+  #navbar{
+    left: 12px;
+    top: 12px;
+    right: 12px;
   }
-
-  #navbar .navbar-nav {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  #navbar .navbar-nav .nav-item {
-    display: inline-flex;
-  }
-
-  #navbar .navbar-nav .dropdown-menu {
-    position: absolute;
-    left: 0;
+  .nav-panel{
+    max-width: 100px !important;
   }
 }
 
-/* touch-specific larger wobble so motion is noticeable on small screens */
-@media (hover: none), (pointer: coarse) {
-    .navbar-nav > li > .nav-link {
-        animation-name: navWobbleTouch !important;
-        animation-duration: 3.4s !important;
-        animation-timing-function: ease-in-out !important;
-        animation-iteration-count: infinite !important;
-        animation-direction: alternate !important;
-        will-change: transform;
-        transform-origin: center center;
-    }
-
-    .navbar-nav > li:nth-child(1) > .nav-link { animation-delay: 0s !important; }
-    .navbar-nav > li:nth-child(2) > .nav-link { animation-delay: 0.08s !important; }
-    .navbar-nav > li:nth-child(3) > .nav-link { animation-delay: 0.16s !important; }
-    .navbar-nav > li:nth-child(4) > .nav-link { animation-delay: 0.24s !important; }
+/* ------------------------------------
+   WORK SUBMENU DROPDOWN STYLES
+------------------------------------ */
+.dropdown-menu {
+  background: var(--charcoal);
+  border: none;
+  border-radius: 12px;
+  padding: 6px 8px;
+  margin-top: 0px;
+  margin-left: -7px !important;
+  left: 0 !important;
+  max-width: 100px !important;
+  width: 90px !important; /* force specific width with !important */
+  min-width: 90px !important; /* also set min-width to prevent expansion */
+  box-sizing: border-box !important; /* ensure padding doesn't expand width */
+  
+  display: none;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+  transition: opacity 200ms ease, transform 200ms ease;
 }
 
-/* keep original desktop wobble variations (apply generally but kept in media area for clarity) */
-@media (hover: hover) and (pointer: fine) {
-    .navbar-nav > li > .nav-link {
-        animation-name: navWobble;
-        animation-duration: 3.8s;
-        animation-timing-function: ease-in-out;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
-        will-change: transform;
-        transform-origin: center center;
-    }
-
-    .navbar-nav > li:nth-child(1) > .nav-link { animation-duration: 3.6s;  animation-delay: 0s;  }
-    .navbar-nav > li:nth-child(2) > .nav-link { animation-duration: 3.9s;  animation-delay: 0.12s; }
-    .navbar-nav > li:nth-child(3) > .nav-link { animation-duration: 4.1s;  animation-delay: 0.24s; }
-    .navbar-nav > li:nth-child(4) > .nav-link { animation-duration: 3.75s; animation-delay: 0.06s; }
-
-    .navbar-nav .dropdown-item {
-        animation-name: navWobbleSub;
-        animation-duration: 4.2s;
-        animation-timing-function: ease-in-out;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
-        will-change: transform;
-        transform-origin: center center;
-    }
+.dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-@media (min-width: 768px) {
-    .aboutcontainer {
-        height: 80vh;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-    }
+/* Remove dropdown arrow */
+.dropdown-toggle::after {
+  display: none !important;
 }
 
-.abouttext
-{ text-transform: justify;}
+/* cascade animation for dropdown items */
+.dropdown-menu .dropdown-item {
+  /* remove initial opacity/transform to make cascade visible */
+  transition: opacity 180ms ease, transform 180ms ease, text-decoration 150ms ease;
+}
 
+.dropdown-menu:not(.show) .dropdown-item {
+  opacity: 0;
+  transform: translateX(-15px);
+}
 
-    /* --- PRODUCT DETAILS PAGE --- */
-    .product-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;    
-        justify-content: center;
-        max-width: 1200px;
-        margin: auto;
-        padding: 4rem 2rem;
-    }
+.dropdown-menu.show .dropdown-item {
+  opacity: 1;
+  transform: translateX(0);
+}
 
-    .product-title {
-        color: var(--charcoal);
-        font-family: Wakaba, sans-serif;
-        font-size: 2.8rem;
-        font-weight: 700;
-        text-transform: lowercase;
-        margin-bottom: 1rem;
-        text-align: center;
-    }
+/* stagger the dropdown items animation */
+.dropdown-menu.show .dropdown-item:nth-child(1) { transition-delay: 50ms; }
+.dropdown-menu.show .dropdown-item:nth-child(2) { transition-delay: 100ms; }
+.dropdown-menu.show .dropdown-item:nth-child(3) { transition-delay: 150ms; }
 
-    .product-price {
-        font-size: 1.6rem;
-        font-weight: 600;
-        margin: 0.5rem 0 2rem 0;
-    }
+.dropdown-item {
+  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  line-height: 1.0;
+  
+  color: var(--pink) !important;
+  text-decoration: none;
+  text-transform: none;
+  
+  padding: 5px 0px !important; /* restore original spacing */
+  margin: 0;
+  border-radius: 8px;
+  
+  transition: text-decoration 150ms ease;
+}
 
-    .product-description {
-        font-size: 1.05rem;
-        line-height: 1.7;
-        color: var(--charcoal);
-        margin-top: 2rem;
-        white-space: pre-line;
-    }
+.dropdown-item:hover,
+.dropdown-item:focus-visible {
+  background: transparent !important;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--pink);
+  text-underline-offset: 4px;
+  color: var(--pink) !important;
+  outline: none;
+}
 
-    /* --- IMAGE LAYOUT --- */
-    .image-wrapper {
-        width: 100%;
-        border-radius: 10px;
-        overflow: hidden;
-    }
+.dropdown-item:active {
+  background: transparent !important;
+  color: var(--pink) !important;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--pink);
+}
 
-    .main-image {
-        width: 100%;
-        border-radius: 12px;
-        object-fit: contain;
-        max-height: 650px;
-    }
+/* ------------------------------------
+   CART ICON (FIXED TOP-RIGHT ON /shop/)
+   HTML:
+   <a class="cart-icon-fixed"><span class="cart-icon"></span></a>
+------------------------------------ */
 
-    .thumbnail-row {
-        margin-top: 1.2rem;
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
+.cart-icon-fixed {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 2000;
 
-    .thumbnail-row img {
-        width: 110px;
-        height: 110px;
-        object-fit: cover;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: opacity 0.2s ease;
-    }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    .thumbnail-row img:hover {
-        opacity: 0.7;
-    }
+  padding: 10px;
+  border-radius: 14px;
 
+  background: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
 
-    /* --- BUY AREA --- */
-    .buy-box {
-        position: sticky;
-        top: 50px;
-        padding: 2rem;
-        border-radius: 14px;
-        background: #fafafa;
-        border: 1px solid #eaeaea;
-    }
-
-    .buy-btn {
-        font-family: wakaba, sans-serif;
-        background-color: transparent !important;
-        text-transform: lowercase;
-        border: none !important;
-        color: #ed71b2;
-        width: 100%;
-        padding: 0.9rem;
-        font-size: 2rem;
-    }
-
-    .buy-btn:hover, .buy-btn:focus {
-        color: #c4c600 !important;
-        text-transform: uppercase;
-    }
-    
-
-    .variant-select {
-        margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 767px) {
-        .product-title { font-size: 2rem; }
-        .product-container { padding: 2rem 1rem; }
-        .buy-box { position: relative; top: 0; margin-top: 2rem; }
-    }
-
-/* Recommended: use the image as a mask so background-color tints only the icon
-   (works best when you replace the <img> with an element like:
-   <a class="cart-icon-nav ...">
-     <span class="cart-icon" role="img" aria-label="Cart"></span>
-     <span id="cart-count"...>...</span>
-   </a>
-*/
+/* Masked icon tinting */
 .cart-icon {
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-    background-color: var(--lilac);           /* initial tint */
-    -webkit-mask-image: url('../img/cart.png');
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    -webkit-mask-size: contain;
-    mask-image: url('../img/cart.png');
-    mask-repeat: no-repeat;
-    mask-position: center;
-    mask-size: contain;
-    transition: transform .18s ease, background-color .18s ease, opacity .18s ease;
-    vertical-align: middle;
-    pointer-events: none; /* keep clicks on parent link */
-}
-
-/* Hover / focus state: grow slightly and change tint to orange */
-.cart-icon-nav:focus .cart-icon,
-.cart-icon-nav:hover .cart-icon,
-.cart-icon:focus,
-.cart-icon:hover {
-    transform: scale(1.12);
-    background-color: var(--orange);
-    outline: none;
-}
-
-/* Fallback: if you keep using an <img class="cart-icon-img"> try a colorizing filter.
-   Filters are approximate; mask method is preferred for perfect tinting. */
-.cart-icon-img {
-    width: 24px;
-    height: auto;
-    display: inline-block;
-    transition: transform .18s ease, filter .18s ease;
-    /* approximate lilac tint */
-    filter: brightness(0) saturate(100%) sepia(20%) hue-rotate(200deg) saturate(400%) brightness(95%);
-    transform-origin: center center;
-}
-
-/* Hover / focus filter to approximate the orange color + scale */
-.cart-icon-img:hover,
-.cart-icon-img:focus {
-    transform: scale(1.12);
-    filter: brightness(0) saturate(100%) sepia(95%) hue-rotate(10deg) saturate(700%) brightness(105%);
-    outline: none;
-}
-
-/* hide <img> fallback when using mask element */
-.cart-icon-nav .cart-icon-img { display: none; }
-
-/* existing mask rules (ensure path is correct relative to this file) */
-.cart-icon {
-    margin-right: 20px;
-    padding-right: 10px;
   width: 30px;
   height: 30px;
   display: inline-block;
-  background-color: var(--lilac);
+
+  background-color: var(--pink); /* default tint */
   -webkit-mask-image: url('../img/cart.png');
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
   -webkit-mask-size: contain;
+
   mask-image: url('../img/cart.png');
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: contain;
-  transition: transform .18s ease, background-color .18s ease, opacity .18s ease;
-  vertical-align: middle;
+
+  transition: transform 180ms ease, background-color 180ms ease, opacity 180ms ease;
+  transform-origin: center center;
   pointer-events: none;
 }
 
-.cart-icon-nav:hover .cart-icon,
-.cart-icon-nav:focus .cart-icon {
-  transform: scale(2);
-  background-color: var(--orange);
+.cart-icon-fixed:hover .cart-icon,
+.cart-icon-fixed:focus-visible .cart-icon,
+.cart-icon-fixed:active .cart-icon {
+  transform: scale(1.12);
+  background-color: var(--green);
   outline: none;
 }
 
-/* On narrow screens put the cart icon on its own centered row */
-@media (max-width: 767.98px) {
-  /* make the collapse stack vertically and center contents */
-  #navbar .navbar-collapse.collapse {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center;
-    gap: .5rem;
-    width: 100%;
-  }
+/* ------------------------------------
+   PRODUCT DETAILS PAGE (kept)
+------------------------------------ */
 
-  /* center the nav links row */
-  #navbar .navbar-nav {
-    width: 100%;
-    justify-content: center;
-    gap: .5rem;
-    padding: 0.25rem 0;
-  }
-
-  /* ensure the cart sits on the next line and is centered */
-  .cart-icon-nav {
-    order: 2;
-    margin-top: .25rem;
-    width: 100%;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center;
-    padding: .25rem 0;
-  }
-
-  /* neutralize any bootstrap auto-margin that pushed it to the side */
-  .cart-icon-nav.ms-auto { margin-left: 0 !important; }
+.product-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: auto;
+  padding: 4rem 2rem;
 }
 
+.product-title {
+  color: var(--charcoal);
+  font-family: wakaba, sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  text-transform: lowercase;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.product-price {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0.5rem 0 2rem 0;
+}
+
+.product-description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--charcoal);
+  margin-top: 2rem;
+  white-space: pre-line;
+}
+
+/* Image layout */
+.image-wrapper {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.main-image {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: contain;
+  max-height: 650px;
+}
+
+.thumbnail-row {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.thumbnail-row img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.thumbnail-row img:hover {
+  opacity: 0.7;
+}
+
+/* Buy area */
+.buy-box {
+  position: sticky;
+  top: 50px;
+  padding: 2rem;
+  border-radius: 14px;
+  background: #fafafa;
+  border: 1px solid #eaeaea;
+}
+
+.buy-btn {
+  font-family: wakaba, sans-serif;
+  background-color: transparent !important;
+  text-transform: lowercase;
+  border: none !important;
+  color: var(--pink);
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 2rem;
+}
+
+.buy-btn:hover,
+.buy-btn:focus {
+  color: var(--green) !important;
+  text-transform: uppercase;
+}
+
+.variant-select {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .product-title { font-size: 2rem; }
+  .product-container { padding: 2rem 1rem; }
+  .buy-box { position: relative; top: 0; margin-top: 2rem; }
+}
