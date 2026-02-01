@@ -27,7 +27,7 @@ function buildBaseRadii(id, N) {
     amps: [2.0 + rnd()*1.2, 1.4 + rnd()*1.0, 1.0 + rnd()*0.8, 0.75 + rnd()*0.7, 0.55 + rnd()*0.55],
     freqs: [2 + Math.floor(rnd()*4), 4 + Math.floor(rnd()*5), 7 + Math.floor(rnd()*6), 11 + Math.floor(rnd()*7), 16 + Math.floor(rnd()*7)],
     phases: [rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2],
-    speeds: [2.1 + rnd()*1.2, 1.8 + rnd()*1.1, 1.4 + rnd()*1.0, 1.2 + rnd()*0.9, 1.0 + rnd()*0.8],
+    speeds: [0.3 + rnd()*0.15, 0.25 + rnd()*0.12, 0.2 + rnd()*0.1, 0.15 + rnd()*0.08, 0.1 + rnd()*0.05],
     strength: 1.25 + rnd()*0.60
   };
 

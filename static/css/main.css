@@ -200,7 +200,7 @@ img, svg, video {
 
   background: var(--charcoal);
   border-radius: 18px;
-  padding: 10px 8px 16px 12px; /* increased bottom padding from 0px to 16px */
+  padding: 0px 8px 16px 10px; /* increased bottom padding from 0px to 16px */
   
   opacity: 0;
   transform: translateY(-15px) scale(0.95);

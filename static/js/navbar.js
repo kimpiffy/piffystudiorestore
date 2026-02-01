@@ -182,15 +182,11 @@
     }
   }
   
-  // Handle mouse enter dropdown trigger
+  // Handle mouse enter dropdown trigger - disabled for click-to-open behavior
   function handleDropdownEnter(event) {
-    console.log('Dropdown enter');
-    updateInteractionMode(event);
-    if (shouldUseTouchBehavior()) return;
-    
-    if (navOpen && !dropdownOpen) {
-      openDropdown();
-    }
+    console.log('Dropdown enter - click to open mode');
+    // No automatic hover opening - require click instead
+    return;
   }
   
   // Removed handleDropdownLeave - submenu stays open once expanded
@@ -228,16 +224,9 @@
   function handleDropdownClick(event) {
     console.log('Dropdown click');
     updateInteractionMode(event);
-    
-    if (!shouldUseTouchBehavior()) {
-      // On desktop/mouse, prevent default and let hover handle it
-      event.preventDefault();
-      return;
-    }
-    
-    // On touch devices, toggle dropdown
     event.preventDefault();
     
+    // Always toggle dropdown on click, regardless of device type
     if (dropdownOpen) {
       closeDropdown();
     } else {

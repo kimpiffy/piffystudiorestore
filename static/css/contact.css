@@ -2,109 +2,148 @@
   --blob: #ff4fb3;
   --text: #141414;
   --page: #141414;
+  --green: #ccfc04;  /* Your var green */
+  --charcoal: #2a2a2a;
 }
 
 /* ------------------------------------
-   PAGE + CLIP OVERRIDES (CONTACT ONLY)
+   PAGE OVERRIDES (CONTACT ONLY)
 ------------------------------------ */
 
 html, body{
   background: var(--page) !important;
 }
 
-/* Your main.css clips with .page-content { overflow:hidden; }
-   Only unclip for this page */
 body.contact-body .page-content{
   overflow: visible !important;
 }
 
-/* prevent horizontal scrollbar when blob spills */
 body.contact-body{
   overflow-x: hidden;
 }
 
 .contact-page{
-  min-height: calc(100vh - 80px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(1rem, 4vw, 3rem);
+  min-height: 100vh;
+  position: relative;
   background: var(--page);
 }
 
 /* ------------------------------------
-   BLOB LAYOUT
+   INTRO STAGE - EXPANDING BLOB
 ------------------------------------ */
 
-.contact-blob-wrap{
-  width: min(1200px, 100%);
-  position: relative;
-  overflow: visible;
+.intro-stage{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--page);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 500ms ease;
 }
 
-.contact-blob{
-  position: relative;
-  width: 100%;
-  min-height: 860px;
-  overflow: visible !important;
-}
-
-/* SVG is intentionally oversized + centered so it can spill */
-.blob-svg{
-overflow: visible !important;
+.expanding-blob{
   position: absolute;
+  top: 50%;
   left: 50%;
-  top: 45%;
-  width: 160%;
-  height: 95%;
-  transform: translate(-50%, -50%);
-  z-index: 0;
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%) scale(0.05);
+  transform-origin: center;
   pointer-events: none;
 }
 
-.blob-fill{
+.expanding-blob .blob-svg{
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.intro-blob-fill{
   fill: var(--blob);
 }
 
-@media (max-width: 760px){
-  .contact-blob{
-    min-height: 680px;
-  }
+/* ------------------------------------
+   TESSELLATED BACKGROUND
+------------------------------------ */
+
+.tessellated-bg{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 800ms ease;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tessellated-dot{
+  position: absolute;
+  opacity: 0.6;
+}
+
+.tessellated-dot svg{
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.tessellated-dot-path{
+  fill: var(--blob);
+  opacity: 0.4;
 }
 
 /* ------------------------------------
-   CONTENT ON TOP OF BLOB
+   MAIN CONTACT CONTENT
 ------------------------------------ */
 
-.contact-inner{
+.contact-content{
   position: relative;
-  z-index: 2;
-
+  z-index: 10;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 1.2rem;
-
-  color: var(--text);
-
-  padding: clamp(3.2rem, 7vw, 5rem);
-  padding-bottom: clamp(6rem, 12vw, 9rem);  /* NEW: extra space for checkbox + send */
+  padding: clamp(2rem, 4vw, 4rem);
+  opacity: 0;
+  transition: opacity 800ms ease;
+  pointer-events: none;
 }
 
+.contact-form-wrap{
+  width: min(900px, 100%);
+  position: relative;
+  background: var(--green);
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
 
+.contact-inner{
+  padding: clamp(2.5rem, 5vw, 4rem);
+  color: var(--charcoal);
+}
 
 .contact-title{
   text-align: center;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 2rem 0;
   font-family: 'wakaba', sans-serif;
   font-size: clamp(2.4rem, 4.2vw, 3.6rem);
   letter-spacing: 3px;
   text-transform: lowercase;
-  color: var(--text);
+  color: var(--charcoal);
 }
 
 /* ------------------------------------
-   FORM
+   FORM STYLES
 ------------------------------------ */
 
 .contact-form label,
@@ -113,7 +152,7 @@ overflow: visible !important;
 .contact-form textarea{
   font-family: "Inconsolata", monospace;
   letter-spacing: 2px;
-  color: var(--text);
+  color: var(--charcoal);
   font-size: 13px;
 }
 
@@ -143,22 +182,30 @@ overflow: visible !important;
 .contact-form select,
 .contact-form textarea{
   width: 100%;
-  background: rgba(255, 254, 236, 0.82);
-  border: 1px solid rgba(20, 20, 20, 0.38);
-  border-radius: 14px;
+  background: var(--charcoal);
+  color: var(--blob);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
   padding: 0.85rem 0.95rem;
   outline: none;
+  transition: all 200ms ease;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder{
+  color: rgba(255, 79, 179, 0.7);
 }
 
 .contact-form textarea{
   resize: vertical;
-  min-height: 170px;
+  min-height: 120px;
 }
 
 .contact-form input:focus,
 .contact-form select:focus,
 .contact-form textarea:focus{
-  border-color: rgba(20, 20, 20, 0.95);
+  border-color: var(--blob);
+  box-shadow: 0 0 0 2px rgba(255, 79, 179, 0.2);
 }
 
 .is-hidden{
@@ -168,8 +215,9 @@ overflow: visible !important;
 /* ------------------------------------
    CHECKBOX
 ------------------------------------ */
+
 .checkbox-row{
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
   display: flex;
   justify-content: flex-end;
 }
@@ -188,15 +236,15 @@ overflow: visible !important;
   pointer-events: none;
 }
 
-
 .checkbox-box{
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: #141414;
-  border: 1px solid rgba(20, 20, 20, 0.7);
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--charcoal);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   display: grid;
   place-items: center;
+  transition: all 200ms ease;
 }
 
 .checkbox-box::after{
@@ -205,10 +253,17 @@ overflow: visible !important;
   color: var(--blob);
   opacity: 0;
   transform: translateY(1px);
+  transition: opacity 200ms ease;
+}
+
+.checkbox input:checked + .checkbox-box{
+  background: var(--blob);
+  border-color: var(--blob);
 }
 
 .checkbox input:checked + .checkbox-box::after{
   opacity: 1;
+  color: white;
 }
 
 /* ------------------------------------
@@ -216,29 +271,50 @@ overflow: visible !important;
 ------------------------------------ */
 
 .actions{
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   display: flex;
   justify-content: flex-end;
 }
 
 .contact-btn{
   font-family: 'wakaba', sans-serif;
-  background: transparent;
+  background: none;
   border: none;
-  color: var(--text);
+  color: var(--charcoal);
   letter-spacing: 3px;
-  font-size: clamp(1.9rem, 3vw, 2.3rem);
+  font-size: clamp(1.6rem, 2.5vw, 2rem);
   text-transform: lowercase;
-  padding: 0.35rem 0.5rem;
-  transition: transform 160ms ease, opacity 160ms ease;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: text-transform 200ms ease;
 }
 
 .contact-btn:hover,
 .contact-btn:focus,
 .contact-btn:active{
   text-transform: uppercase;
-  opacity: 0.92;
-  transform: translateY(-1px);
+}
+
+/* ------------------------------------
+   RESPONSIVE
+------------------------------------ */
+
+@media (max-width: 768px){
+  .contact-content{
+    padding: 1rem;
+  }
+  
+  .contact-inner{
+    padding: 2rem 1.5rem;
+  }
+  
+  .actions{
+    justify-content: center;
+  }
+  
+  .checkbox-row{
+    justify-content: center;
+  }
 }
 
 /* ------------------------------------
@@ -247,19 +323,4 @@ overflow: visible !important;
 
 .honeypot{
   display: none !important;
-}
-
-@media (max-width: 768px){
-    .contact-page{
- padding-top: clamp(3rem, 8vh, 6rem);
-}
-
-.blob-svg {
-    top: 45%;
-    height: 90%;
-}
-
- .actions{
-    margin-bottom: 4.5rem;
-  }
 }
