@@ -1,2 +1,102 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}contact{% endblock %}
+{% block body_class %}contact-body{% endblock %}
+
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+{% endblock %}
+
 {% block content %}
+<main class="contact-page">
+  <section class="contact-blob-wrap" aria-label="contact form">
+
+    <div class="contact-blob" id="contactBlob">
+      <!-- Animated blob shape (fill only) -->
+      <svg class="blob-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path id="blobFill" class="blob-fill" d=""></path>
+      </svg>
+
+      <!-- Content always on top -->
+      <div class="contact-inner">
+        <h1 class="contact-title">contact</h1>
+
+        <form
+          class="contact-form"
+          method="POST"
+          action="https://formspree.io/f/xreleywk"
+          novalidate
+        >
+          <input type="hidden" name="source_site" value="piffystudio">
+          <input type="hidden" name="_subject" value="New contact – Piffystudio">
+          <input type="text" name="_gotcha" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="full_name">Full Name *</label>
+              <input id="full_name" name="full_name" type="text" required autocomplete="name">
+            </div>
+
+            <div class="field">
+              <label for="email">Email *</label>
+              <input id="email" name="email" type="email" required autocomplete="email">
+            </div>
+
+            <div class="field">
+              <label for="telephone">Telephone</label>
+              <input id="telephone" name="telephone" type="tel" autocomplete="tel">
+            </div>
+
+            <div class="field">
+              <label for="location">Location</label>
+              <input id="location" name="location" type="text" autocomplete="address-level2">
+            </div>
+
+            <div class="field field-full">
+              <label for="query_related">Query Related To *</label>
+              <select id="query_related" name="query_related" required>
+                <option value="" selected disabled>Choose One:</option>
+                <option value="art">Art</option>
+                <option value="web design">Web Design</option>
+                <option value="community projects">Community Projects</option>
+                <option value="creative facilitation">Creative Facilitation</option>
+                <option value="collaboration">Collaboration</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="field field-full is-hidden" id="otherWrap">
+              <label for="other_specify">Please Specify *</label>
+              <input id="other_specify" name="other_specify" type="text">
+            </div>
+
+            <div class="field field-full">
+              <label for="message">Message *</label>
+              <textarea id="message" name="message" rows="6" required></textarea>
+            </div>
+
+            <div class="field field-full checkbox-row">
+              <label class="checkbox">
+                <input id="newsletter" name="newsletter" type="checkbox" required>
+                <span class="checkbox-box" aria-hidden="true"></span>
+                <span class="checkbox-text">Sign up for Newsletter? *</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="contact-btn" type="submit">send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/contact.js' %}"></script>
+{% endblock %}

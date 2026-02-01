@@ -1,0 +1,248 @@
+:root{
+  --blob: #ccfc04;
+  --text: #141414;
+  --page: #141414;
+}
+
+/* ------------------------------------
+   PAGE + CLIP OVERRIDES (CONTACT ONLY)
+------------------------------------ */
+
+html, body{
+  background: var(--page) !important;
+}
+
+/* Your main.css clips with .page-content { overflow:hidden; }
+   Only unclip for this page */
+body.contact-body .page-content{
+  overflow: visible !important;
+}
+
+/* prevent horizontal scrollbar when blob spills */
+body.contact-body{
+  overflow-x: hidden;
+}
+
+.contact-page{
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: var(--page);
+}
+
+/* ------------------------------------
+   BLOB LAYOUT
+------------------------------------ */
+
+.contact-blob-wrap{
+  width: min(1200px, 100%);
+  position: relative;
+  overflow: visible;
+}
+
+.contact-blob{
+  position: relative;
+  width: 100%;
+  min-height: 860px;
+  overflow: visible !important;
+}
+
+/* SVG is intentionally oversized + centered so it can spill */
+.blob-svg{
+overflow: visible !important;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160%;
+  height: 95%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.blob-fill{
+  fill: var(--blob);
+}
+
+@media (max-width: 760px){
+  .contact-blob{
+    min-height: 680px;
+  }
+}
+
+/* ------------------------------------
+   CONTENT ON TOP OF BLOB
+------------------------------------ */
+
+.contact-inner{
+  position: relative;
+  z-index: 2;
+
+  /* BIG safety padding so wiggle never touches fields */
+  padding: clamp(3.2rem, 7vw, 5rem);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.2rem;
+
+  color: var(--text);
+}
+
+.contact-title{
+  text-align: center;
+  margin: 0 0 0.5rem 0;
+  font-family: 'wakaba', sans-serif;
+  font-size: clamp(2.4rem, 4.2vw, 3.6rem);
+  letter-spacing: 3px;
+  text-transform: lowercase;
+  color: var(--text);
+}
+
+/* ------------------------------------
+   FORM
+------------------------------------ */
+
+.contact-form label,
+.contact-form input,
+.contact-form select,
+.contact-form textarea{
+  font-family: "Inconsolata", monospace;
+  letter-spacing: 2px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.field-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+}
+
+@media (max-width: 760px){
+  .field-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+.field{
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.field-full{
+  grid-column: 1 / -1;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea{
+  width: 100%;
+  background: rgba(255, 254, 236, 0.82);
+  border: 1px solid rgba(20, 20, 20, 0.38);
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  outline: none;
+}
+
+.contact-form textarea{
+  resize: vertical;
+  min-height: 170px;
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus{
+  border-color: rgba(20, 20, 20, 0.95);
+}
+
+.is-hidden{
+  display: none;
+}
+
+/* ------------------------------------
+   CHECKBOX
+------------------------------------ */
+.checkbox-row{
+  margin-top: 0.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.checkbox{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox input{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+.checkbox-box{
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #141414;
+  border: 1px solid rgba(20, 20, 20, 0.7);
+  display: grid;
+  place-items: center;
+}
+
+.checkbox-box::after{
+  content: "✓";
+  font-weight: 700;
+  color: var(--blob);
+  opacity: 0;
+  transform: translateY(1px);
+}
+
+.checkbox input:checked + .checkbox-box::after{
+  opacity: 1;
+}
+
+/* ------------------------------------
+   BUTTON
+------------------------------------ */
+
+.actions{
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.contact-btn{
+  font-family: 'wakaba', sans-serif;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  letter-spacing: 3px;
+  font-size: clamp(1.9rem, 3vw, 2.3rem);
+  text-transform: lowercase;
+  padding: 0.35rem 0.5rem;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.contact-btn:hover,
+.contact-btn:focus,
+.contact-btn:active{
+  text-transform: uppercase;
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* ------------------------------------
+   MISC
+------------------------------------ */
+
+.honeypot{
+  display: none !important;
+}
