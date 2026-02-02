@@ -238,13 +238,13 @@ body.about-page #mobileArcText{
     transform: rotate(0deg) scale(1);
   }
   25% {
-    transform: rotate(0.5deg) scale(1.02);
+    transform: rotate(1.2deg) scale(1.04);
   }
   50% {
-    transform: rotate(-0.3deg) scale(0.98);
+    transform: rotate(-0.8deg) scale(0.96);
   }
   75% {
-    transform: rotate(0.4deg) scale(1.01);
+    transform: rotate(1deg) scale(1.03);
   }
 }
 /* =========================================
@@ -371,6 +371,30 @@ body.about-page .about-word.is-wobbling .wobble-span{
 }
 
 /* Mobile: static tags + huge blob spill */
+/* Force portrait orientation on mobile */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+  body.about-page {
+    display: none;
+  }
+  
+  body.about-page::before {
+    content: "Please rotate your device to portrait mode";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--green);
+    font-family: 'wakaba', sans-serif;
+    font-size: 1.5rem;
+    text-align: center;
+    z-index: 9999;
+    background: var(--ink);
+    padding: 2rem;
+    border-radius: 10px;
+    display: block;
+  }
+}
+
 @media (max-width: 767px){
 
   /* Allow scrolling on mobile - removed overflow restrictions */
@@ -416,21 +440,12 @@ body.about-page .about-word.is-wobbling .wobble-span{
     animation: gentleWobble 4s ease-in-out infinite;
   }
   
-  /* Stagger animation timing for each word */
-  body.about-page .orbit .about-word[data-key="bio"]{
-    animation-delay: 0s;
-  }
-  
-  body.about-page .orbit .about-word[data-key="digital"]{
-    animation-delay: 1s;
-  }
-  
-  body.about-page .orbit .about-word[data-key="people"]{
-    animation-delay: 2s;
-  }
-  
+  /* All words animate together - no staggered timing */
+  body.about-page .orbit .about-word[data-key="bio"],
+  body.about-page .orbit .about-word[data-key="digital"],
+  body.about-page .orbit .about-word[data-key="people"],
   body.about-page .orbit .about-word[data-key="art"]{
-    animation-delay: 3s;
+    animation-delay: 0s;
   }
 
   /* Slightly higher */

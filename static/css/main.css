@@ -48,6 +48,13 @@ html, body {
 }
 
 /* Optional helpers */
+
+/* ------------------------------------
+   MOBILE PORTRAIT-ONLY RESTRICTION
+------------------------------------ */
+
+/* Force portrait orientation on mobile across entire site */
+@media screen and (max-width: 767px) and (orientation: landscape) {\n  body {\n    display: none !important;\n  }\n  \n  html::before {\n    content: \"Please rotate your device to portrait mode\";\n    position: fixed;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    color: var(--green);\n    font-family: 'wakaba', sans-serif;\n    font-size: 1.5rem;\n    text-align: center;\n    z-index: 99999;\n    background: var(--charcoal);\n    padding: 2rem;\n    border-radius: 10px;\n    display: block;\n    width: 80vw;\n    max-width: 300px;\n  }\n}
 .pink { color: var(--pink); }
 .green { color: var(--green); }
 
