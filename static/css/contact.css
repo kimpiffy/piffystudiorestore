@@ -120,10 +120,10 @@ body.contact-body{
 .contact-form-wrap{
   width: min(900px, 100%);
   position: relative;
-  background: var(--green);
+  background: transparent;
   border-radius: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: none;
+  box-shadow: none;
   overflow: hidden;
 }
 
@@ -139,20 +139,32 @@ body.contact-body{
   font-size: clamp(2.4rem, 4.2vw, 3.6rem);
   letter-spacing: 3px;
   text-transform: lowercase;
-  color: var(--charcoal);
+  color: var(--green);
 }
 
 /* ------------------------------------
    FORM STYLES
 ------------------------------------ */
 
-.contact-form label,
+.contact-form label{
+  display: none;
+}
+
+/* Exception for checkbox labels - they need to be visible */
+.checkbox{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
 .contact-form input,
 .contact-form select,
 .contact-form textarea{
   font-family: "Inconsolata", monospace;
   letter-spacing: 2px;
-  color: var(--charcoal);
+  color: #141414;
   font-size: 13px;
 }
 
@@ -182,8 +194,8 @@ body.contact-body{
 .contact-form select,
 .contact-form textarea{
   width: 100%;
-  background: var(--charcoal);
-  color: var(--blob);
+  background: var(--green);
+  color: #141414;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   padding: 0.85rem 0.95rem;
@@ -193,7 +205,7 @@ body.contact-body{
 
 .contact-form input::placeholder,
 .contact-form textarea::placeholder{
-  color: rgba(255, 79, 179, 0.7);
+  color: rgba(20, 20, 20, 0.7);
 }
 
 .contact-form textarea{
@@ -204,8 +216,8 @@ body.contact-body{
 .contact-form input:focus,
 .contact-form select:focus,
 .contact-form textarea:focus{
-  border-color: var(--blob);
-  box-shadow: 0 0 0 2px rgba(255, 79, 179, 0.2);
+  border-color: #141414;
+  box-shadow: 0 0 0 2px rgba(20, 20, 20, 0.2);
 }
 
 .is-hidden{
@@ -240,7 +252,7 @@ body.contact-body{
   width: 20px;
   height: 20px;
   border-radius: 4px;
-  background: var(--charcoal);
+  background: var(--green);
   border: 1px solid rgba(0, 0, 0, 0.2);
   display: grid;
   place-items: center;
@@ -256,14 +268,18 @@ body.contact-body{
   transition: opacity 200ms ease;
 }
 
+.checkbox-text{
+  color: #141414;
+}
+
 .checkbox input:checked + .checkbox-box{
-  background: var(--blob);
-  border-color: var(--blob);
+  background: #141414;
+  border-color: #141414;
 }
 
 .checkbox input:checked + .checkbox-box::after{
   opacity: 1;
-  color: white;
+  color: var(--green);
 }
 
 /* ------------------------------------
@@ -271,7 +287,7 @@ body.contact-body{
 ------------------------------------ */
 
 .actions{
-  margin-top: 1.5rem;
+  margin-top: 0rem;
   display: flex;
   justify-content: flex-end;
 }
@@ -280,7 +296,7 @@ body.contact-body{
   font-family: 'wakaba', sans-serif;
   background: none;
   border: none;
-  color: var(--charcoal);
+  color: var(--green);
   letter-spacing: 3px;
   font-size: clamp(1.6rem, 2.5vw, 2rem);
   text-transform: lowercase;

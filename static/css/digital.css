@@ -212,12 +212,12 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
   -webkit-font-smoothing: antialiased;
 }
 
-/* hover / focus / active OR when .orange is present -> uppercase + orange */
+/* hover / focus / active OR when .orange is present -> uppercase + stay charcoal */
 .overlay-panel .overlay-close:hover,
 .overlay-panel .overlay-close:focus,
 .overlay-panel .overlay-close:active,
 .overlay-panel .overlay-close.orange {
-  color: var(--lilac);
+  color: #141414;
   text-transform: uppercase;                    /* become 'X' */
   outline: none;
 }
@@ -249,12 +249,12 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
 .project-cta.lilac{ color: #141414; }
 .project-cta.orange{ color:  var(--lilac); }
 
-/* hover / focus / active: uppercase and orange */
+/* hover / focus / active: uppercase and stay charcoal */
 .project-cta:hover,
 .project-cta:focus,
 .project-cta:active{
   text-transform: uppercase;
-  color:  var(--lilac);
+  color: #141414;
   outline: none;
 }
 

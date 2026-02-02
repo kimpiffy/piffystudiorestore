@@ -56,15 +56,18 @@ function pointsToClosedPath(points) {
 // ---- blob model ----
 function buildBlobModel(id) {
   const rnd = mulberry32(hashToSeed(id || "contact"));
-  const N = 12; // More points for smoother curves
+  const N = 10 + Math.floor(rnd() * 6); // Moderate range (10-16) for good smoothness
 
-  const baseR = 45 + rnd() * 6; // Smaller variance for smoother shape
-  const amp1 = 3 + rnd() * 2; // Reduced amplitudes for gentler curves
-  const amp2 = 2 + rnd() * 1.5;
-  const f1 = 2 + Math.floor(rnd() * 2); // Lower frequencies for smoother waves
-  const f2 = 3 + Math.floor(rnd() * 2);
+  const baseR = 40 + rnd() * 12; // Moderate base radius range (40-52)
+  const amp1 = 3 + rnd() * 5; // Moderate amplitudes for variation (3-8)
+  const amp2 = 2 + rnd() * 4; // (2-6)
+  const amp3 = 1 + rnd() * 3; // Additional amplitude layer (1-4)
+  const f1 = 2 + Math.floor(rnd() * 3); // Lower frequency range for smoother curves (2-5)
+  const f2 = 3 + Math.floor(rnd() * 3); // (3-6)
+  const f3 = 4 + Math.floor(rnd() * 2); // (4-6)
   const p1 = rnd() * Math.PI * 2;
   const p2 = rnd() * Math.PI * 2;
+  const p3 = rnd() * Math.PI * 2;
 
   const angles = [];
   const radii = [];
@@ -73,17 +76,44 @@ function buildBlobModel(id) {
     const a = (i / N) * Math.PI * 2;
     angles.push(a);
 
-    let r = baseR + Math.sin(a * f1 + p1) * amp1 + Math.sin(a * f2 + p2) * amp2;
-    r = Math.max(42, Math.min(52, r)); // Tighter range for smoother curves
+    let r = baseR + 
+      Math.sin(a * f1 + p1) * amp1 + 
+      Math.sin(a * f2 + p2) * amp2 +
+      Math.sin(a * f3 + p3) * amp3;
+    r = Math.max(32, Math.min(60, r)); // Tighter radius range to prevent spikes
     radii.push(r);
   }
 
   const rip = {
-    amps: [1.5 + rnd() * 0.8, 1.0 + rnd() * 0.6, 0.8 + rnd() * 0.4, 0.5 + rnd() * 0.3], // Gentler ripples
-    freqs: [2 + Math.floor(rnd() * 2), 3 + Math.floor(rnd() * 2), 4 + Math.floor(rnd() * 2), 6 + Math.floor(rnd() * 2)], // Lower frequencies
-    phases: [rnd() * Math.PI * 2, rnd() * Math.PI * 2, rnd() * Math.PI * 2, rnd() * Math.PI * 2],
-    speeds: [0.3 + rnd() * 0.15, 0.25 + rnd() * 0.12, 0.2 + rnd() * 0.1, 0.15 + rnd() * 0.08],
-    strength: 0.4 + rnd() * 0.2 // Reduced strength for smoother movement
+    amps: [
+      1.5 + rnd() * 2,     // Smaller ripple amplitudes (1.5-3.5)
+      1 + rnd() * 1.5,     // (1-2.5)
+      0.8 + rnd() * 1.2,   // (0.8-2)
+      0.5 + rnd() * 1,     // (0.5-1.5)
+      0.3 + rnd() * 0.7    // Additional gentle ripple layer (0.3-1)
+    ],
+    freqs: [
+      2 + Math.floor(rnd() * 2), // Lower frequency range for smoothness (2-4)
+      3 + Math.floor(rnd() * 2), // (3-5)
+      4 + Math.floor(rnd() * 2), // (4-6)
+      5 + Math.floor(rnd() * 3), // (5-8)
+      6 + Math.floor(rnd() * 2)  // (6-8)
+    ],
+    phases: [
+      rnd() * Math.PI * 2, 
+      rnd() * Math.PI * 2, 
+      rnd() * Math.PI * 2, 
+      rnd() * Math.PI * 2,
+      rnd() * Math.PI * 2
+    ],
+    speeds: [
+      0.15 + rnd() * 0.25, // Slower, smoother speeds (0.15-0.4)
+      0.12 + rnd() * 0.23, // (0.12-0.35)
+      0.1 + rnd() * 0.2,   // (0.1-0.3)
+      0.08 + rnd() * 0.17, // (0.08-0.25)
+      0.05 + rnd() * 0.15  // (0.05-0.2)
+    ],
+    strength: 0.4 + rnd() * 0.4 // Moderate ripple strength (0.4-0.8)
   };
 
   return { N, angles, radii, rip };
@@ -103,11 +133,11 @@ function computeBlobPath(model, tSec) {
     }
 
     r += dr * model.rip.strength;
-    r = Math.max(30, Math.min(60, r));
+    r = Math.max(30, Math.min(65, r)); // Moderate range to prevent extremes
     pts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
   }
 
-  const smooth = chaikin(pts, 2);
+  const smooth = chaikin(pts, 3); // More smoothing iterations to eliminate sharp points
   return pointsToClosedPath(smooth);
 }
 
@@ -135,23 +165,12 @@ class ContactAnimationController {
   }
 
   init() {
-    if (this.isFirstVisit) {
-      // First visit: show intro animation
-      this.contactContent.style.opacity = '0';
-      this.contactContent.style.pointerEvents = 'none';
-      this.tessellatedBg.style.opacity = '0';
-      this.startIntro();
-      
-      // Mark as visited
-      sessionStorage.setItem('contactVisited', 'true');
-    } else {
-      // Return visit: skip straight to tessellated background
-      this.introStage.style.display = 'none';
-      this.tessellatedBg.style.opacity = '1';
-      this.contactContent.style.opacity = '1';
-      this.contactContent.style.pointerEvents = 'auto';
-      this.generateTessellatedDots();
-    }
+    // Always skip intro animation and go straight to tessellated background
+    this.introStage.style.display = 'none';
+    this.tessellatedBg.style.opacity = '1';
+    this.contactContent.style.opacity = '1';
+    this.contactContent.style.pointerEvents = 'auto';
+    this.generateTessellatedDots();
     
     this.setupFormLogic();
   }

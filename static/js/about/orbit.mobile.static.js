@@ -33,11 +33,11 @@ export function createMobileStaticController({ overlay, routes, wordsLayer }) {
 
     overlay.open(
       `
-      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 10px 0; text-transform: lowercase; text-align:center;">bio</h2>
-      <p style="opacity:.85; max-width: 62ch; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
+      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 6px 0; text-transform: lowercase; text-align:center;">my name is kim...</h2>
+      <p style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
         ${escapeHtml(BIO_TEXT)}
       </p>
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top: 14px;">
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top: 18px;">
         <a class="btn project-cta lilac"
            href="${escapeHtml(contactHref)}"
            style="font-family: wakaba; font-size: 2rem; text-decoration:none;">
@@ -50,7 +50,7 @@ export function createMobileStaticController({ overlay, routes, wordsLayer }) {
              href="${escapeHtml(cvHref)}"
              target="_blank" rel="noopener noreferrer"
              style="font-family: wakaba; font-size: 2rem; text-decoration:none;">
-            cv
+            c.v
           </a>`
             : ""
         }

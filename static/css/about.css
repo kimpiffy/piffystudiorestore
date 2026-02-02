@@ -265,8 +265,9 @@ body.about-page .overlay-panel{
   overflow: auto;
 
   border-radius: 34px;
-  background: var(--cream);
-  padding: 18px;
+  background: #ccfc04; /* var green */
+  padding: clamp(0.5rem, 1vw, 1rem) clamp(2rem, 4vw, 3rem) clamp(1rem, 2.5vw, 1.75rem) clamp(2rem, 4vw, 3rem); /* Further reduced bottom padding */
+  color: #141414; /* charcoal text */
 }
 
 body.about-page .overlay-close{
@@ -278,15 +279,50 @@ body.about-page .overlay.is-open .overlay-close{
 }
 
 body.about-page .overlay-panel .overlay-close{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: sticky;
-  top: 8px;
+  top: 4px;
   margin-left: auto;
-
-  background: transparent;
+  margin-right: 0;
+  transform: translateX(28px);
   border: 0;
+  background: transparent;
+  border-radius: 999px;
   width: 30px;
   height: 30px;
   cursor: pointer;
+
+  /* typography / default state */
+  color: #141414; /* charcoal */
+  font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: 2rem;
+  line-height: 1;
+  text-transform: lowercase; /* show 'x' lowercase by default */
+  transition: color 140ms ease, text-transform 120ms ease, transform 120ms ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* hover / focus / active -> uppercase + stay charcoal */
+body.about-page .overlay-panel .overlay-close:hover,
+body.about-page .overlay-panel .overlay-close:focus,
+body.about-page .overlay-panel .overlay-close:active {
+  color: #141414;
+  text-transform: uppercase; /* become 'X' */
+  outline: none;
+}
+
+body.about-page .overlay-panel .overlay-close:focus-visible{
+  box-shadow: 0 0 0 4px rgba(177,255,43,0.12);
+}
+
+/* Project CTA buttons - add hover effects */
+body.about-page .project-cta:hover,
+body.about-page .project-cta:focus,
+body.about-page .project-cta:active {
+  text-transform: uppercase;
+  outline: none;
 }
 
 body.about-page .about-word .wobble-span{

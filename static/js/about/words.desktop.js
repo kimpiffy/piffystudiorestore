@@ -52,9 +52,9 @@ export function createWordsController({ bioZone, linksZone, overlay, routes }) {
         const dx = bx - ax, dy = by - ay;
         const d = Math.hypot(dx, dy) || 0.0001;
 
-        const min = Math.max(a.w, b.w) * 0.95;
+        const min = Math.max(a.w, b.w) * 0.85; // Reduced repulsion radius
         if (d < min) {
-          const push = (1 - d / min) * 0.030 * 60;
+          const push = (1 - d / min) * 0.020 * 60; // Reduced push force
           const nx = dx / d, ny = dy / d;
           if (!a.frozen) { a.vx -= nx * push; a.vy -= ny * push; }
           if (!b.frozen) { b.vx += nx * push; b.vy += ny * push; }
@@ -73,16 +73,16 @@ export function createWordsController({ bioZone, linksZone, overlay, routes }) {
     const cvHref = routes?.cv || "/static/kimpiffycv.pdf";
 
     overlay.open(`
-      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 10px 0; text-transform: lowercase; text-align:center;">bio</h2>
-      <p style="opacity:.85; max-width: 62ch; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
+      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 6px 0; text-transform: lowercase; text-align:center;">my name is kim...</h2>
+      <p style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
         ${escapeHtml(BIO_TEXT)}
       </p>
-      <div class="cta-row" style="display:flex; justify-content:center; margin-top: 14px;">
+      <div class="cta-row" style="display:flex; justify-content:center; margin-top: 18px;">
         <a class="btn project-cta lilac"
            href="${escapeHtml(cvHref)}"
            target="_blank" rel="noopener noreferrer"
            style="font-family: wakaba; font-size: 2rem; text-decoration:none;">
-          download cv
+          c.v
         </a>
       </div>
     `, { reason: "bio" });
@@ -101,11 +101,21 @@ export function createWordsController({ bioZone, linksZone, overlay, routes }) {
 
     el.addEventListener("mouseenter", () => {
       const p = particles.find(x => x.el === el);
-      if (p) p.frozen = true;
+      if (p) {
+        p.frozen = true;
+        // Smoothly reduce velocity to prevent glitches
+        p.vx *= 0.1;
+        p.vy *= 0.1;
+      }
     });
     el.addEventListener("mouseleave", () => {
       const p = particles.find(x => x.el === el);
-      if (p) p.frozen = false;
+      if (p) {
+        p.frozen = false;
+        // Give a gentle initial velocity to resume smooth motion
+        p.vx = (Math.random() - 0.5) * 0.15;
+        p.vy = (Math.random() - 0.5) * 0.15;
+      }
     });
 
     el.addEventListener("click", () => {
@@ -123,10 +133,11 @@ export function createWordsController({ bioZone, linksZone, overlay, routes }) {
     const p = {
       el, zone,
       x: 0, y: 0,
-      vx: (Math.random()-0.5) * 0.35,
-      vy: (Math.random()-0.5) * 0.35,
+      vx: (Math.random()-0.5) * 0.25, // Reduced initial velocity
+      vy: (Math.random()-0.5) * 0.25,
       phase: Math.random() * Math.PI * 2,
       frozen: false,
+      transitioning: false, // Add transition state
       w: 120, h: 50
     };
 
@@ -166,28 +177,36 @@ export function createWordsController({ bioZone, linksZone, overlay, routes }) {
 
       const t = now * 0.001;
 
-      const noise = 0.040;
-      const damping = 0.990;
-      const maxSpeed = 0.55;
+      const noise = 0.025; // Reduced noise for smoother movement
+      const damping = 0.995; // Increased damping for more controlled motion
+      const maxSpeed = 0.45; // Reduced max speed
 
       for (const p of particles) {
         if (!p.frozen) {
-          p.vx += Math.sin(t * 0.55 + p.phase) * noise;
-          p.vy += Math.cos(t * 0.50 + p.phase) * noise;
+          // Add gentle noise for organic movement
+          p.vx += Math.sin(t * 0.45 + p.phase) * noise;
+          p.vy += Math.cos(t * 0.40 + p.phase) * noise;
 
+          // Apply damping
           p.vx *= damping;
           p.vy *= damping;
 
+          // Speed limiting
           const sp = Math.hypot(p.vx, p.vy) || 0.0001;
           if (sp > maxSpeed) {
             p.vx = (p.vx / sp) * maxSpeed;
             p.vy = (p.vy / sp) * maxSpeed;
           }
 
+          // Update position
           p.x += p.vx * 60 * dt;
           p.y += p.vy * 60 * dt;
 
           bounceIn(p);
+        } else {
+          // When frozen, gradually reduce any remaining velocity
+          p.vx *= 0.8;
+          p.vy *= 0.8;
         }
 
         p.el.style.transform = `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0)`;
