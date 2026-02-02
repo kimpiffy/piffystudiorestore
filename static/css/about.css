@@ -232,7 +232,21 @@ body.about-page .mobile-carousel .arc-text{
 body.about-page #mobileArcText{
   transition: opacity 160ms ease, letter-spacing 160ms ease;
 }
-
+/* Add gentle wobble keyframes for mobile */
+@keyframes gentleWobble {
+  0%, 100% { 
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(0.5deg) scale(1.02);
+  }
+  50% {
+    transform: rotate(-0.3deg) scale(0.98);
+  }
+  75% {
+    transform: rotate(0.4deg) scale(1.01);
+  }
+}
 /* =========================================
    Overlay (kept stable)
    ========================================= */
@@ -359,14 +373,15 @@ body.about-page .about-word.is-wobbling .wobble-span{
 /* Mobile: static tags + huge blob spill */
 @media (max-width: 767px){
 
-  /* extra safety: no scrollbars */
+  /* Allow scrolling on mobile - removed overflow restrictions */
   html, body{
-    height: 100%;
-    overflow: hidden;
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
   }
 
   body.about-page{
-    overflow: hidden;
+    overflow: auto;
   }
 
   body.about-page .about-stage{
@@ -397,6 +412,26 @@ body.about-page .about-word.is-wobbling .wobble-span{
     font-size: 2.5rem !important;   /* phones */
     line-height: 1;
     padding: 8px 10px !important;
+    
+    /* Add gentle wobble animation */
+    animation: gentleWobble 4s ease-in-out infinite;
+  }
+  
+  /* Stagger animation timing for each word */
+  body.about-page .orbit .about-word[data-key="bio"]{
+    animation-delay: 0s;
+  }
+  
+  body.about-page .orbit .about-word[data-key="digital"]{
+    animation-delay: 1s;
+  }
+  
+  body.about-page .orbit .about-word[data-key="people"]{
+    animation-delay: 2s;
+  }
+  
+  body.about-page .orbit .about-word[data-key="art"]{
+    animation-delay: 3s;
   }
 
   /* Slightly higher */
