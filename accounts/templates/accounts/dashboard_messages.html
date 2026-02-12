@@ -1,0 +1,29 @@
+{% extends "dashboard_base.html" %}
+{% block content %}
+<h2>Messages</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th><th>Name</th><th>Email</th><th>Topic</th><th>Status</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in messages_qs %}
+    <tr>
+      <td>{{ m.created_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ m.full_name }}</td>
+      <td>{{ m.email }}</td>
+      <td>{{ m.subject_line }}</td>
+      <td>
+        {% if m.is_replied %}Replied{% elif m.is_read %}Read{% else %}New{% endif %}
+      </td>
+      <td><a href="{% url 'dashboard_message_detail' m.pk %}">Open</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No messages yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

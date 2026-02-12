@@ -5,102 +5,41 @@
 {% block body_class %}contact-body{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+  <!-- Font Awesome (brands + solid) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/contact.css' %}">
 {% endblock %}
 
 {% block content %}
 <main class="contact-page">
-  <!-- Intro animation: tiny pink blob that expands -->
-  <div class="intro-stage" id="introStage">
-    <div class="expanding-blob" id="expandingBlob">
-      <svg class="blob-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <path id="introBlobPath" class="intro-blob-fill" d=""></path>
-      </svg>
-    </div>
-  </div>
 
-  <!-- Tessellating dots background (hidden initially) -->
-  <div class="tessellated-bg" id="tessellatedBg"></div>
+  <!-- SUCCESS MODAL (rendered ONLY when server messages exist) -->
+  {% if messages %}
+  <!-- removed the `is-active` class so it doesn't show on initial render -->
+  <div class="contact-modal-overlay" id="contactModal" data-has-messages="true" role="dialog" aria-modal="true" aria-label="Message sent">
+    <div class="contact-modal" role="document">
+      <button class="contact-modal-x" id="contactModalClose" aria-label="Close">x</button>
 
-  <!-- Main contact form (hidden initially) -->
-  <section class="contact-content" id="contactContent" aria-label="contact form">
-    <div class="contact-form-wrap">
-      <div class="contact-inner">
-        <h1 class="contact-title">contact</h1>
+      <h1 class="contact-modal-title">Thank you</h1>
+      <p class="contact-modal-text">We aim to reply within 1–3 working days.</p>
+      <p class="contact-modal-subtext">In the meantime, check out our socials:</p>
 
-        <form
-          class="contact-form"
-          method="POST"
-          action="https://formspree.io/f/xreleywk"
-          novalidate
-        >
-          <input type="hidden" name="source_site" value="piffystudio">
-          <input type="hidden" name="_subject" value="New contact – Piffystudio">
-          <input type="text" name="_gotcha" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-
-          <div class="field-grid">
-            <div class="field">
-              <label for="full_name">Full Name *</label>
-              <input id="full_name" name="full_name" type="text" required autocomplete="name" placeholder="Full Name *">
-            </div>
-
-            <div class="field">
-              <label for="email">Email *</label>
-              <input id="email" name="email" type="email" required autocomplete="email" placeholder="Email *">
-            </div>
-
-            <div class="field">
-              <label for="telephone">Telephone</label>
-              <input id="telephone" name="telephone" type="tel" autocomplete="tel" placeholder="Telephone">
-            </div>
-
-            <div class="field">
-              <label for="location">Location</label>
-              <input id="location" name="location" type="text" autocomplete="address-level2" placeholder="Location">
-            </div>
-
-            <div class="field field-full">
-              <label for="query_related">Query Related To *</label>
-              <select id="query_related" name="query_related" required>
-                <option value="" selected disabled>Choose One:</option>
-                <option value="art">Art</option>
-                <option value="web design">Web Design</option>
-                <option value="community projects">Community Projects</option>
-                <option value="creative facilitation">Creative Facilitation</option>
-                <option value="collaboration">Collaboration</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            <div class="field field-full is-hidden" id="otherWrap">
-              <label for="other_specify">Please Specify *</label>
-              <input id="other_specify" name="other_specify" type="text" placeholder="Please Specify *">
-            </div>
-
-            <div class="field field-full">
-              <label for="message">Message *</label>
-              <textarea id="message" name="message" rows="6" required placeholder="Message *"></textarea>
-            </div>
-
-            <div class="field field-full checkbox-row">
-              <label class="checkbox">
-                <input id="newsletter" name="newsletter" type="checkbox" value="yes">
-                <span class="checkbox-box" aria-hidden="true"></span>
-                <span class="checkbox-text">Sign up for Newsletter? *</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="actions">
-            <button class="contact-btn" type="submit">send</button>
-          </div>
-        </form>
+      <div class="contact-modal-socials" aria-hidden="false">
+        <a class="contact-social-btn" href="https://www.instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <i class="fab fa-instagram fa-3x" aria-hidden="true"></i>
+        </a>
+        <a class="contact-social-btn" href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <i class="fab fa-linkedin-in fa-3x" aria-hidden="true"></i>
+        </a>
       </div>
     </div>
-  </section>
+  </div>
+  {% endif %}
+
 </main>
 {% endblock %}
 
 {% block extra_scripts %}
 <script src="{% static 'js/contact.js' %}"></script>
+<script src="{% static 'js/contactmodal.js' %}"></script>
 {% endblock %}

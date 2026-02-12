@@ -1,0 +1,38 @@
+{% extends "dashboard_base.html" %}
+{% block content %}
+<h2>Message</h2>
+
+<p><strong>From:</strong> {{ msg.full_name }} ({{ msg.email }})</p>
+<p><strong>Date:</strong> {{ msg.created_at }}</p>
+<p><strong>Topic:</strong> {{ msg.subject_line }}</p>
+
+<hr>
+<p style="white-space: pre-wrap;">{{ msg.message }}</p>
+
+<hr>
+<p>
+  <a href="mailto:{{ msg.email }}?subject=Re:%20{{ msg.subject_line|urlencode }}">Reply in email</a>
+</p>
+
+<form method="post">
+  {% csrf_token %}
+  <div>
+    <label for="admin_notes"><strong>Admin notes</strong></label><br>
+    <textarea id="admin_notes" name="admin_notes" rows="6">{{ msg.admin_notes }}</textarea>
+  </div>
+
+  <label>
+    <input type="checkbox" name="mark_replied" value="1" {% if msg.is_replied %}checked{% endif %}>
+    Mark as replied
+  </label>
+
+  <div>
+    <button type="submit">Save</button>
+  </div>
+</form>
+
+<form method="post" action="{% url 'dashboard_message_delete' msg.pk %}">
+  {% csrf_token %}
+  <button type="submit">Delete</button>
+</form>
+{% endblock %}

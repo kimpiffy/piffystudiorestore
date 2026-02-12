@@ -54,7 +54,30 @@ html, body {
 ------------------------------------ */
 
 /* Force portrait orientation on mobile across entire site */
-@media screen and (max-width: 767px) and (orientation: landscape) {\n  body {\n    display: none !important;\n  }\n  \n  html::before {\n    content: \"Please rotate your device to portrait mode\";\n    position: fixed;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    color: var(--green);\n    font-family: 'wakaba', sans-serif;\n    font-size: 1.5rem;\n    text-align: center;\n    z-index: 99999;\n    background: var(--charcoal);\n    padding: 2rem;\n    border-radius: 10px;\n    display: block;\n    width: 80vw;\n    max-width: 300px;\n  }\n}
+@media screen and (max-width: 767px) and (orientation: landscape) {
+  body {
+    display: none !important;
+  }
+
+  html::before {
+    content: "Please rotate your device to portrait mode";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--green);
+    font-family: 'wakaba', sans-serif;
+    font-size: 1.5rem;
+    text-align: center;
+    z-index: 99999;
+    background: var(--charcoal);
+    padding: 2rem;
+    border-radius: 10px;
+    display: block;
+    width: 80vw;
+    max-width: 300px;
+  }
+}
 .pink { color: var(--pink); }
 .green { color: var(--green); }
 
@@ -559,3 +582,5 @@ img, svg, video {
   .product-container { padding: 2rem 1rem; }
   .buy-box { position: relative; top: 0; margin-top: 2rem; }
 }
+
+/* dashboard nav moved to css/dashboard.css to avoid conflicts */

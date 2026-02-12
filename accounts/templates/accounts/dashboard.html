@@ -1,13 +1,24 @@
 {% extends 'dashboard_base.html' %}
 
-
 {% block content %}
 <h1>Your Dashboard</h1>
 
 <ul>
-    <li><a href="/shop/manage/products/">Manage Products</a></li>
-    <li><a href="/shop/manage/orders/">Manage Orders</a></li>
-    <li><a href="/portfolio/manage/">Manage Portfolio</a></li>
-</ul>
+  <li>
+    <strong>Shop</strong>
+    <ul>
+      <li><a href="/shop/manage/products/">Products</a></li>
+      <li><a href="/shop/manage/categories/">Categories</a></li>
+      <li><a href="/shop/manage/orders/">Orders</a></li>
+    </ul>
+  </li>
 
+  <li>
+    <strong>Contact</strong>
+    <ul>
+      <li><a href="{% url 'dashboard_messages' %}">Messages</a></li>
+      <li><a href="{% url 'dashboard_newsletter' %}">Newsletter</a></li>
+    </ul>
+  </li>
+</ul>
 {% endblock %}

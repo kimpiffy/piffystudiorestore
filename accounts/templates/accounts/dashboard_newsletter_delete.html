@@ -1,0 +1,10 @@
+{% extends "dashboard_base.html" %}
+{% block content %}
+<h2>Delete subscriber?</h2>
+<p>{{ sub.email }}</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Confirm delete</button>
+  <a href="{% url 'dashboard_newsletter' %}">Cancel</a>
+</form>
+{% endblock %}
