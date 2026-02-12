@@ -236,7 +236,7 @@ body.contact-body{
 .checkbox-row{
   margin-top: 0.5rem;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .checkbox{
@@ -294,7 +294,6 @@ body.contact-body{
 
 /* Newsletter-specific checkbox visuals (unchanged logic, now clickable) */
 .checkbox.newsletter .checkbox-box{
-  /* ensure the box is sized and centers any glyph */
   width: 22px;
   height: 22px;
   display: inline-flex;
@@ -307,11 +306,12 @@ body.contact-body{
   position: relative;
   box-sizing: border-box;
 }
+
 .checkbox.newsletter .checkbox-box::after{
-  content: "🫟";               /* emoji; many platforms render it purple */
+  content: "🫟";
   font-size: 14px;
   line-height: 1;
-  color: var(--lilac);        /* fallback color for glyphs that respect color */
+  color: var(--lilac);
   opacity: 0;
   transform: scale(0.85);
   transition: opacity 160ms ease, transform 160ms ease;
@@ -323,6 +323,7 @@ body.contact-body{
   background: var(--green);
   border-color: rgba(0,0,0,0.32);
 }
+
 .checkbox.newsletter input:checked + .checkbox-box::after{
   opacity: 1;
   transform: scale(1);
@@ -370,15 +371,15 @@ body.contact-body{
   .contact-content{
     padding: 1rem;
   }
-  
+
   .contact-inner{
     padding: 2rem 1.5rem;
   }
-  
+
   .actions{
     justify-content: center;
   }
-  
+
   .checkbox-row{
     justify-content: center;
   }
@@ -396,23 +397,32 @@ body.contact-body{
    SUCCESS MODAL – FADE + SCALE + TYPO
 ------------------------------------ */
 
-/* Make the overlay fully cover and fade smoothly; ensure it's above page content */
+/* Overlay: hidden by default */
 .contact-modal-overlay{
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(0,0,0,0);     /* start transparent */
-  z-index: 10000;                /* high so it hides page */
+
+  background: rgba(0,0,0,0);
+  z-index: 10000;
   padding: 1rem;
+
   opacity: 0;
+  visibility: hidden;         /* key: prevents “stuck” overlay interactions */
   pointer-events: none;
-  transition: opacity 350ms ease, background 350ms ease;
+
+  transition: opacity 350ms ease, background 350ms ease, visibility 0s linear 350ms;
 }
+
+/* Active: visible + interactive */
 .contact-modal-overlay.is-active{
-  background: rgba(0,0,0,1); /* full black */
+  background: rgba(0,0,0,1);
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
+
+  transition: opacity 350ms ease, background 350ms ease, visibility 0s;
 }
 
 /* Ensure nav stays visible above the overlay if desired */
@@ -440,18 +450,18 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   opacity: 1;
 }
 
-/* Modal typography: adjust sizes to match other modals */
+/* Typography */
 .contact-modal h1,
 .contact-modal .thankyou {
   font-family: 'wakaba', sans-serif;
-  font-size: 3rem; /* larger thank-you heading */
+  font-size: 3rem;
   color: #141414;
   margin: 0 0 0.6rem 0;
 }
 
 .contact-modal .contact-modal-title {
   font-family: "wakaba", sans-serif;
-  font-size: 2.5rem; /* slightly larger */
+  font-size: 2.5rem;
   color: #141414;
   margin: 0 0 0.6rem 0;
   text-transform: none;
@@ -462,10 +472,10 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
   color: #141414;
   margin: 0 0 0 0;
-  font-size: 0.95rem; /* slightly smaller so it doesn't dominate */
+  font-size: 0.95rem;
 }
 
-/* Close 'x' — keep black always, transform text-case on hover but remain black */
+/* Close 'x' */
 .contact-modal-x{
   position: absolute;
   top: 10px;
@@ -476,71 +486,63 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   font-family: 'wakaba', sans-serif;
   font-size: 1.8rem;
   line-height: 1;
-  color: #000 !important;       /* always black */
+  color: #000 !important;
   text-transform: lowercase;
   transition: text-transform 120ms ease, transform 120ms ease;
   padding: 0;
 }
+
 .contact-modal-x:hover,
 .contact-modal-x:focus,
 .contact-modal-x:active {
-  text-transform: uppercase;    /* becomes 'X' visually */
-  color: #000 !important;       /* remain black */
+  text-transform: uppercase;
+  color: #000 !important;
   outline: none;
 }
 
-/* Social buttons — remove black box/border; make square containers with small padding,
-   larger black icons, slight hover/active transforms; ensure minimal spacing between them */
+/* Social buttons */
 .contact-modal-socials {
   display: flex;
-  gap: 6px;                /* closer together */
+  gap: 6px;
   justify-content: center;
   align-items: center;
   margin-top: 0.6rem;
 }
 
-/* square container, minimal padding, transparent background */
 .contact-social-btn{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 45px;             /* larger square */
+  width: 45px;
   height: 64px;
-  padding: 6px;            /* small internal padding so glyphs don't touch edges */
-  background: transparent; /* no filled box */
-  border: none;            /* no border */
+  padding: 6px;
+  background: transparent;
+  border: none;
   color: #000;
   text-decoration: none;
-  border-radius: 6px;      /* slight corner radius keeps them square-like */
+  border-radius: 6px;
   transition: transform 140ms ease;
   outline: none;
 }
 
-/* make the icon itself much larger */
 .contact-social-btn i {
-  font-size: 36px;         /* more drastic size increase */
+  font-size: 36px;
   line-height: 1;
   color: #000;
   display: block;
 }
 
-/* hover/active: slight scale */
 .contact-social-btn:hover,
 .contact-social-btn:focus {
   transform: scale(1.12);
 }
+
 .contact-social-btn:active {
   transform: scale(0.98);
 }
+
 .contact-social-btn:focus-visible{
   box-shadow: 0 0 0 4px rgba(0,0,0,0.06);
-}
-
-/* ensure the overlay is fully opaque black when active (already set) */
-.contact-modal-overlay.is-active{
-  background: rgba(0,0,0,1); /* full black */
-  opacity: 1;
-  pointer-events: auto;
 }
 
 /* ensure form field text is always dark */
@@ -552,26 +554,26 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   caret-color: #141414;
 }
 
-/* Bootstrap server/client validation class support:
-   show pink text/borders for invalid fields (server errors or .is-invalid) */
+/* invalid styling */
 .contact-form input.is-invalid,
 .contact-form textarea.is-invalid,
 .contact-form select.is-invalid,
 .contact-form .field-error,
 .contact-form .error {
-  color: #f960d0 !important;        /* pink text for errors */
-  border-color: #f960d0 !important; /* pink border on invalid */
+  color: #f960d0 !important;
+  border-color: #f960d0 !important;
 }
 
-/* also style adjacent labels/message for error visibility */
 .contact-form .field-error,
 .contact-form .invalid-feedback,
 .contact-form .errorlist {
   color: #f960d0 !important;
 }
 
-/* If you use server-side error spans, make sure they are visible */
 .contact-form .errorlist li { list-style: none; }
 
 /* helper: prevent scroll when modal open */
-.no-scroll { overflow: hidden !important; }
+html.no-scroll,
+body.no-scroll{
+  overflow: hidden !important;
+}

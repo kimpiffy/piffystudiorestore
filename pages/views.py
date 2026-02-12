@@ -28,10 +28,18 @@ def contact(request):
 
             contact_message.save()
 
-            messages.success(request, "Thanks — your message has been sent.")
+            messages.success(
+                request,
+                "Thanks — your message has been sent.",
+                extra_tags="contact-success"
+            )
             return redirect("pages:contact")
         else:
-            messages.error(request, "Please check the form and try again.")
+            messages.error(
+                request,
+                "Please check the form and try again.",
+                extra_tags="contact-error"
+            )
     else:
         form = ContactMessageForm()
 

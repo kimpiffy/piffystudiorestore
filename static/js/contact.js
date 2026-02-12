@@ -56,15 +56,15 @@ function pointsToClosedPath(points) {
 // ---- blob model ----
 function buildBlobModel(id) {
   const rnd = mulberry32(hashToSeed(id || "contact"));
-  const N = 10 + Math.floor(rnd() * 6); // Moderate range (10-16) for good smoothness
+  const N = 10 + Math.floor(rnd() * 6); // 10-16
 
-  const baseR = 40 + rnd() * 12; // Moderate base radius range (40-52)
-  const amp1 = 3 + rnd() * 5; // Moderate amplitudes for variation (3-8)
-  const amp2 = 2 + rnd() * 4; // (2-6)
-  const amp3 = 1 + rnd() * 3; // Additional amplitude layer (1-4)
-  const f1 = 2 + Math.floor(rnd() * 3); // Lower frequency range for smoother curves (2-5)
-  const f2 = 3 + Math.floor(rnd() * 3); // (3-6)
-  const f3 = 4 + Math.floor(rnd() * 2); // (4-6)
+  const baseR = 40 + rnd() * 12; // 40-52
+  const amp1 = 3 + rnd() * 5;    // 3-8
+  const amp2 = 2 + rnd() * 4;    // 2-6
+  const amp3 = 1 + rnd() * 3;    // 1-4
+  const f1 = 2 + Math.floor(rnd() * 3); // 2-5
+  const f2 = 3 + Math.floor(rnd() * 3); // 3-6
+  const f3 = 4 + Math.floor(rnd() * 2); // 4-6
   const p1 = rnd() * Math.PI * 2;
   const p2 = rnd() * Math.PI * 2;
   const p3 = rnd() * Math.PI * 2;
@@ -76,44 +76,46 @@ function buildBlobModel(id) {
     const a = (i / N) * Math.PI * 2;
     angles.push(a);
 
-    let r = baseR + 
-      Math.sin(a * f1 + p1) * amp1 + 
+    let r =
+      baseR +
+      Math.sin(a * f1 + p1) * amp1 +
       Math.sin(a * f2 + p2) * amp2 +
       Math.sin(a * f3 + p3) * amp3;
-    r = Math.max(32, Math.min(60, r)); // Tighter radius range to prevent spikes
+
+    r = Math.max(32, Math.min(60, r));
     radii.push(r);
   }
 
   const rip = {
     amps: [
-      1.5 + rnd() * 2,     // Smaller ripple amplitudes (1.5-3.5)
-      1 + rnd() * 1.5,     // (1-2.5)
-      0.8 + rnd() * 1.2,   // (0.8-2)
-      0.5 + rnd() * 1,     // (0.5-1.5)
-      0.3 + rnd() * 0.7    // Additional gentle ripple layer (0.3-1)
+      1.5 + rnd() * 2,
+      1 + rnd() * 1.5,
+      0.8 + rnd() * 1.2,
+      0.5 + rnd() * 1,
+      0.3 + rnd() * 0.7
     ],
     freqs: [
-      2 + Math.floor(rnd() * 2), // Lower frequency range for smoothness (2-4)
-      3 + Math.floor(rnd() * 2), // (3-5)
-      4 + Math.floor(rnd() * 2), // (4-6)
-      5 + Math.floor(rnd() * 3), // (5-8)
-      6 + Math.floor(rnd() * 2)  // (6-8)
+      2 + Math.floor(rnd() * 2),
+      3 + Math.floor(rnd() * 2),
+      4 + Math.floor(rnd() * 2),
+      5 + Math.floor(rnd() * 3),
+      6 + Math.floor(rnd() * 2)
     ],
     phases: [
-      rnd() * Math.PI * 2, 
-      rnd() * Math.PI * 2, 
-      rnd() * Math.PI * 2, 
+      rnd() * Math.PI * 2,
+      rnd() * Math.PI * 2,
+      rnd() * Math.PI * 2,
       rnd() * Math.PI * 2,
       rnd() * Math.PI * 2
     ],
     speeds: [
-      0.15 + rnd() * 0.25, // Slower, smoother speeds (0.15-0.4)
-      0.12 + rnd() * 0.23, // (0.12-0.35)
-      0.1 + rnd() * 0.2,   // (0.1-0.3)
-      0.08 + rnd() * 0.17, // (0.08-0.25)
-      0.05 + rnd() * 0.15  // (0.05-0.2)
+      0.15 + rnd() * 0.25,
+      0.12 + rnd() * 0.23,
+      0.1 + rnd() * 0.2,
+      0.08 + rnd() * 0.17,
+      0.05 + rnd() * 0.15
     ],
-    strength: 0.4 + rnd() * 0.4 // Moderate ripple strength (0.4-0.8)
+    strength: 0.4 + rnd() * 0.4
   };
 
   return { N, angles, radii, rip };
@@ -129,151 +131,168 @@ function computeBlobPath(model, tSec) {
 
     let dr = 0;
     for (let k = 0; k < model.rip.amps.length; k++) {
-      dr += Math.sin(a * model.rip.freqs[k] + model.rip.phases[k] + tSec * model.rip.speeds[k]) * model.rip.amps[k];
+      dr +=
+        Math.sin(
+          a * model.rip.freqs[k] +
+            model.rip.phases[k] +
+            tSec * model.rip.speeds[k]
+        ) * model.rip.amps[k];
     }
 
     r += dr * model.rip.strength;
-    r = Math.max(30, Math.min(65, r)); // Moderate range to prevent extremes
+    r = Math.max(30, Math.min(65, r));
     pts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
   }
 
-  const smooth = chaikin(pts, 3); // More smoothing iterations to eliminate sharp points
+  const smooth = chaikin(pts, 3);
   return pointsToClosedPath(smooth);
 }
 
 // ---- Main Animation Controller ----
 class ContactAnimationController {
   constructor() {
-    this.introStage = document.getElementById('introStage');
-    this.expandingBlob = document.getElementById('expandingBlob');
-    this.introBlobPath = document.getElementById('introBlobPath');
-    this.tessellatedBg = document.getElementById('tessellatedBg');
-    this.contactContent = document.getElementById('contactContent');
-    
-    this.model = buildBlobModel('contact-intro');
-    this.animationPhase = 'intro';
+    this.introStage = document.getElementById("introStage");
+    this.expandingBlob = document.getElementById("expandingBlob");
+    this.introBlobPath = document.getElementById("introBlobPath");
+    this.tessellatedBg = document.getElementById("tessellatedBg");
+    this.contactContent = document.getElementById("contactContent");
+
+    this.model = buildBlobModel("contact-intro");
+    this.animationPhase = "intro";
     this.introStartTime = null;
     this.expandStartTime = null;
     this.tessellateStartTime = null;
-    
-    this.INTRO_DURATION = 3000; // Longer elaborate wiggling phase
-    this.EXPAND_DURATION = 2500; // Slightly longer expansion
+
+    this.INTRO_DURATION = 3000;
+    this.EXPAND_DURATION = 2500;
     this.FADE_DURATION = 800;
-    
-    // Check if this is first visit
-    this.isFirstVisit = !sessionStorage.getItem('contactVisited');
+
+    this.isFirstVisit = !sessionStorage.getItem("contactVisited");
   }
 
   init() {
-    // Always skip intro animation and go straight to tessellated background
-    this.introStage.style.display = 'none';
-    this.tessellatedBg.style.opacity = '1';
-    this.contactContent.style.opacity = '1';
-    this.contactContent.style.pointerEvents = 'auto';
-    this.generateTessellatedDots();
-    
+    // Always keep form logic working
     this.setupFormLogic();
+
+    // If the page doesn't include the animation DOM, do nothing else (prevents crashes)
+    if (!this.tessellatedBg || !this.contactContent) return;
+
+    // Your current behaviour: skip intro animation and go straight to background + form
+    if (this.introStage) this.introStage.style.display = "none";
+
+    this.tessellatedBg.style.opacity = "1";
+    this.generateTessellatedDots();
+
+    this.contactContent.style.opacity = "1";
+    this.contactContent.style.pointerEvents = "auto";
+
+    // Keep dots filling viewport on resize (no visual change; just prevents gaps)
+    window.addEventListener("resize", () => {
+      if (!this.tessellatedBg) return;
+      this.generateTessellatedDots();
+    });
   }
 
+  // (kept for future if you re-enable intro)
   startIntro() {
+    if (!this.introBlobPath || !this.expandingBlob) return;
     this.introStartTime = performance.now();
-    this.animationPhase = 'intro';
+    this.animationPhase = "intro";
     this.animate();
   }
 
   startExpansion() {
+    if (!this.introBlobPath || !this.expandingBlob) return;
     this.expandStartTime = performance.now();
-    this.animationPhase = 'expanding';
+    this.animationPhase = "expanding";
   }
 
   startTessellation() {
+    if (!this.tessellatedBg || !this.contactContent) return;
+
     this.tessellateStartTime = performance.now();
-    this.animationPhase = 'tessellating';
-    
-    // Fade in tessellated background
-    this.tessellatedBg.style.opacity = '1';
+    this.animationPhase = "tessellating";
+
+    this.tessellatedBg.style.opacity = "1";
     this.generateTessellatedDots();
-    
-    // Fade in contact form
+
     setTimeout(() => {
-      this.contactContent.style.opacity = '1';
-      this.contactContent.style.pointerEvents = 'auto';
+      if (!this.contactContent) return;
+      this.contactContent.style.opacity = "1";
+      this.contactContent.style.pointerEvents = "auto";
     }, 300);
-    
-    // Hide intro stage
-    setTimeout(() => {
-      this.introStage.style.opacity = '0';
+
+    if (this.introStage) {
       setTimeout(() => {
-        this.introStage.style.display = 'none';
-      }, 500);
-    }, 200);
+        if (!this.introStage) return;
+        this.introStage.style.opacity = "0";
+        setTimeout(() => {
+          if (this.introStage) this.introStage.style.display = "none";
+        }, 500);
+      }, 200);
+    }
   }
 
   animate() {
+    if (!this.introBlobPath || !this.expandingBlob) return;
+
     const now = performance.now();
     const t = now / 1000;
-    
-    if (this.animationPhase === 'intro') {
+
+    if (this.animationPhase === "intro") {
       const elapsed = now - this.introStartTime;
       const progress = elapsed / this.INTRO_DURATION;
-      
-      // Elaborate blob animation with complex wiggles
+
       const path = computeBlobPath(this.model, t);
-      this.introBlobPath.setAttribute('d', path);
-      
-      // Complex scaling: starts tiny, wiggles, then grows elaborately
+      this.introBlobPath.setAttribute("d", path);
+
       const baseScale = 0.03;
       const wiggle1 = Math.sin(t * 3) * 0.02;
       const wiggle2 = Math.sin(t * 5.5) * 0.015;
       const wiggle3 = Math.sin(t * 7.2) * 0.01;
-      const growth = Math.sin(progress * Math.PI * 0.5) * 0.08; // Gradual growth throughout intro
-      const elaborate = Math.sin(t * 1.8) * Math.sin(t * 2.3) * 0.02; // Complex oscillation
-      
+      const growth = Math.sin(progress * Math.PI * 0.5) * 0.08;
+      const elaborate = Math.sin(t * 1.8) * Math.sin(t * 2.3) * 0.02;
+
       const scale = baseScale + wiggle1 + wiggle2 + wiggle3 + growth + elaborate;
       this.expandingBlob.style.transform = `translate(-50%, -50%) scale(${scale})`;
-      
-      if (elapsed >= this.INTRO_DURATION) {
-        this.startExpansion();
-      }
-      
-    } else if (this.animationPhase === 'expanding') {
+
+      if (elapsed >= this.INTRO_DURATION) this.startExpansion();
+    } else if (this.animationPhase === "expanding") {
       const elapsed = now - this.expandStartTime;
       const progress = Math.min(elapsed / this.EXPAND_DURATION, 1);
-      
-      // Smooth expansion using easeOutQuart
+
       const easeProgress = 1 - Math.pow(1 - progress, 4);
-      
-      // Expand from tiny to screen-filling
-      const scale = 0.05 + easeProgress * 25; // scales up to 25x (fills screen)
+      const scale = 0.05 + easeProgress * 25;
       this.expandingBlob.style.transform = `translate(-50%, -50%) scale(${scale})`;
-      
-      // Keep blob animating during expansion
+
       const path = computeBlobPath(this.model, t);
-      this.introBlobPath.setAttribute('d', path);
-      
+      this.introBlobPath.setAttribute("d", path);
+
       if (progress >= 1) {
         this.startTessellation();
-        return; // Stop this animation loop
+        return;
       }
     }
-    
-    if (this.animationPhase !== 'tessellating') {
+
+    if (this.animationPhase !== "tessellating") {
       requestAnimationFrame(() => this.animate());
     }
   }
 
   generateTessellatedDots() {
     const container = this.tessellatedBg;
-    container.innerHTML = ''; // Clear existing dots
-    
-    const dotSize = 60; // Base size in pixels
-    const spacing = 80; // Spacing between dots
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const dotSize = 60;
+    const spacing = 80;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    
+
     const cols = Math.ceil(viewportWidth / spacing) + 2;
     const rows = Math.ceil(viewportHeight / spacing) + 2;
-    
+
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const dot = this.createTessellatedDot(col, row, spacing, dotSize);
@@ -283,69 +302,62 @@ class ContactAnimationController {
   }
 
   createTessellatedDot(col, row, spacing, baseSize) {
-    const dot = document.createElement('div');
-    dot.className = 'tessellated-dot';
-    
-    // Position
+    const dot = document.createElement("div");
+    dot.className = "tessellated-dot";
+
     const x = col * spacing - spacing / 2;
     const y = row * spacing - spacing / 2;
-    
-    // Offset every other row for tessellation
     const offsetX = row % 2 === 1 ? spacing / 2 : 0;
-    
+
     dot.style.left = `${x + offsetX}px`;
     dot.style.top = `${y}px`;
     dot.style.width = `${baseSize}px`;
     dot.style.height = `${baseSize}px`;
-    
-    // Create blob SVG for this dot
-    const svg = document.createElement('div');
+
+    const svg = document.createElement("div");
     svg.innerHTML = `
       <svg viewBox="0 0 100 100" preserveAspectRatio="none">
         <path class="tessellated-dot-path" d="" fill="#ff4fb3"></path>
       </svg>
     `;
     dot.appendChild(svg.firstElementChild);
-    
-    // Start animation for this dot
+
     const model = buildBlobModel(`dot-${col}-${row}`);
-    const pathElement = dot.querySelector('.tessellated-dot-path');
-    
-    // Start immediately, no delay
-    this.animateTessellatedDot(pathElement, model, baseSize);
-    
+    const pathElement = dot.querySelector(".tessellated-dot-path");
+    if (pathElement) this.animateTessellatedDot(pathElement, model);
+
     return dot;
   }
 
-  animateTessellatedDot(pathElement, model, baseSize) {
+  animateTessellatedDot(pathElement, model) {
     const startTime = performance.now();
-    const CYCLE_DURATION = 4000 + Math.random() * 2000; // 4-6 seconds per cycle
-    
+    const CYCLE_DURATION = 4000 + Math.random() * 2000;
+
     const animate = () => {
       const elapsed = (performance.now() - startTime) % CYCLE_DURATION;
       const progress = elapsed / CYCLE_DURATION;
-      
-      // Scale animation: small -> big -> small
+
       const scale = 0.3 + Math.sin(progress * Math.PI * 2) * 0.4 + 0.3;
-      
-      // Update blob shape
+
       const t = performance.now() / 1000;
       const path = computeBlobPath(model, t);
-      pathElement.setAttribute('d', path);
-      pathElement.parentElement.style.transform = `scale(${scale})`;
-      
+      pathElement.setAttribute("d", path);
+
+      if (pathElement.parentElement) {
+        pathElement.parentElement.style.transform = `scale(${scale})`;
+      }
+
       requestAnimationFrame(animate);
     };
-    
+
     animate();
   }
 
   setupFormLogic() {
-    // "other" dropdown logic (preserve existing functionality)
     const select = document.getElementById("query_related");
     const otherWrap = document.getElementById("otherWrap");
     const otherInput = document.getElementById("other_specify");
-    
+
     if (!select || !otherWrap || !otherInput) return;
 
     function sync() {
@@ -366,7 +378,7 @@ class ContactAnimationController {
 }
 
 // ---- Initialize when DOM is ready ----
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   const controller = new ContactAnimationController();
   controller.init();
 });
