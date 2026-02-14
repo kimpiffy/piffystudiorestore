@@ -1,4 +1,9 @@
 import { createBlobModel, computePathFromModel } from "./digital/blob/model.js";
+import {
+  createMetaballField,
+  marchingSquaresContours,
+  polylineToSvgPath
+} from "./digital/blob/metaballs.js";
 
 function fitPathElToBox(pathEl, boxSize = 300, pad = 4) {
   if (!pathEl) return null;
@@ -90,25 +95,48 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!orbit) return;
 
   // === Feel knobs ===
-  const GAP_PX = 38;             // desired edge gap
-  const SAMPLES = 120;           // more samples = smoother min distance
-  const SOLVER_ITERS = 3;        // keep low to avoid jitter (we smooth output)
+  const GAP_PX = 38;
+  const SAMPLES = 120;
+  const SOLVER_ITERS = 4;
 
-  // How strongly they "yield" when too close
-  const YIELD = 0.085;
+  const YIELD = 0.050;
 
-  // Scale limits (keep subtle)
-  const G_MIN = 0.90;
+  const G_MIN = 0.92;
   const G_MAX = 1.00;
-  const AX_MIN = 0.86;
-  const AX_MAX = 1.03;
+  const AX_MIN = 0.90;
+  const AX_MAX = 1.02;
 
-  // Smoothing (important for unified fluid)
-  const SMOOTH = 0.08;
+  const SMOOTH = 0.10;
 
-  // Shared morph driver (unifies motion)
+  const CORRECT_K = 0.52;
+  const T_DAMP = 0.90;
+  const T_MAX = 55;
+
+  const TIME_SLOW = 0.55;
+  const YIELD_DAMP = 0.60;
+
+  const FLOW_AMP = 10;
+  const FLOW_SPEED = 0.22;
+  const SWIRL_AMP = 7;
+  const SWIRL_SPEED = 0.35;
+  const SWIRL_DAMP_BY_CONTACT = 0.65;
+
+  const GAP_PRESS = 0.22;
+  const GAP_PRESS_MAX = 0.38;
+
+  // ===== Metaballs (single shared field) =====
+  // ROLLBACK: disable metaballs to return to stable shared-model rendering
+  const USE_METABALLS = false;
+
+  const MB_COLS = 96;
+  const MB_ROWS = 96;
+  const MB_ISO = 0;
+  const MB_BIAS = 1.10;
+  const MB_RADIUS = 78;
+  const MB_WOB = 6;
+
   const sharedModel = createBlobModel("home-shared");
-  const TIME_OFFSETS = [0.0, 0.0, 0.0]; // related, not identical
+  const TIME_OFFSETS = [0.0, 0.0, 0.0];
 
   const links = Array.from(orbit.querySelectorAll(".blob-link"));
   const svgs = Array.from(orbit.querySelectorAll(".blob-svg"));
@@ -135,18 +163,25 @@ document.addEventListener("DOMContentLoaded", () => {
       shapeEl,
       linkEl,
       tOff: TIME_OFFSETS[idx % TIME_OFFSETS.length],
-
-      // sampled points each frame
       pts: [],
-
-      // center each frame
       cx: 0,
       cy: 0,
 
-      // current & target deformation
       g: 1, tg: 1,
       sx: 1, tsx: 1,
       sy: 1, tsy: 1,
+
+      tx: 0,
+      ty: 0,
+      stx: 0,
+      sty: 0,
+
+      contact: 0,
+      tScale: 1,
+      stScale: 1,
+
+      // NEW: stable identity number for “dance” phase
+      i: idx,
     };
   });
 
@@ -164,25 +199,21 @@ document.addEventListener("DOMContentLoaded", () => {
       b.tg = 1;
       b.tsx = 1;
       b.tsy = 1;
+      b.contact = 0; // NEW: reset contact each frame
     }
   }
 
-  function applyPairYield(A, B, overlap, dirX, dirY) {
-    // overlap in px. dir is unit vector pointing from B -> A (screen space).
-    // We "squish" both along the approach axis, and slightly expand perpendicular.
+  // Change applyPairYield to accept a per-pair yield multiplier
+  function applyPairYield(A, B, overlap, dirX, dirY, yieldMul) {
     const k = clamp(overlap / GAP_PX, 0, 1);
-
-    // axis weights in screen frame (stable + good enough visually)
     const wx = Math.abs(dirX);
     const wy = Math.abs(dirY);
 
-    const s = YIELD * k;
+    const s = (YIELD * yieldMul) * k;
 
-    // squish toward each other
     const shrinkX = 1 - s * wx;
     const shrinkY = 1 - s * wy;
 
-    // tiny compensate perpendicular (keeps "liquid volume" feeling)
     const expandX = 1 + (s * 0.45) * wy;
     const expandY = 1 + (s * 0.45) * wx;
 
@@ -191,75 +222,107 @@ document.addEventListener("DOMContentLoaded", () => {
     B.tsx = clamp(B.tsx * shrinkX * expandX, AX_MIN, AX_MAX);
     B.tsy = clamp(B.tsy * shrinkY * expandY, AX_MIN, AX_MAX);
 
-    // gentle global shrink fallback
-    const gDrop = (YIELD * 0.55) * k;
+    const gDrop = ((YIELD * yieldMul) * 0.55) * k;
     A.tg = clamp(A.tg * (1 - gDrop), G_MIN, G_MAX);
     B.tg = clamp(B.tg * (1 - gDrop), G_MIN, G_MAX);
   }
 
+  function resetTranslationTargets() {
+    for (const b of blobs) {
+      b.tx *= T_DAMP;
+      b.ty *= T_DAMP;
+    }
+  }
+
+  function applyTranslationStyles() {
+    for (const b of blobs) {
+      if (!b.linkEl) continue;
+      b.stx = lerp(b.stx ?? 0, b.tx, SMOOTH);
+      b.sty = lerp(b.sty ?? 0, b.ty, SMOOTH);
+      b.linkEl.style.setProperty("--tx", `${b.stx.toFixed(2)}px`);
+      b.linkEl.style.setProperty("--ty", `${b.sty.toFixed(2)}px`);
+    }
+  }
+
+  function recenterCluster() {
+    // Make them feel like ONE object: keep centroid of translations at (0,0)
+    let mx = 0, my = 0, n = 0;
+    for (const b of blobs) {
+      mx += b.tx;
+      my += b.ty;
+      n++;
+    }
+    if (!n) return;
+    mx /= n;
+    my /= n;
+
+    for (const b of blobs) {
+      b.tx -= mx;
+      b.ty -= my;
+
+      b.tx = clamp(b.tx, -T_MAX, T_MAX);
+      b.ty = clamp(b.ty, -T_MAX, T_MAX);
+    }
+  }
+
+  function getLocalCenters300() {
+    // Map each blob-link center (screen coords) into its own SVG 0..300 space.
+    // We use the current link rect as the local frame.
+    return blobs.map((b) => {
+      const r = b.linkEl?.getBoundingClientRect();
+      if (!r) return { x: 150, y: 150 };
+
+      const nx = (b.cx - r.left) / (r.width || 1);
+      const ny = (b.cy - r.top) / (r.height || 1);
+
+      return { x: nx * 300, y: ny * 300 };
+    });
+  }
+
+  function centroid(poly) {
+    let x = 0, y = 0;
+    const n = poly?.length || 1;
+    for (let i = 0; i < (poly?.length || 0); i++) {
+      x += poly[i].x;
+      y += poly[i].y;
+    }
+    return { x: x / n, y: y / n };
+  }
+
+  // NEW: make sure frame is defined in the same scope as the helpers
   let raf = 0;
   const t0 = performance.now();
 
   function frame(now) {
     const t = (now - t0) / 1000;
 
-    // 1) Morph: use shared model so motion is unified
+    // 1) Render shapes (stable path)
     for (const b of blobs) {
       if (!b.shapeEl) continue;
-      b.shapeEl.setAttribute("d", computePathFromModel(sharedModel, t + b.tOff));
+
+      // Keep a gentle per-blob time scaling if you want
+      b.stScale = lerp(b.stScale, b.tScale, 0.12);
+      const tLocal = t * (b.stScale || 1) + (b.tOff || 0);
+
+      b.shapeEl.setAttribute("d", computePathFromModel(sharedModel, tLocal));
       fitPathElToBox(b.shapeEl, 300, 4);
     }
 
-    // 2) sample edges AFTER morph (positions come from CSS orbit)
+    // 2) Update centers + sample points (for collisions if/when you re-enable packing)
     updateCenters();
     for (const b of blobs) {
       if (!b.shapeEl) continue;
       b.pts = samplePathScreenPoints(b.shapeEl, SAMPLES);
     }
 
-    // 3) solve yields
-    resetTargets();
+    // 3) (Optional) If your old stable version had translation/packing, it would go here.
+    // For now, keep it simple and visible:
+    // applyTranslationStyles();
 
-    for (let iter = 0; iter < SOLVER_ITERS; iter++) {
-      for (let i = 0; i < blobs.length; i++) {
-        for (let j = i + 1; j < blobs.length; j++) {
-          const A = blobs[i];
-          const B = blobs[j];
-          if (!A.pts.length || !B.pts.length) continue;
-
-          const { d, ax, ay, bx, by } = minDistBetweenPointSets(A.pts, B.pts);
-          const overlap = GAP_PX - d;
-          if (overlap <= 0) continue;
-
-          let dx = ax - bx;
-          let dy = ay - by;
-          const mag = Math.hypot(dx, dy) || 1;
-          dx /= mag; dy /= mag;
-
-          applyPairYield(A, B, overlap, dx, dy);
-        }
-      }
-    }
-
-    // 4) smooth application (THIS is what makes it feel like one fluid)
-    for (const b of blobs) {
-      if (!b.linkEl) continue;
-
-      b.g = lerp(b.g, b.tg, SMOOTH);
-      b.sx = lerp(b.sx, b.tsx, SMOOTH);
-      b.sy = lerp(b.sy, b.tsy, SMOOTH);
-
-      b.linkEl.style.setProperty("--blob-scale", b.g.toFixed(4));
-      b.linkEl.style.setProperty("--sx", b.sx.toFixed(4));
-      b.linkEl.style.setProperty("--sy", b.sy.toFixed(4));
-    }
-
-    body.classList.add("home-ready");
     raf = requestAnimationFrame(frame);
   }
 
+  body.classList.add("home-ready");
   raf = requestAnimationFrame(frame);
-  setTimeout(() => body.classList.add("home-rotate"), 200);
-
   window.addEventListener("beforeunload", () => cancelAnimationFrame(raf));
 });

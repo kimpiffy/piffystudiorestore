@@ -63,6 +63,7 @@ html, body{ background: var(--bg); color:#fff; }
     translate(-50%,-50%)
     rotate(var(--angle))
     translateY(calc(-1 * var(--blob-dist)))
+    translate(var(--tx, 0px), var(--ty, 0px))
     scale(var(--blob-scale, 1))
     scaleX(var(--sx, 1))
     scaleY(var(--sy, 1));
