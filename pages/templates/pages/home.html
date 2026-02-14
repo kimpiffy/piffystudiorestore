@@ -1,94 +1,64 @@
+{% extends "base.html" %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% block extra_head %}
   <link rel="preload" href="{% static 'fonts/wakaba.woff2' %}" as="font" type="font/woff2" crossorigin>
-
-  <title>Piffy Studio</title>
-
-  <!-- Homepage-only styles -->
   <link rel="stylesheet" href="{% static 'css/home.css' %}">
-</head>
+{% endblock %}
 
-<body class="home">
+{% block content %}
+<main class="home-stage" id="homeStage" aria-label="Piffy Studio landing">
+  <div class="orbit" id="orbit" aria-hidden="false">
 
-  <main class="tiles">
-    <div class="deck" id="deck">
+    <a class="blob-link" href="{% url 'portfolio:art' %}" aria-label="create" style="--angle:0deg;">
+      <svg class="blob-svg" viewBox="0 0 300 300" data-label="create" data-img="{% static 'img/home/create.png' %}">
+        <defs>
+          <path id="shape-create" class="blob-shape"></path>
+          <clipPath id="clip-create" clipPathUnits="userSpaceOnUse">
+            <use href="#shape-create" xlink:href="#shape-create"></use>
+          </clipPath>
+        </defs>
 
-      <!-- 1 -->
-      <a
-        class="tile"
-        href="{% url 'portfolio:art' %}"
-        style="--bg: url('{% static 'img/home/create.png' %}');"
-      >
-        <div class="tile__bg" aria-hidden="true"></div>
-        <div class="tile__word" data-text="create"></div>
-      </a>
+        <image class="blob-img" clip-path="url(#clip-create)"></image>
+        <rect class="blob-shade" clip-path="url(#clip-create)" x="0" y="0" width="300" height="300"></rect>
+      </svg>
+      <span class="blob-label" aria-hidden="true">create</span>
+    </a>
 
-      <!-- 2 -->
-      <a
-        class="tile"
-        href="{% url 'portfolio:digital' %}"
-        style="--bg: url('{% static 'img/home/build.png' %}');"
-      >
-        <div class="tile__bg" aria-hidden="true"></div>
-        <div class="tile__word" data-text="build"></div>
-      </a>
+    <a class="blob-link" href="{% url 'portfolio:digital' %}" aria-label="build" style="--angle:120deg;">
+      <svg class="blob-svg" viewBox="0 0 300 300" data-label="build" data-img="{% static 'img/home/build.png' %}">
+        <defs>
+          <path id="shape-build" class="blob-shape"></path>
+          <clipPath id="clip-build" clipPathUnits="userSpaceOnUse">
+            <use href="#shape-build" xlink:href="#shape-build"></use>
+          </clipPath>
+        </defs>
 
-      <!-- 3 -->
-      <a
-        class="tile"
-        href="{% url 'portfolio:installations' %}"
-        style="--bg: url('{% static 'img/home/connect.jpg' %}');"
-      >
-        <div class="tile__bg" aria-hidden="true"></div>
-        <div class="tile__word" data-text="connect"></div>
-      </a>
+        <image class="blob-img" clip-path="url(#clip-build)"></image>
+        <rect class="blob-shade" clip-path="url(#clip-build)" x="0" y="0" width="300" height="300"></rect>
+      </svg>
+      <span class="blob-label" aria-hidden="true">build</span>
+    </a>
 
-      <!-- 4 -->
-      <a
-        class="tile"
-        href="{% url 'portfolio:art' %}"
-        style="--bg: url('{% static 'img/home/create2.png' %}');"
-      >
-        <div class="tile__bg" aria-hidden="true"></div>
-        <div class="tile__word" data-text="create"></div>
-      </a>
+    <a class="blob-link" href="{% url 'portfolio:installations' %}" aria-label="connect" style="--angle:240deg;">
+      <svg class="blob-svg" viewBox="0 0 300 300" data-label="connect" data-img="{% static 'img/home/connect.jpg' %}">
+        <defs>
+          <path id="shape-connect" class="blob-shape"></path>
+          <clipPath id="clip-connect" clipPathUnits="userSpaceOnUse">
+            <use href="#shape-connect" xlink:href="#shape-connect"></use>
+          </clipPath>
+        </defs>
 
-      <!-- 5 -->
-      <a
-        class="tile"
-        href="{% url 'portfolio:digital' %}"
-        style="--bg: url('{% static 'img/home/build2.png' %}');"
-      >
-        <div class="tile__bg" aria-hidden="true"></div>
-        <div class="tile__word" data-text="build"></div>
-      </a>
+        <image class="blob-img" clip-path="url(#clip-connect)"></image>
+        <rect class="blob-shade" clip-path="url(#clip-connect)" x="0" y="0" width="300" height="300"></rect>
+      </svg>
+      <span class="blob-label" aria-hidden="true">connect</span>
+    </a>
 
-      <!-- 6 -->
-      <a
-        class="tile"
-        href="{% url 'portfolio:installations' %}"
-        style="--bg: url('{% static 'img/home/connect2.png' %}');"
-      >
-        <div class="tile__bg" aria-hidden="true"></div>
-        <div class="tile__word" data-text="connect"></div>
-      </a>
+  </div>
+</main>
+{% endblock %}
 
-    </div>
-  </main>
-
-  <script src="{% static 'js/vendor/gsap.min.js' %}"></script>
-  <script src="{% static 'js/vendor/Observer.min.js' %}"></script>
-
-  <script src="{% static 'js/vendor/blotter.min.js' %}"></script>
-  <script src="{% static 'js/vendor/liquidDistortMaterial.js' %}"></script>
-
-  <!-- your blotter file should stay BEFORE the gsap file so it can listen for panelEnter -->
-  <script src="{% static 'js/home-blotter.js' %}"></script>
-  <script src="{% static 'js/home-gsap.js' %}"></script>
-
-</body>
-</html>
+{% block extra_scripts %}
+  <script type="module" src="{% static 'js/home-main.js' %}"></script>
+{% endblock %}

@@ -98,17 +98,26 @@ WSGI_APPLICATION = "config.wsgi.application"
 # -------------------------------
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
+# Normalize old-style postgres scheme if present
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+def _is_postgres(url: str) -> bool:
+    return url.startswith("postgresql://") or url.startswith("postgres://")
+
 if DATABASE_URL:
+    # Parse WITHOUT forcing SSL (because DATABASE_URL might be sqlite:// locally)
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True,   # Render Postgres wants SSL
         )
     }
+
+    # Only require SSL options when the parsed engine is Postgres
+    if DATABASES["default"].get("ENGINE") == "django.db.backends.postgresql" or _is_postgres(DATABASE_URL):
+        DATABASES["default"].setdefault("OPTIONS", {})
+        DATABASES["default"]["OPTIONS"]["sslmode"] = "require"
 else:
     DATABASES = {
         "default": {
