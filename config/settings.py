@@ -7,11 +7,10 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load default env (Render / shared)
-load_dotenv(BASE_DIR / ".env")
-
-# Load local overrides if present (SQLite, test keys, etc.)
-load_dotenv(BASE_DIR / ".env.local", override=True)
+# Only load .env files locally (NOT on Render)
+if os.getenv("RENDER") is None:
+    load_dotenv(BASE_DIR / ".env")
+    load_dotenv(BASE_DIR / ".env.local", override=True)
 
 # -------------------------------
 # SECURITY
@@ -26,14 +25,8 @@ raw_allowed = os.getenv(
 )
 ALLOWED_HOSTS = [h.strip() for h in raw_allowed.split(",") if h.strip()]
 
-# Render runs behind a proxy; this makes request.is_secure() work correctly
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-# If you want forced HTTPS in production, uncomment after everything works:
-# if not DEBUG:
-#     SECURE_SSL_REDIRECT = True
-
-# Needed for login/forms/admin on https domains
 CSRF_TRUSTED_ORIGINS = [
     "https://piffystudio.onrender.com",
 ]
@@ -55,7 +48,6 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "widget_tweaks",
 
-    # Your apps
     "pages",
     "portfolio",
     "interactions",
@@ -107,7 +99,6 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
 if DATABASE_URL.startswith("postgres://"):
-    # Some providers use postgres:// but dj_database_url expects postgresql://
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 if DATABASE_URL:
@@ -115,7 +106,7 @@ if DATABASE_URL:
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True,
+            ssl_require=True,   # Render Postgres wants SSL
         )
     }
 else:
@@ -161,7 +152,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Django 4.2+ storage configuration (works well with Whitenoise)
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {
