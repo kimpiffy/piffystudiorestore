@@ -31,8 +31,8 @@ html, body{ height:100%; margin:0; }
   /* Rotation speed */
   --orbit-seconds: 25s;
 
-  /* label size */
-  --label-size: 75px;
+  /* label size - match about page word size */
+  --label-size: clamp(5rem, 5vw, 10rem);
 }
 
 html, body{ background: var(--bg); color:#fff; }
@@ -111,6 +111,8 @@ html, body{ background: var(--bg); color:#fff; }
   font-family: wakaba, system-ui, sans-serif;
   font-size: var(--label-size);
   color: #ffa931;
+  text-transform: lowercase;
+  transition: color 300ms ease, text-transform 300ms ease;
 
   padding: 0;                 /* was 10px 16px */
   border-radius: 0;           /* was 999px */
@@ -121,12 +123,20 @@ html, body{ background: var(--bg); color:#fff; }
     0 0 20px rgba(124, 108, 247, 0.6),
     0 0 30px rgba(124, 108, 247, 0.4),
     2px 2px 4px rgba(0, 0, 0, 0.8);
+
+  pointer-events: none;
+}
+
+.blob-link:hover .blob-label,
+.blob-link:active .blob-label {
+  color: #ff4fb3;
+  text-transform: uppercase;
 }
 
 @media (max-width: 520px){
   :root{
     --blob-size: clamp(120px, 28vw, 180px);
-    --label-size: 16px;
+    --label-size: clamp(3rem, 8vw, 5rem);
   }
   
   /* Reset orbit positioning for mobile */

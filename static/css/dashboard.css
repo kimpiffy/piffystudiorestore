@@ -271,7 +271,7 @@ hr {
   min-width: 0 !important;
   max-width: 100px;
 
-  background: var(--charcoal);
+  background: transparent;
   border-radius: 18px;
   padding: 0px 8px 16px 10px;
 
@@ -321,7 +321,10 @@ hr {
 
 /* WORK / DROPDOWN STYLES */
 .dropdown-menu {
-  background: var(--charcoal);
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
   border: none;
   border-radius: 12px;
   padding: 6px 8px;
@@ -355,7 +358,7 @@ hr {
   letter-spacing: 0.01em;
   line-height: 1.0;
 
-  color: var(--lilac) !important;
+  color: #ff4fb3 !important;
   text-decoration: none;
   text-transform: none;
 
@@ -369,17 +372,17 @@ hr {
   background: transparent !important;
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: var(--lilac);
+  text-decoration-color: #ff4fb3;
   text-underline-offset: 4px;
-  color: var(--lilac) !important;
+  color: #ff4fb3 !important;
   outline: none;
 }
 .dropdown-item:active {
   background: transparent !important;
-  color: var(--lilac) !important;
+  color: #ff4fb3 !important;
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: var(--lilac);
+  text-decoration-color: #ff4fb3;
 }
 
 /* helper alignment for Bootstrap nav where needed */

@@ -84,6 +84,7 @@ export function createPortraitController(portraitBtn) {
                  xlink:href="${escapeHtml(img)}"
                  x="0" y="0" width="100" height="100"
                  preserveAspectRatio="${PORTRAIT_FIT}"></image>
+          <rect class="blob-shade" x="0" y="0" width="100" height="100"></rect>
         </g>
 
         <path class="blob-outline" id="${uid}_outline" d="${d0}" fill="none"></path>

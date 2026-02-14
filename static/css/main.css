@@ -253,7 +253,7 @@ img, svg, video {
   min-width: 0 !important;
   max-width: 100px;          /* limit width to about 2/3 of original */
 
-  background: var(--charcoal);
+  background: transparent;
   border-radius: 18px;
   padding: 0px 8px 16px 10px; /* increased bottom padding from 0px to 16px */
   
@@ -360,7 +360,10 @@ img, svg, video {
    WORK SUBMENU DROPDOWN STYLES
 ------------------------------------ */
 .dropdown-menu {
-  background: var(--charcoal);
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
   border: none;
   border-radius: 12px;
   padding: 6px 8px;
@@ -416,7 +419,7 @@ img, svg, video {
   letter-spacing: 0.01em;
   line-height: 1.0;
   
-  color: var(--lilac) !important;
+  color: #ff4fb3 !important;
   text-decoration: none;
   text-transform: none;
   
@@ -432,18 +435,18 @@ img, svg, video {
   background: transparent !important;
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: var(--lilac);
+  text-decoration-color: #ff4fb3;
   text-underline-offset: 4px;
-  color: var(--lilac) !important;
+  color: #ff4fb3 !important;
   outline: none;
 }
 
 .dropdown-item:active {
   background: transparent !important;
-  color: var(--lilac) !important;
+  color: #ff4fb3 !important;
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: var(--lilac);
+  text-decoration-color: #ff4fb3;
 }
 
 /* ------------------------------------

@@ -15,10 +15,10 @@
 
 
   /* Section colours */
-  --bio-hot:     #7B6CF6;
-  --art-hot:     #ffa931;
-  --digital-hot: #7B6CF6;
-  --people-hot:  #ffa931;
+  --bio-hot:     #ff4fb3;
+  --art-hot:     #ff4fb3;
+  --digital-hot: #ff4fb3;
+  --people-hot:  #ff4fb3;
 
   /* Orbit tuning (CSS only — JS will do the motion) */
   --orbit-pad: 12px;
@@ -28,7 +28,7 @@ body.about-page{
   margin:0;
   min-height:100vh;
   background: var(--ink);
-  color: #ff4fb3;
+  color: #ffa931;
   overflow:hidden;
 }
 
@@ -170,7 +170,7 @@ body.about-page .about-word:focus{
 }
 
 /* default colour */
-body.about-page .about-word{ color: #ff4fb3; }
+body.about-page .about-word{ color: #ffa931; }
 
 /* section hover colours */
 body.about-page .about-word[data-key="bio"]:hover,
