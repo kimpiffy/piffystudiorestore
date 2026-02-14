@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+
 import dj_database_url
 from dotenv import load_dotenv
 
@@ -15,102 +16,156 @@ load_dotenv(BASE_DIR / ".env.local", override=True)
 # -------------------------------
 # SECURITY
 # -------------------------------
-# Retrieve the secret key from .env for safety
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') or 'unsafe-default-for-dev'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-default-for-dev")
 
 DEBUG = os.getenv("DEBUG", "false").strip().lower() in ("1", "true", "yes", "on")
 
-if DEBUG:
-    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-else:
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
-raw_allowed = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,.github.dev,.app.github.dev")
+raw_allowed = os.getenv(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,.github.dev,.app.github.dev,piffystudio.onrender.com",
+)
 ALLOWED_HOSTS = [h.strip() for h in raw_allowed.split(",") if h.strip()]
 
-# ensure render host is present
-if "piffystudio.onrender.com" not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append("piffystudio.onrender.com")
+# Render runs behind a proxy; this makes request.is_secure() work correctly
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-# -------------------------------
-# STRIPE CONFIGURATION
-# -------------------------------
-# Use os.getenv (or set up django-environ if you prefer)
-STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')  # Secret Key (sk_test_...)
-STRIPE_TEST_PUBLIC_KEY = os.getenv('STRIPE_TEST_PUBLIC_KEY')  # Public Key (pk_test_...)
-STRIPE_SUCCESS_URL = os.getenv('STRIPE_SUCCESS_URL')  # URL after successful payment
-STRIPE_CANCEL_URL = os.getenv('STRIPE_CANCEL_URL')  # URL after canceled payment
-STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")  # Webhook signing secret
+# If you want forced HTTPS in production, uncomment after everything works:
+# if not DEBUG:
+#     SECURE_SSL_REDIRECT = True
+
+# Needed for login/forms/admin on https domains
+CSRF_TRUSTED_ORIGINS = [
+    "https://piffystudio.onrender.com",
+]
 
 # -------------------------------
 # APPLICATIONS
 # -------------------------------
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'crispy_forms',
-    'crispy_bootstrap5',
-    'widget_tweaks',
+    "whitenoise.runserver_nostatic",
+
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "widget_tweaks",
 
     # Your apps
-    'pages',
-    'portfolio',
-    'interactions',
-    'shop',
-    'accounts',
+    "pages",
+    "portfolio",
+    "interactions",
+    "shop",
+    "accounts",
 ]
 
 # -------------------------------
 # MIDDLEWARE
 # -------------------------------
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = "config.urls"
 
 # -------------------------------
 # TEMPLATES
 # -------------------------------
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],   # ← IMPORTANT
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = "config.wsgi.application"
 
 # -------------------------------
-# DATABASE (PostgreSQL)
+# DATABASE
 # -------------------------------
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL")
-    )
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+else:
+    # Local/dev fallback
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+# -------------------------------
+# PASSWORD VALIDATION
+# -------------------------------
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+LOGIN_REDIRECT_URL = "/accounts/dashboard/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
+
+# -------------------------------
+# INTERNATIONALIZATION
+# -------------------------------
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+# -------------------------------
+# STATIC & MEDIA
+# -------------------------------
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# Django 4.2+ storage configuration (works well with Whitenoise)
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        if not DEBUG
+        else "django.contrib.staticfiles.storage.StaticFilesStorage"
+    },
 }
 
 # -------------------------------
@@ -123,55 +178,24 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-
 # -------------------------------
-# PASSWORD VALIDATION
+# STRIPE CONFIGURATION
 # -------------------------------
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-LOGIN_REDIRECT_URL = '/accounts/dashboard/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
-
-# -------------------------------
-# INTERNATIONALIZATION
-# -------------------------------
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-# -------------------------------
-# STATIC & MEDIA
-# -------------------------------
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-STATIC_ROOT = BASE_DIR / "staticfiles"   # Used later for deployment
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "media"
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_TEST_PUBLIC_KEY = os.getenv("STRIPE_TEST_PUBLIC_KEY")
+STRIPE_SUCCESS_URL = os.getenv("STRIPE_SUCCESS_URL")
+STRIPE_CANCEL_URL = os.getenv("STRIPE_CANCEL_URL")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 
 # -------------------------------
 # DEFAULT PK
 # -------------------------------
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # -------------------------------
 # CRISPY FORMS
 # -------------------------------
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
-
