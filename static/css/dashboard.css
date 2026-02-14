@@ -196,17 +196,48 @@ hr {
 
   font-family: "wakaba", system-ui;
   font-size: 34px;
-  line-height: 1;
+  line-height: 0.85;
   letter-spacing: 0.02em;
 
-  color: var(--pink);
+  color: var(--lilac);  /* uppercase/hover state */
 
   transition: opacity 140ms ease, transform 160ms ease, color 160ms ease, filter 160ms ease;
 }
 
-/* start state: show lowercase */
-.nav-x__upper{ opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
-.nav-x__lower{ opacity: 1; transform: translate(-50%, -50%) scale(1); }
+/* Make 'kim' wider to match 'piffy' width and center properly */
+.nav-x__kim {
+  font-size: 1.15em;
+  letter-spacing: 0.05em;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Piffy sizing adjustments */
+.nav-x__lower .nav-x__piffy {
+  font-size: 1.15em;  /* 5px larger for lowercase */
+  text-align: center;
+  display: inline-block;
+}
+
+.nav-x__upper .nav-x__piffy {
+  font-size: 0.91em;  /* 3px smaller for uppercase */
+  text-align: center;
+  display: inline-block;
+}
+
+/* start state: show lowercase with old pink color */
+.nav-x__upper{ 
+  opacity: 0; 
+  transform: translate(-50%, -50%) scale(0.88); 
+  line-height: 0.8;  /* larger line-height for uppercase */
+}
+.nav-x__lower{ 
+  opacity: 1; 
+  transform: translate(-50%, -50%) translateY(-5px) scale(1);  /* move up 5px when lowercase */
+  color: #ff4fb3;  /* old pink for lowercase */
+  text-align: center;
+  line-height: 0.7;  /* tighter line-height for lowercase */
+}
 
 /* hover/focus/open: show uppercase and scale from centre */
 .nav-x:hover .nav-x__lower,
@@ -221,18 +252,18 @@ hr {
 .nav-x[aria-expanded="true"] .nav-x__upper{
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.15);
-  color: var(--green);
+  color: var(--lilac);
 }
 
 /* mobile tap highlight fix */
 .nav-x, .nav-x * { -webkit-tap-highlight-color: rgba(0,0,0,0); }
-.nav-x:active .nav-x__upper { color: var(--green); }
+.nav-x:active .nav-x__upper { color: var(--lilac); }
 
 /* dropdown panel: tight width, charcoal bg, green text, directly under X */
 .nav-panel{
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  left: -25px;               /* align with left edge of kim piffy text */
   margin-top: 0 !important;
 
   display: none;
@@ -251,7 +282,7 @@ hr {
 .nav-panel.show { display: inline-block; opacity: 1; transform: translateY(0) scale(1); }
 
 /* nav-links visual cascade */
-.nav-links{ margin: 0; padding: 0; width: fit-content; }
+.nav-links{ margin: 0; padding: 5px 0 0 0; width: fit-content; }  /* add gap above first item */
 .nav-links .nav-item { transition: opacity 200ms ease, transform 200ms ease; }
 .nav-panel:not(.show) .nav-links .nav-item { opacity: 0; transform: translateX(-20px); }
 .nav-panel.show .nav-links .nav-item { opacity: 1; transform: translateX(0); }
@@ -263,7 +294,7 @@ hr {
   letter-spacing: 0.01em;
   line-height: 1.0;
 
-  color: var(--green) !important;
+  color: var(--orange) !important;
   text-decoration: none;
   text-transform: none;
 
@@ -277,7 +308,7 @@ hr {
 .nav-links .nav-link:focus-visible{
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: var(--green);
+  text-decoration-color: var(--orange);
   text-underline-offset: 4px;
   outline: none;
 }
@@ -324,7 +355,7 @@ hr {
   letter-spacing: 0.01em;
   line-height: 1.0;
 
-  color: var(--pink) !important;
+  color: var(--lilac) !important;
   text-decoration: none;
   text-transform: none;
 
@@ -338,17 +369,17 @@ hr {
   background: transparent !important;
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: var(--pink);
+  text-decoration-color: var(--lilac);
   text-underline-offset: 4px;
-  color: var(--pink) !important;
+  color: var(--lilac) !important;
   outline: none;
 }
 .dropdown-item:active {
   background: transparent !important;
-  color: var(--pink) !important;
+  color: var(--lilac) !important;
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: var(--pink);
+  text-decoration-color: var(--lilac);
 }
 
 /* helper alignment for Bootstrap nav where needed */

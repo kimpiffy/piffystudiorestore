@@ -27,8 +27,8 @@ body.digital-page video{
 /* theme vars (override main.css vars) */
 body.digital-page{
   --background: #141414;
-  --lilac: #ff4fb3;
-  --orange: #ccfc04;
+  --lilac: #7B6CF6;
+  --orange: #ffa931;
   background: var(--background);
 }
 

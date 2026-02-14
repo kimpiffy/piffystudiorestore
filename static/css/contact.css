@@ -1,8 +1,8 @@
 :root{
-  --blob: #ff4fb3;
+  --blob: #7B6CF6;
   --text: #141414;
   --page: #141414;
-  --green: #ccfc04;  /* Your var green */
+  --orange: #ffa931;  /* Your var orange */
   --charcoal: #2a2a2a;
 }
 
@@ -139,7 +139,7 @@ body.contact-body{
   font-size: clamp(2.4rem, 4.2vw, 3.6rem);
   letter-spacing: 3px;
   text-transform: lowercase;
-  color: var(--green);
+  color: var(--orange);
 }
 
 /* ------------------------------------
@@ -195,7 +195,7 @@ body.contact-body{
 .contact-form select,
 .contact-form textarea{
   width: 100%;
-  background: var(--green) !important; /* force green always */
+  background: var(--orange) !important; /* force orange always */
   color: #141414;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -208,8 +208,8 @@ body.contact-body{
 .contact-form input:-webkit-autofill,
 .contact-form textarea:-webkit-autofill,
 .contact-form select:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px var(--green) inset !important;
-  box-shadow: 0 0 0px 1000px var(--green) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--orange) inset !important;
+  box-shadow: 0 0 0px 1000px var(--orange) inset !important;
   -webkit-text-fill-color: #141414 !important;
 }
 
@@ -262,7 +262,7 @@ body.contact-body{
   width: 20px;
   height: 20px;
   border-radius: 4px;
-  background: var(--green);
+  background: var(--orange);
   border: 1px solid rgba(0, 0, 0, 0.2);
   display: grid;
   place-items: center;
@@ -289,7 +289,7 @@ body.contact-body{
 
 .checkbox input:checked + .checkbox-box::after{
   opacity: 1;
-  color: var(--green);
+  color: var(--orange);
 }
 
 /* Newsletter-specific checkbox visuals (unchanged logic, now clickable) */
@@ -299,7 +299,7 @@ body.contact-body{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--green);
+  background: var(--orange);
   border: 1px solid rgba(0,0,0,0.18);
   border-radius: 4px;
   transition: background 160ms ease, border-color 160ms ease, transform 140ms ease;
@@ -320,7 +320,7 @@ body.contact-body{
 
 /* When checked: reveal the heart */
 .checkbox.newsletter input:checked + .checkbox-box{
-  background: var(--green);
+  background: var(--orange);
   border-color: rgba(0,0,0,0.32);
 }
 
@@ -329,9 +329,9 @@ body.contact-body{
   transform: scale(1);
 }
 
-/* keep the newsletter label text green */
+/* keep the newsletter label text orange */
 .checkbox.newsletter .checkbox-text{
-  color: var(--green);
+  color: var(--orange);
 }
 
 /* ------------------------------------
@@ -348,7 +348,7 @@ body.contact-body{
   font-family: 'wakaba', sans-serif;
   background: none;
   border: none;
-  color: var(--green);
+  color: var(--orange);
   letter-spacing: 3px;
   font-size: clamp(1.6rem, 2.5vw, 2rem);
   text-transform: lowercase;

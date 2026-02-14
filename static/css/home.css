@@ -17,7 +17,7 @@ html, body{ height:100%; margin:0; }
    Home page base
 -------------------------------------------------- */
 :root{
-  --bg: #070707;
+  --bg: #141414;
 
   /* container sizing */
   --arena-d: min(86vmin, 920px);
@@ -49,6 +49,8 @@ html, body{ background: var(--bg); color:#fff; }
   position:absolute;
   inset:0;
   pointer-events:none;
+  /* Move the entire orbit system higher up */
+  top: -15vh;
 }
 
 /* 3 blob positions on a circle around centre */
@@ -91,10 +93,12 @@ html, body{ background: var(--bg); color:#fff; }
   display:block;
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 24px 70px rgba(0,0,0,.55));
+  filter: drop-shadow(0 24px 70px transparent); /* optional: add shadow; delete this line if you don't want it */
 }
 
-.blob-shade{ fill: rgba(0,0,0,0.16); }
+.blob-shade{ 
+  fill: #7c6cf689;
+}
 
 /* Label physically on top of blob */
 .blob-label{
@@ -103,23 +107,76 @@ html, body{ background: var(--bg); color:#fff; }
   top:50%;
   transform: translate(-50%, -50%);
   z-index: 2;
-  pointer-events:none;
 
   font-family: wakaba, system-ui, sans-serif;
   font-size: var(--label-size);
-  color:#fff;
+  color: #ffa931;
 
   padding: 0;                 /* was 10px 16px */
   border-radius: 0;           /* was 999px */
   background: transparent;    /* was rgba(...) */
   border: 0;                  /* was 1px solid ... */
-  text-shadow: none;          /* optional: remove glow; delete this line if you want to keep it */
+  text-shadow: 
+    0 0 10px rgba(124, 108, 247, 0.8),
+    0 0 20px rgba(124, 108, 247, 0.6),
+    0 0 30px rgba(124, 108, 247, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 @media (max-width: 520px){
   :root{
-    --blob-dist: 55px;
-    --label-size: 14px;
+    --blob-size: clamp(120px, 28vw, 180px);
+    --label-size: 16px;
+  }
+  
+  /* Reset orbit positioning for mobile */
+  .orbit{
+    position: relative;
+    top: 10vh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+    padding: 0 20px;
+  }
+  
+  /* Disable rotation on mobile */
+  .home-rotate .orbit{
+    animation: none;
+  }
+  
+  /* Mobile blob positioning - single column, irregular layout */
+  .blob-link{
+    position: relative;
+    left: auto;
+    top: auto;
+    width: var(--blob-size);
+    height: var(--blob-size);
+    margin-bottom: 1vh;
+    
+    /* Reset transform to not use circular positioning */
+    transform: 
+      scale(var(--blob-scale, 1))
+      scaleX(var(--sx, 1))
+      scaleY(var(--sy, 1));
+  }
+  
+  /* Irregular positioning for each blob */
+  .blob-link:nth-child(1){
+    align-self: flex-start;
+    margin-left: 10%;
+  }
+  
+  .blob-link:nth-child(2){
+    align-self: center;
+    margin-top: -1vh;
+  }
+  
+  .blob-link:nth-child(3){
+    align-self: flex-end;
+    margin-right: 15%;
+    margin-top: -2vh;
   }
 }
 

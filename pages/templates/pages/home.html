@@ -7,11 +7,11 @@
 {% endblock %}
 
 {% block content %}
-<main class="home-stage" id="homeStage" aria-label="Piffy Studio landing">
+<main class="home-stage home-rotate" id="homeStage" aria-label="Piffy Studio landing">
   <div class="orbit" id="orbit" aria-hidden="false">
 
     <a class="blob-link" href="{% url 'portfolio:art' %}" aria-label="create" style="--angle:0deg;">
-      <svg class="blob-svg" viewBox="0 0 300 300" data-label="create" data-img="{% static 'img/home/create.png' %}">
+      <svg class="blob-svg" viewBox="0 0 300 300" data-label="create" data-img="{% static 'img/home/createeye.jpeg' %}">
         <defs>
           <path id="shape-create" class="blob-shape"></path>
           <clipPath id="clip-create" clipPathUnits="userSpaceOnUse">
@@ -26,7 +26,7 @@
     </a>
 
     <a class="blob-link" href="{% url 'portfolio:digital' %}" aria-label="build" style="--angle:120deg;">
-      <svg class="blob-svg" viewBox="0 0 300 300" data-label="build" data-img="{% static 'img/home/build.png' %}">
+      <svg class="blob-svg" viewBox="0 0 300 300" data-label="build" data-img="{% static 'img/home/buildcode.jpeg' %}">
         <defs>
           <path id="shape-build" class="blob-shape"></path>
           <clipPath id="clip-build" clipPathUnits="userSpaceOnUse">
@@ -41,7 +41,7 @@
     </a>
 
     <a class="blob-link" href="{% url 'portfolio:installations' %}" aria-label="connect" style="--angle:240deg;">
-      <svg class="blob-svg" viewBox="0 0 300 300" data-label="connect" data-img="{% static 'img/home/connect.jpg' %}">
+      <svg class="blob-svg" viewBox="0 0 300 300" data-label="connect" data-img="{% static 'img/home/connection.jpeg' %}">
         <defs>
           <path id="shape-connect" class="blob-shape"></path>
           <clipPath id="clip-connect" clipPathUnits="userSpaceOnUse">

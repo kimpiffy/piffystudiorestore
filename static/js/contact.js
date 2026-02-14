@@ -317,7 +317,7 @@ class ContactAnimationController {
     const svg = document.createElement("div");
     svg.innerHTML = `
       <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path class="tessellated-dot-path" d="" fill="#ff4fb3"></path>
+        <path class="tessellated-dot-path" d="" fill="#7B6CF6"></path>
       </svg>
     `;
     dot.appendChild(svg.firstElementChild);
