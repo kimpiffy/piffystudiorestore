@@ -180,19 +180,21 @@ html, body{ background: var(--bg); color:#fff; }
   }
   
   /* Specific positioning for each blob to match design */
-  .blob-link:nth-child(1){ /* create - top center, can overlap navbar */
+  .blob-link:nth-child(1){ /* create - top center-right */
     align-self: center;
     margin-top: -3vh; /* Negative margin to push it even higher */
+    margin-right: -15%; /* Move right from center */
   }
   
-  .blob-link:nth-child(2){ /* build - middle, slightly left */
+  .blob-link:nth-child(2){ /* build - middle, further left */
     align-self: flex-start;
-    margin-left: 10%;
+    margin-left: 5%; /* More dramatically left */
   }
   
-  .blob-link:nth-child(3){ /* connect - bottom, slightly right */
+  .blob-link:nth-child(3){ /* connect - bottom, much further right and higher */
     align-self: flex-end;
-    margin-right: 10%;
+    margin-right: -5%; /* Much further right */
+    margin-top: -1vh; /* Move up slightly */
   }
 }
 
