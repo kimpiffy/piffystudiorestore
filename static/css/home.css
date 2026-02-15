@@ -143,16 +143,17 @@ html, body{ background: var(--bg); color:#fff; }
   /* Reset orbit positioning for mobile - vertical column layout */
   .orbit{
     position: relative;
-    top: 8vh;
+    top: 2vh; /* Moved much higher to allow create blob to overlap navbar space */
     height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4vh;
+    gap: 2vh; /* Reduced gap from 4vh to 2vh */
     padding: 0 20px;
     width: 100%;
-    min-height: 85vh;
+    min-height: 90vh;
+    z-index: 10; /* Higher z-index to allow overlap with navbar */
   }
   
   /* Disable rotation on mobile */
@@ -169,6 +170,7 @@ html, body{ background: var(--bg); color:#fff; }
     height: var(--blob-size);
     margin: 0;
     flex: 0 0 auto;
+    z-index: 15; /* Ensure blobs can overlap navbar */
     
     /* Reset transform to not use circular positioning */
     transform: 
@@ -178,8 +180,9 @@ html, body{ background: var(--bg); color:#fff; }
   }
   
   /* Specific positioning for each blob to match design */
-  .blob-link:nth-child(1){ /* create - top center */
+  .blob-link:nth-child(1){ /* create - top center, can overlap navbar */
     align-self: center;
+    margin-top: -3vh; /* Negative margin to push it even higher */
   }
   
   .blob-link:nth-child(2){ /* build - middle, slightly left */
