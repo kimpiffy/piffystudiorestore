@@ -347,7 +347,7 @@ img, svg, video {
 /* keep dropdown from going offscreen on small devices */
 @media (max-width: 576px){
   #navbar{
-    left: 20px; /* moved kim piffy away from left edge */
+    left: 25px; /* moved kim piffy further from left edge */
     top: 15px;
     right: 15px;
   }

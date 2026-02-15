@@ -183,18 +183,18 @@ html, body{ background: var(--bg); color:#fff; }
   .blob-link:nth-child(1){ /* create - top center-right */
     align-self: center;
     margin-top: -3vh; /* Negative margin to push it even higher */
-    margin-right: -15%; /* Move right from center */
+    margin-right: -18%; /* Move slightly more right (was -15%) */
   }
   
   .blob-link:nth-child(2){ /* build - middle, further left */
     align-self: flex-start;
-    margin-left: 5%; /* More dramatically left */
+    margin-left: 8%; /* Move slightly right (was 5%) */
   }
   
-  .blob-link:nth-child(3){ /* connect - bottom, much further right and higher */
+  .blob-link:nth-child(3){ /* connect - bottom, move northwest (315 degrees) */
     align-self: flex-end;
-    margin-right: -5%; /* Much further right */
-    margin-top: -2vh; /* Move up more (was -1vh) */
+    margin-right: -2%; /* Move slightly left (was -5%) */
+    margin-top: -2.5vh; /* Move up more (was -2vh) */
     z-index: 20; /* Higher z-index to allow more overlap */
   }
 }
