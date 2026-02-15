@@ -195,6 +195,7 @@ html, body{ background: var(--bg); color:#fff; }
     align-self: flex-end;
     margin-right: -5%; /* Much further right */
     margin-top: -2vh; /* Move up more (was -1vh) */
+    z-index: 20; /* Higher z-index to allow more overlap */
   }
 }
 

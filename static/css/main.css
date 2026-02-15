@@ -347,36 +347,11 @@ img, svg, video {
 /* keep dropdown from going offscreen on small devices */
 @media (max-width: 576px){
   #navbar{
-    left: 15px; /* moved inwards 5-10px from 12px */
+    left: 20px; /* moved kim piffy away from left edge */
     top: 15px;
     right: 15px;
   }
-  .nav-panel{
-    /* Keep same behavior as desktop - absolute positioning with transparent background */
-    position: absolute !important;
-    top: calc(100% + 6px) !important;
-    left: -25px !important;
-    right: auto !important;
-    width: fit-content !important;
-    height: auto !important;
-    max-width: 120px !important;
-    background: transparent !important;
-    border-radius: 18px !important;
-    padding: 0px 8px 16px 10px !important;
-    display: none !important; /* Hidden by default like desktop */
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-  }
-  .nav-panel .nav-links {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 5px !important;
-    width: 100% !important;
-  }
-  .nav-panel .nav-links .nav-link {
-    font-size: 16px !important;
-    padding: 5px 0px !important;
-  }
+  /* No nav-panel overrides - let it behave exactly like desktop */
 }
 
 /* ------------------------------------
