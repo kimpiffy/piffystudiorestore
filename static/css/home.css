@@ -188,7 +188,7 @@ html, body{ background: var(--bg); color:#fff; }
   
   .blob-link:nth-child(2){ /* build - middle, further left */
     align-self: flex-start;
-    margin-left: 8%; /* Move slightly right (was 5%) */
+    margin-left: 10%; /* Move slightly more right (was 8%) */
   }
   
   .blob-link:nth-child(3){ /* connect - bottom, move northwest (315 degrees) */
