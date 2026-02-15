@@ -135,20 +135,23 @@ html, body{ background: var(--bg); color:#fff; }
 
 @media (max-width: 520px){
   :root{
-    --blob-size: clamp(120px, 28vw, 180px);
-    --label-size: clamp(3rem, 8vw, 5rem);
+    /* Increase blob size by 150% (250% of original) */
+    --blob-size: clamp(300px, 70vw, 450px);
+    --label-size: clamp(4rem, 10vw, 7rem);
   }
   
-  /* Reset orbit positioning for mobile */
+  /* Reset orbit positioning for mobile - single row layout */
   .orbit{
     position: relative;
-    top: 10vh;
+    top: 15vh;
     height: auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* changed from column to row */
     align-items: center;
-    gap: 2vh;
-    padding: 0 20px;
+    justify-content: space-between;
+    gap: 0;
+    padding: 0 10px;
+    width: 100%;
   }
   
   /* Disable rotation on mobile */
@@ -156,14 +159,15 @@ html, body{ background: var(--bg); color:#fff; }
     animation: none;
   }
   
-  /* Mobile blob positioning - single column, irregular layout */
+  /* Mobile blob positioning - single row, three columns */
   .blob-link{
     position: relative;
     left: auto;
     top: auto;
     width: var(--blob-size);
     height: var(--blob-size);
-    margin-bottom: 1vh;
+    margin: 0;
+    flex: 0 0 auto; /* don't grow/shrink */
     
     /* Reset transform to not use circular positioning */
     transform: 
@@ -172,21 +176,17 @@ html, body{ background: var(--bg); color:#fff; }
       scaleY(var(--sy, 1));
   }
   
-  /* Irregular positioning for each blob */
-  .blob-link:nth-child(1){
-    align-self: flex-start;
-    margin-left: 10%;
-  }
-  
-  .blob-link:nth-child(2){
-    align-self: center;
-    margin-top: -1vh;
-  }
-  
-  .blob-link:nth-child(3){
+  /* Specific alignment for each blob */
+  .blob-link:nth-child(1){ /* create - align right */
     align-self: flex-end;
-    margin-right: 15%;
-    margin-top: -2vh;
+  }
+  
+  .blob-link:nth-child(2){ /* build - align left */
+    align-self: flex-start;
+  }
+  
+  .blob-link:nth-child(3){ /* connect - align right */
+    align-self: flex-end;
   }
 }
 
