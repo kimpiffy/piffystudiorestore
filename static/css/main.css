@@ -347,35 +347,35 @@ img, svg, video {
 /* keep dropdown from going offscreen on small devices */
 @media (max-width: 576px){
   #navbar{
-    left: 20px; /* moved inwards from 12px */
-    top: 20px;
-    right: 20px;
+    left: 15px; /* moved inwards 5-10px from 12px */
+    top: 15px;
+    right: 15px;
   }
   .nav-panel{
-    /* Full screen width background on mobile */
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    max-width: none !important;
-    background: var(--charcoal) !important;
-    border-radius: 0 !important;
-    padding: 80px 20px 20px 20px !important;
-    display: flex !important;
+    /* Keep same behavior as desktop - absolute positioning with transparent background */
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    left: -25px !important;
+    right: auto !important;
+    width: fit-content !important;
+    height: auto !important;
+    max-width: 120px !important;
+    background: transparent !important;
+    border-radius: 18px !important;
+    padding: 0px 8px 16px 10px !important;
+    display: none !important; /* Hidden by default like desktop */
     align-items: flex-start !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
   }
   .nav-panel .nav-links {
     flex-direction: column !important;
-    align-items: center !important;
-    gap: 20px !important;
+    align-items: flex-start !important;
+    gap: 5px !important;
     width: 100% !important;
   }
   .nav-panel .nav-links .nav-link {
-    font-size: 24px !important;
-    padding: 10px 20px !important;
+    font-size: 16px !important;
+    padding: 5px 0px !important;
   }
 }
 

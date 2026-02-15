@@ -315,8 +315,8 @@ hr {
 
 /* small-device adjustments */
 @media (max-width: 576px){
-  #navbar{ left: 12px; top: 12px; right: 12px; }
-  .nav-panel{ max-width: 100px !important; }
+  #navbar{ left: 15px; top: 15px; right: 15px; } /* moved inwards 5-10px */
+  .nav-panel{ max-width: 120px !important; }
 }
 
 /* WORK / DROPDOWN STYLES */

@@ -194,7 +194,7 @@ html, body{ background: var(--bg); color:#fff; }
   .blob-link:nth-child(3){ /* connect - bottom, much further right and higher */
     align-self: flex-end;
     margin-right: -5%; /* Much further right */
-    margin-top: -1vh; /* Move up slightly */
+    margin-top: -2vh; /* Move up more (was -1vh) */
   }
 }
 
