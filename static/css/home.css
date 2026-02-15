@@ -135,23 +135,24 @@ html, body{ background: var(--bg); color:#fff; }
 
 @media (max-width: 520px){
   :root{
-    /* Increase blob size by 150% (250% of original) */
-    --blob-size: clamp(300px, 70vw, 450px);
-    --label-size: clamp(4rem, 10vw, 7rem);
+    /* Reduced size by 30% from previous size */
+    --blob-size: clamp(210px, 49vw, 315px);
+    --label-size: clamp(3.5rem, 8vw, 6rem);
   }
   
-  /* Reset orbit positioning for mobile - single row layout */
+  /* Reset orbit positioning for mobile - single column layout */
   .orbit{
     position: relative;
-    top: 15vh;
+    top: 12vh;
     height: auto;
     display: flex;
-    flex-direction: row; /* changed from column to row */
-    align-items: center;
-    justify-content: space-between;
-    gap: 0;
-    padding: 0 10px;
+    flex-direction: column; /* back to column for 3 rows */
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 3vh;
+    padding: 0 15px;
     width: 100%;
+    min-height: 80vh;
   }
   
   /* Disable rotation on mobile */
@@ -159,7 +160,7 @@ html, body{ background: var(--bg); color:#fff; }
     animation: none;
   }
   
-  /* Mobile blob positioning - single row, three columns */
+  /* Mobile blob positioning - single column, three rows */
   .blob-link{
     position: relative;
     left: auto;
@@ -177,15 +178,16 @@ html, body{ background: var(--bg); color:#fff; }
   }
   
   /* Specific alignment for each blob */
-  .blob-link:nth-child(1){ /* create - align right */
-    align-self: flex-end;
+  .blob-link:nth-child(1){ /* create - top left, below nav */
+    align-self: flex-start;
+    margin-top: 2vh;
   }
   
-  .blob-link:nth-child(2){ /* build - align left */
+  .blob-link:nth-child(2){ /* build - middle left */
     align-self: flex-start;
   }
   
-  .blob-link:nth-child(3){ /* connect - align right */
+  .blob-link:nth-child(3){ /* connect - bottom right */
     align-self: flex-end;
   }
 }
