@@ -140,19 +140,19 @@ html, body{ background: var(--bg); color:#fff; }
     --label-size: clamp(3.5rem, 8vw, 6rem);
   }
   
-  /* Reset orbit positioning for mobile - single column layout */
+  /* Reset orbit positioning for mobile - vertical column layout */
   .orbit{
     position: relative;
-    top: 12vh;
+    top: 8vh;
     height: auto;
     display: flex;
-    flex-direction: column; /* back to column for 3 rows */
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 3vh;
-    padding: 0 15px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4vh;
+    padding: 0 20px;
     width: 100%;
-    min-height: 80vh;
+    min-height: 85vh;
   }
   
   /* Disable rotation on mobile */
@@ -160,7 +160,7 @@ html, body{ background: var(--bg); color:#fff; }
     animation: none;
   }
   
-  /* Mobile blob positioning - single column, three rows */
+  /* Mobile blob positioning - centered vertical stack */
   .blob-link{
     position: relative;
     left: auto;
@@ -168,7 +168,7 @@ html, body{ background: var(--bg); color:#fff; }
     width: var(--blob-size);
     height: var(--blob-size);
     margin: 0;
-    flex: 0 0 auto; /* don't grow/shrink */
+    flex: 0 0 auto;
     
     /* Reset transform to not use circular positioning */
     transform: 
@@ -177,18 +177,19 @@ html, body{ background: var(--bg); color:#fff; }
       scaleY(var(--sy, 1));
   }
   
-  /* Specific alignment for each blob */
-  .blob-link:nth-child(1){ /* create - top left, below nav */
-    align-self: flex-start;
-    margin-top: 2vh;
+  /* Specific positioning for each blob to match design */
+  .blob-link:nth-child(1){ /* create - top center */
+    align-self: center;
   }
   
-  .blob-link:nth-child(2){ /* build - middle left */
+  .blob-link:nth-child(2){ /* build - middle, slightly left */
     align-self: flex-start;
+    margin-left: 10%;
   }
   
-  .blob-link:nth-child(3){ /* connect - bottom right */
+  .blob-link:nth-child(3){ /* connect - bottom, slightly right */
     align-self: flex-end;
+    margin-right: 10%;
   }
 }
 
