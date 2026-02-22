@@ -162,13 +162,19 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 STORAGES = {
-    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
         if not DEBUG
         else "django.contrib.staticfiles.storage.StaticFilesStorage"
     },
 }
+
+# Cloudinary configuration (expects env vars: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET)
+import cloudinary
+import cloudinary_storage
 
 # -------------------------------
 # EMAIL CONFIGURATION (Gmail SMTP)
