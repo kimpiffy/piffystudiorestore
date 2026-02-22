@@ -21,5 +21,5 @@ dj-database-url==2.1.0
 psycopg2-binary==2.9.6
 
 # Cloudinary storage
-cloudinary
-django-cloudinary-storage
+cloudinary==1.40.0
+django-cloudinary-storage==0.3.0
