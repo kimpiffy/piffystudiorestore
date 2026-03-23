@@ -477,8 +477,8 @@ body.about-page .about-word.is-wobbling .wobble-span{
 
   /* Just below the blob, can overlap a touch */
   body.about-page .orbit .about-word[data-key="digital"]{
-    top: 11.5%;
-    right: 20%;
+    top: 20%;
+    right: 10%;
   }
 
   /* Lower + a bit to the right (staggered) */
