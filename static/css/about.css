@@ -466,8 +466,8 @@ body.about-page .about-word.is-wobbling .wobble-span{
 
   /* Slightly higher */
   body.about-page .orbit .about-word[data-key="bio"]{
-    top: 6.5%;
-    left: 10%;
+    top: 4.5%;
+    left: 25%;
   }
 
   body.about-page .orbit .about-word[data-key="people"]{
@@ -478,7 +478,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
   /* Just below the blob, can overlap a touch */
   body.about-page .orbit .about-word[data-key="digital"]{
     top: 11.5%;
-    right: 10%;
+    right: 20%;
   }
 
   /* Lower + a bit to the right (staggered) */
