@@ -12,12 +12,11 @@ class ContactMessageForm(forms.ModelForm):
     # Dropdown choices (includes placeholder)
     QUERY_CHOICES = [
         ("", "Query related to:"),  
-        ("art", "Visual Art"),        # placeholder option
-        ("commission", "Commission"),
-        ("collaboration", "Collaboration"),
-        ("workshops", "Workshops & Events"),
-        ("community", "Community Engagement"),
-        ("digital", "Web Design & Development"),
+    ("art", "Visual Art"),
+    ("web design", "Web Design & Development"),
+    ("community projects", "Community Engagement"),
+    ("creative facilitation", "Creative Facilitation"),
+    ("collaboration", "Collaboration"),
         ("other", "Other"),
     ]
 

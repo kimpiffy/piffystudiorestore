@@ -91,6 +91,7 @@
     console.log('Opening nav');
     if (navOpen) return;
     navOpen = true;
+    document.body.classList.add('nav-expanded');
     
     if (navToggler) {
       navToggler.setAttribute('aria-expanded', 'true');
@@ -107,6 +108,7 @@
     if (!navOpen) return;
     navOpen = false;
     dropdownOpen = false;
+    document.body.classList.remove('nav-expanded');
     
     if (navToggler) {
       navToggler.setAttribute('aria-expanded', 'false');
@@ -254,6 +256,7 @@
     
     isTouch = detectTouch();
     console.log('Device detection:', { isTouch });
+    document.body.classList.remove('nav-expanded');
     
     // Set initial ARIA states
     navToggler.setAttribute('aria-expanded', 'false');
