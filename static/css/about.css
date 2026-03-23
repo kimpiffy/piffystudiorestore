@@ -132,6 +132,17 @@ body.about-page .about-word{
   position:absolute;
   left: 50%;
   top: 50%;
+   padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  text-shadow: 
+    0 0 10px rgba(124, 108, 247, 0.8),
+    0 0 20px rgba(124, 108, 247, 0.6),
+    0 0 30px rgba(124, 108, 247, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
+  z-index: 100 !important;
+
 
   /* JS will override transform with translate3d(x,y,0) rotate(...) */
   transform: translate3d(0,0,0);
@@ -523,5 +534,30 @@ body.about-page .about-word.is-wobbling .wobble-span{
   :root{
     --word-size: clamp(4.2rem, 3.2vw, 10.5rem);
   }
+}
+
+@keyframes liquid-wobble {
+  0%   { transform: translate3d(0,0,0) scale(1) rotate(-1deg);}
+  20%  { transform: translate3d(0,0,0) scale(1.03, 0.97) rotate(1deg);}
+  40%  { transform: translate3d(0,0,0) scale(0.98, 1.02) rotate(-0.5deg);}
+  60%  { transform: translate3d(0,0,0) scale(1.02, 0.98) rotate(0.5deg);}
+  80%  { transform: translate3d(0,0,0) scale(0.99, 1.01) rotate(-1deg);}
+  100% { transform: translate3d(0,0,0) scale(1) rotate(1deg);}
+}
+
+body.about-page .about-word {
+  /* Remove animation and filter from here */
+  animation: none !important;
+  filter: none !important;
+}
+
+body.about-page .about-word .wobble-inner {
+  display: inline-block;
+  animation: liquid-wobble 3.5s ease-in-out infinite alternate;
+  text-shadow: 
+    0 0 10px rgba(124, 108, 247, 0.8),
+    0 0 20px rgba(124, 108, 247, 0.6),
+    0 0 30px rgba(124, 108, 247, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 

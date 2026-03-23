@@ -28,10 +28,10 @@ data-url-cv="{% static 'kimpiffycv.pdf' %}"
   <!-- Desktop orbit words layer (JS positions these) -->
   <nav class="orbit" id="aboutWords" aria-label="About navigation">
     <!-- JS can replace/confirm these, but having them in HTML helps SEO + no-JS fallback -->
-    <button class="about-word" type="button" data-key="bio">bio</button>
-    <button class="about-word" type="button" data-key="people">people</button>
-    <button class="about-word" type="button" data-key="art">art</button>
-    <button class="about-word" type="button" data-key="digital">digital</button>
+    <div class="about-word" data-key="bio"><span class="wobble-inner">bio</span></div>
+    <div class="about-word" data-key="people"><span class="wobble-inner">people</span></div>
+    <div class="about-word" data-key="art"><span class="wobble-inner">art</span></div>
+    <div class="about-word" data-key="digital"><span class="wobble-inner">digital</span></div>
   </nav>
 
   <!-- Mobile carousel (one word at a time on curved arc) -->
