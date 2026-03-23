@@ -374,7 +374,7 @@ body.contact-body{
   }
 
   body.contact-body.nav-expanded .contact-content{
-    transform: translateY(clamp(96px, 14vh, 150px));
+    transform: translateY(clamp(100px, 15vh, 160px));
   }
 
   .contact-inner{
