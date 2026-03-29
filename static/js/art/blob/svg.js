@@ -25,7 +25,7 @@ export function makeWarpSVG({ uid, cover, title, initialD }) {
         : ""
       }
 
-      <path id="${uid}_outline" d="${initialD}" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.2"></path>
+      <path id="${uid}_outline" d="${initialD}" fill="none"></path>
     </svg>
   `;
 }

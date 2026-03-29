@@ -37,7 +37,7 @@ export function createDesktopDrift() {
       noiseStrength: 0.08,   // Reduced for mosaic
       maxSpeed: 0.35,        // Slower movement for stable mosaic
       damping: 0.992,
-      repel: 0.25,           // INCREASED for stronger repulsion (was 0.12)
+      repel: 0.35,           // VERY STRONG for tight packing (was 0.25)
       centerPull: 0.0003,    // Reduced to let blobs stay more distributed
       avoidTLStrength: 0.028,
       avoidTLRadiusFrac: 0.40

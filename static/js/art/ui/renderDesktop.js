@@ -15,7 +15,7 @@ function getSet(projects, setIndex) {
 
 export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectClick }) {
   const set = getSet(projects, setIndex);
-  const uniform = isTablet() ? 280 : 340;  // Smaller blobs for art mosaic
+  const uniform = isTablet() ? 450 : 500;  // Larger blobs to fill screen
 
   blobLayer.innerHTML = set.map((p) => {
     const cover = coverUrl(p);
@@ -55,9 +55,9 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
     const cellW = r0.width / cols;
     const cellH = r0.height / cols;
 
-    // Place blob in center of cell, with some randomness
-    const gridX = (col + 0.5) * cellW + (rnd() - 0.5) * cellW * 0.3;
-    const gridY = (row + 0.5) * cellH + (rnd() - 0.5) * cellH * 0.3;
+    // Place blob in center of cell, with minimal randomness for tight packing
+    const gridX = (col + 0.5) * cellW + (rnd() - 0.5) * cellW * 0.05;
+    const gridY = (row + 0.5) * cellH + (rnd() - 0.5) * cellH * 0.05;
 
     return {
       btn, id,
