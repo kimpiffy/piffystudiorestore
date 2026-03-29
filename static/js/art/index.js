@@ -1,8 +1,7 @@
 import { $, safeJsonParse, mod } from "./utils.js";
 import { isMobile, mqMobile, mqTablet, DESKTOP_PAGE_SIZE } from "./state.js";
 
-import { createEdgeWarp } from "./anim/edgeWarp.js";
-import { createDesktopDrift } from "./anim/driftDesktop.js";
+import { createEdgePressure } from "./anim/edgePressure.js";
 import { createMobileDrift } from "./anim/driftMobile.js";
 
 import { createOverlay } from "./ui/overlay.js";
@@ -30,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // services
-  const edgeWarp = createEdgeWarp(blobLayer);
-  const desktopDrift = createDesktopDrift();
+  const edgePressure = createEdgePressure(blobLayer);
   const mobileDrift = createMobileDrift();
 
   // state
@@ -39,9 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let mobileIndex = 0;
 
   function stopAll() {
-    desktopDrift.stop();
+    edgePressure.stop();
     mobileDrift.stop();
-    edgeWarp.stop();
   }
 
   function updateArrowVisibility() {
@@ -78,8 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
         onProjectClick
       });
 
-      // edge warp animates the blob path
-      edgeWarp.start();
+      // edge pressure animates the blob edge deformation
+      edgePressure.start();
 
       // mobile drift animates inner element position
       mobileDrift.start(blobLayer, innerEl);
@@ -87,15 +84,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const { particles } = renderDesktopBlobs({
+    // Desktop: fixed grid with edge deformation
+    const { segments } = renderDesktopBlobs({
       blobLayer,
       projects,
       setIndex,
       onProjectClick
     });
 
-    edgeWarp.start(particles);
-    desktopDrift.start(blobLayer, particles);
+    // Only animate edge pressure - blobs stay fixed
+    edgePressure.start(segments);
   }
 
   bindControls({
