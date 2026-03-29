@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.templatetags.static import static
+
 
 def installations(request):
     return render(request, "portfolio/installations.html")
+
 
 def digital(request):
     projects = [
@@ -15,9 +16,9 @@ def digital(request):
                 "A simple, personal site with clear presentation, layout fundamentals, and a focus on learning-by-doing."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
-            "cover": static("img/digital/piffy.png"),
+            "cover": "/static/img/digital/piffy.png",
             "url": "https://piffy.studio",
-            "github": "",  # add later
+            "github": "",
         },
         {
             "id": "webdevination",
@@ -28,9 +29,9 @@ def digital(request):
                 "Built with JavaScript and API integrations to generate entertaining insights."
             ),
             "stack": ["JavaScript", "APIs", "HTML", "CSS"],
-            "cover": static("img/digital/wd.png"),
-            "url": "https://webdevination.onrender.com",       # add later if live
-            "github": "",    # add later
+            "cover": "/static/img/digital/wd.png",
+            "url": "https://webdevination.onrender.com",
+            "github": "",
         },
         {
             "id": "the-english-studio",
@@ -41,9 +42,9 @@ def digital(request):
                 "Custom backend functionality lets the school manage their content easily, avoiding unnecessary complexity."
             ),
             "stack": ["Django", "Python", "HTML", "CSS", "JavaScript"],
-            "cover": static("img/digital/tes.png"),
-            "url": "https://theenglishstudiocorvetto.com",      # add later if live
-            "github": "",   # add later
+            "cover": "/static/img/digital/tes.png",
+            "url": "https://theenglishstudiocorvetto.com",
+            "github": "",
         },
         {
             "id": "phoebe-collins-tattoo",
@@ -54,7 +55,7 @@ def digital(request):
                 "Gallery content is pulled from Instagram so new work appears automatically, saving time and keeping the site current."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
-            "cover": static("img/digital/phoebecollins.png"),
+            "cover": "/static/img/digital/phoebecollins.png",
             "url": "https://phoebecollins.co.uk/",
             "github": "",
         },
@@ -67,7 +68,7 @@ def digital(request):
                 "Handling both the website build and the brand direction creates a consistent, confident online identity."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
-            "cover": static("img/digital/thinkeng.png"),
+            "cover": "/static/img/digital/thinkeng.png",
             "url": "https://thinkeng.it/",
             "github": "",
         },
@@ -80,12 +81,11 @@ def digital(request):
                 "The piece visualizes identity through an interactive sonar dial; blending symbolism, and design."
             ),
             "stack": ["JavaScript", "Creative Coding", "HTML", "CSS"],
-            "cover": static("img/digital/findmyself.jpeg"),
+            "cover": "/static/img/digital/findmyself.jpeg",
             "url": "https://kimpiffy.github.io/grimiore/",
             "github": "",
         },
     ]
-
 
     return render(
         request,
@@ -99,44 +99,45 @@ def art(request):
             "id": "piece-one",
             "title": "Untitled I",
             "description": "A series exploring color dialogue and form.",
-            "cover": static("img/art/piece-one.jpg"),
+            "cover": "/static/img/art/piece-one.jpg",
             "slug": "untitled-i",
         },
         {
             "id": "piece-two",
             "title": "Transition",
             "description": "Digital exploration of movement and transformation.",
-            "cover": static("img/art/piece-two.jpg"),
+            "cover": "/static/img/art/piece-two.jpg",
             "slug": "transition",
         },
         {
             "id": "piece-three",
             "title": "Luminescence",
             "description": "Mixed media study on light and perception.",
-            "cover": static("img/art/piece-three.jpg"),
+            "cover": "/static/img/art/piece-three.jpg",
             "slug": "luminescence",
         },
         {
             "id": "piece-four",
             "title": "Fragments",
             "description": "Conceptual work examining broken systems.",
-            "cover": static("img/art/piece-four.jpg"),
+            "cover": "/static/img/art/piece-four.jpg",
             "slug": "fragments",
         },
         {
             "id": "piece-five",
             "title": "Emergence",
             "description": "Organic forms responding to audio data.",
-            "cover": static("img/art/piece-five.jpg"),
+            "cover": "/static/img/art/piece-five.jpg",
             "slug": "emergence",
         },
         {
             "id": "piece-six",
             "title": "Flux",
             "description": "Interactive installation exploring fluid dynamics.",
-            "cover": static("img/art/piece-six.jpg"),
+            "cover": "/static/img/art/piece-six.jpg",
             "slug": "flux",
         },
     ]
 
     return render(request, "portfolio/art.html", {"projects": projects})
+
