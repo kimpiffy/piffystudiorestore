@@ -9,7 +9,7 @@ function coverUrl(p) {
 }
 
 /**
- * Render single blob for mobile with slide animation
+ * Returns { innerEl } for mobile drift to animate.
  */
 export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClick }) {
   const mobileIndex = mod(index, projects.length);
@@ -20,22 +20,29 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
   const model = createBlobModel(p.id);
   const initialD = computePathFromModel(model, performance.now() * 0.001);
 
+  // layer setup (same as your current logic)
   blobLayer.style.position = "absolute";
   blobLayer.style.inset = "0";
   blobLayer.style.overflow = "hidden";
 
+  // OUTER = slide (transform)
+  // INNER = drift (transform)
   blobLayer.innerHTML = `
 <div class="blob-outer"
   style="
     position:absolute;
     inset:0;
+
     display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+    flex-direction:column;        /* important */
+    justify-content:flex-start;   /* THIS controls vertical */
+    align-items:center;           /* horizontal centering */
+
+    padding-top: var(--mobile-blob-top, 24px);  /* start small */
     will-change: transform;
   "
 >
+
       <button class="blob-inner"
         type="button"
         data-id="${escapeHtml(p.id)}"
@@ -48,8 +55,6 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
           background: transparent;
           border: 0;
           padding: 0;
-          width: 200px;
-          height: 200px;
         "
         aria-label="${escapeHtml(p.title)}"
       >
@@ -65,6 +70,7 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
     inner.addEventListener("click", () => onProjectClick(p.id));
   }
 
+  // slide animation on OUTER
   if (outer) {
     setTransitionImportant(outer, MOBILE_TRANSITION);
 

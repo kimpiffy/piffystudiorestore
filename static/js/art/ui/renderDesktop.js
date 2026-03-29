@@ -1,30 +1,38 @@
 import { escapeHtml } from "../utils.js";
+import { perSet, isTablet } from "../state.js";
 import { makeWarpSVG } from "../blob/svg.js";
 import { createBlobModel, computePathFromModel } from "../blob/model.js";
+import { hashToSeed, mulberry32 } from "../blob/rng.js";
 
 function coverUrl(p) {
   return (p && p.cover ? String(p.cover) : "").trim();
 }
 
 function getSet(projects, setIndex) {
-  // For art mosaic, show all projects on desktop
-  return projects;
+  const n = perSet(projects.length);
+  if (projects.length <= n) return projects;
+
+  const start = (setIndex * n) % projects.length;
+  const end = start + n;
+  const slice = projects.slice(start, end);
+  if (slice.length < n) return slice.concat(projects.slice(0, n - slice.length));
+  return slice;
 }
 
 export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectClick }) {
   const set = getSet(projects, setIndex);
+  const uniform = isTablet() ? 520 : 560;
 
   blobLayer.innerHTML = set.map((p) => {
     const cover = coverUrl(p);
 
     const uid = `b_${String(p.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random()*1e9)}`;
     const model = createBlobModel(p.id);
-    const initialD = computePathFromModel(model, 0, { neighbors: [] });
+    const initialD = computePathFromModel(model, performance.now() * 0.001);
 
-    // Size will be determined by grid - use placeholder
     return `
       <button class="blob" type="button" data-id="${escapeHtml(p.id)}" aria-label="${escapeHtml(p.title)}"
-        style="left:0;top:0;"
+        style="width:${uniform}px;height:${uniform}px;left:0;top:0;"
       >
         ${makeWarpSVG({ uid, cover, title: p.title, initialD })}
       </button>
@@ -39,43 +47,43 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
 
   const r0 = blobLayer.getBoundingClientRect();
 
-  // Fixed grid layout - no drifting, just fixed positions
-  const segments = buttons.map((btn, idx) => {
+  const particles = buttons.map(btn => {
     const id = btn.getAttribute("data-id") || "";
-
-    // Grid-based fixed positioning (centered, tight packing)
-    const cols = Math.ceil(Math.sqrt(set.length));
-    const col = idx % cols;
-    const row = Math.floor(idx / cols);
-
-    const cellW = r0.width / cols;
-    const cellH = r0.height / cols;
-
-    // Center blob in cell (fixed position)
-    const x = (col + 0.5) * cellW;
-    const y = (row + 0.5) * cellH;
-
-    // Blob radius with margin - leaves gap between blobs
-    const cellRadius = Math.min(cellW, cellH) / 2;
-    const margin = 1; // Tiny gap - blobs forced together
-    const radius = cellRadius * 2 - margin; // Double size, pressed together
+    const rnd = mulberry32(hashToSeed(id));
+    const size = btn.getBoundingClientRect().width || uniform;
 
     return {
-      btn, id, x, y,
-      radius,
-      col, row,
-      cellW, cellH
+      btn, id,
+      x: rnd() * r0.width,
+      y: rnd() * r0.height,
+      vx: (rnd()-0.5)*0.22,
+      vy: (rnd()-0.5)*0.22,
+      radius: size * (0.42 + rnd()*0.04),
+      grabbed: false,
+      px: rnd()*1000,
+      py: rnd()*1000,
+      ph: rnd()*Math.PI*2,
+      biasX: (rnd()-0.5)*0.08,
+      biasY: (rnd()-0.5)*0.08
     };
   });
 
-  // Position blobs in grid - centered in their cells
-  segments.forEach(seg => {
-    seg.btn.style.transform =
-      `translate(${(seg.x - seg.radius).toFixed(2)}px, ${(seg.y - seg.radius).toFixed(2)}px)`;
-    // Update button size to match actual radius
-    seg.btn.style.width = `${seg.radius * 2}px`;
-    seg.btn.style.height = `${seg.radius * 2}px`;
+  particles.forEach(p => {
+    const b = p.btn;
+    const grab = () => { p.grabbed = true; };
+    const rel  = () => { p.grabbed = false; };
+    b.addEventListener("mouseenter", grab);
+    b.addEventListener("mouseleave", rel);
+    b.addEventListener("focus", grab);
+    b.addEventListener("blur", rel);
+    b.addEventListener("touchstart", grab, { passive:true });
+    b.addEventListener("touchend", rel, { passive:true });
+    b.addEventListener("touchcancel", rel, { passive:true });
   });
 
-  return { segments };
+  particles.forEach(p => {
+    p.btn.style.transform = `translate(${p.x - p.btn.offsetWidth/2}px, ${p.y - p.btn.offsetHeight/2}px)`;
+  });
+
+  return { particles };
 }

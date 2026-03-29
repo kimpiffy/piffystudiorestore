@@ -1,296 +1,343 @@
-/* static/css/art.css */
+:root{
+  --pad: 16px;
+  --radius: 24px;
+  --overlay: rgba(0,0,0,0.55);
 
-:root {
-  --cream: #f6f1e6;
-  --ink: #141414;
-  --lilac: #7B6CF6;
+  /* approx height of your top nav row on mobile */
   --site-header-h: 92px;
 }
 
-body.art-page {
+/* Page owns viewport */
+html,
+body.art-page{
+  height: 100%;
   margin: 0;
+  background: #141414;
+  overflow: hidden;
+}
+
+/* prevent any sideways gutters (DON’T apply max-width to everything) */
+body.art-page{ overflow-x: hidden; }
+body.art-page img,
+body.art-page svg,
+body.art-page video{
+  max-width: 100vw;
+}
+
+/* theme vars (override main.css vars) */
+body.art-page{
+  --background: #141414;
+  --lilac: #7B6CF6;
+  --orange: #ffa931;
+  background: var(--background);
+}
+
+/* nav colours only on this page */
+body.art-page .nav-link,
+body.art-page .aboutlink{ color: var(--lilac); }
+body.art-page .nav-link:hover,
+body.art-page .nav-link:focus,
+body.art-page .aboutlink:hover,
+body.art-page .aboutlink:focus{ color: var(--orange); }
+
+/* wrap */
+.wrap{
+  padding: var(--pad);
   min-height: 100vh;
-  background: var(--ink);
-  color: var(--cream);
+  background: #141515;
+}
+
+/* header spacer inside page (not the site nav) */
+.art-header{
+  position: relative;
+  z-index: 50;
+}
+.art-header h1{ margin:0; }
+
+/* Modes */
+.mode{ display:none; }
+.mode.is-active{ display:block; }
+
+/* Showcase */
+.showcase{
+  position: relative;
+  height: 100vh;
+  border-radius: 0;
+  z-index: 1;
   overflow: hidden;
 }
 
-body.art-page header {
-  position: relative;
-  z-index: 100000 !important;
+/* >=768: allow blobs to escape, keep body locked */
+@media (min-width: 768px){
+  .showcase{ overflow: visible; }
+  html, body.art-page{ overflow: hidden; }
 }
 
-.art-header {
-  position: relative;
-  z-index: 100;
-}
+/* Disable metaballs canvas */
+.lava-canvas{ display:none !important; }
 
-.wrap {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: var(--site-header-h);
-  height: calc(100dvh - var(--site-header-h));
-  padding-bottom: env(safe-area-inset-bottom);
-  overflow: hidden;
+/* Blob layer */
+.blob-layer{
+  position:absolute;
+  overflow: visible;
+  inset:0;
+  width:100%;
+  height:100%;
   z-index: 1;
 }
 
-.mode {
-  display: none;
-  width: 100%;
-  height: 100%;
-}
-
-.mode.is-active {
-  display: block;
-}
-
-.showcase {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 90vw;
-  height: 90vh;
-  overflow: hidden;
-}
-
-.blob-layer {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
-
-/* Blob styling */
-.blob-layer .blob {
-  position: absolute;
-  border: none;
+/* Clickable blobs (desktop positioning) */
+.blob{
+  position:absolute;
+  border: 0;
   background: transparent;
   padding: 0;
   cursor: pointer;
-  outline: none;
-  box-shadow: none !important;
-  filter: none !important;
+  width: 420px;
+  height: 420px;
   will-change: transform;
-  transition: filter 0.3s ease;
 }
 
-.blob-layer .blob:hover,
-.blob-layer .blob:focus {
-  filter: brightness(1.1);
-  outline: none;
-}
-
-/* SVG blob and overlay styling */
-.blob-layer .blob .blob-svg {
+/* Blob SVG */
+.blob-svg{
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  left: 0;
+  display:block;
+  overflow: visible;
+  filter: none;
+  transition: transform 140ms ease;
+  transform: translateZ(0);
 }
+.blob-svg path[id$="_outline"] { stroke: transparent; }
+.blob:hover .blob-svg{ transform: scale(1.02); }
 
-.blob-layer .blob .blob-img {
-  filter: brightness(1);
-}
-
-/* Purple overlay on blob - removed on hover */
-.blob-layer .blob .blob-shade {
+/* Purple overlay on blobs - removes on hover */
+.blob-shade {
   fill: #7c6cf689;
   transition: fill 0.3s ease;
 }
 
-.blob-layer .blob:hover .blob-shade,
-.blob-layer .blob:focus .blob-shade {
+.blob:hover .blob-shade,
+.blob:focus .blob-shade {
   fill: transparent;
 }
 
-/* Navigation arrows */
-.nav-arrows {
-  position: absolute;
+.blob-outer { touch-action: pan-y; }
+.blob-inner { -webkit-tap-highlight-color: transparent; }
+
+
+/* Arrows */
+.nav-arrows{
+  position:absolute;
+  z-index: 3;
   left: 50%;
-  bottom: -60px;
   transform: translateX(-50%);
-  display: none;
-  gap: 20px;
+  bottom: 12px;
+  display:flex;
+  gap: 10px;
+  pointer-events:auto;
+}
+.nav-arrows button{
+  border-radius: 999px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(20,20,20,0.65);
+  color: #f2f2f2;
+  cursor:pointer;
+}
+.nav-arrows button:hover{
+  color: var(--orange);
+  border-color: rgba(177,255,43,0.35);
+}
+
+/* Overlay */
+.overlay{
+  position: fixed;
+  inset:0;
+  display:none;
   z-index: 100;
 }
+.overlay.is-open{ display:block; }
+.overlay-backdrop{ position:absolute; inset:0; background: var(--overlay); }
+.overlay-panel{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  width: min(860px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow:auto;
+  border-radius: 34px;
+  background: var(--orange);
+  padding: 18px;
+  color: #141515;
+}
 
-.nav-arrows button {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: var(--cream);
+
+
+@media (max-width: 899px){
+  .overlay-panel{
+    left: 50%;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    width: min(560px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px);
+  }
+}
+.overlay-close{
+  position: sticky;
+  top: 8px;
+  margin-left: auto;
+  display:block;
+  border: 0;
+  background: rgba(0,0,0,0.06);
+  border-radius: 999px;
   width: 40px;
   height: 40px;
-  font-size: 18px;
-  cursor: pointer;
-  border-radius: 50%;
+  cursor:pointer;
+}
+
+/* specifically target the close button inside the overlay panel only */
+.overlay-panel .overlay-close{
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.nav-arrows button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* Modal overlay */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9998;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.overlay.is-open {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.overlay-backdrop {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  cursor: pointer;
-}
-
-.overlay-panel {
-  position: relative;
-  background: var(--ink);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 40px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  z-index: 10;
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.overlay-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: transparent;
-  border: none;
-  color: var(--cream);
-  font-size: 24px;
-  cursor: pointer;
-  padding: 0;
+  position: sticky;
+  margin-left: auto;
+  margin-right: 0.1rem;
+  border: 0;
+  background: transparent;        /* NO semi‑transparent circle */
+  border-radius: 999px;
   width: 30px;
   height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease;
+  cursor: pointer;
+
+  /* typography / default state */
+  color: #141414;                            /* inactive colour */
+  font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: 2rem;
+  line-height: 1;
+  text-transform: lowercase;                    /* show 'x' lowercase by default */
+  transition: color 140ms ease, text-transform 120ms ease, transform 120ms ease;
+  -webkit-font-smoothing: antialiased;
 }
 
-.overlay-close:hover {
-  color: var(--lilac);
+/* hover / focus / active OR when .orange is present -> uppercase + stay charcoal */
+.overlay-panel .overlay-close:hover,
+.overlay-panel .overlay-close:focus,
+.overlay-panel .overlay-close:active,
+.overlay-panel .overlay-close.orange {
+  color: #141414;
+  text-transform: uppercase;                    /* become 'X' */
+  outline: none;
 }
 
-.overlay-content h2 {
-  margin: 0 0 15px 0;
-  font-size: 28px;
-  color: var(--cream);
+.overlay-panel .overlay-close:focus-visible{
+  box-shadow: 0 0 0 4px rgba(177,255,43,0.12);
 }
 
-.overlay-content p {
-  font-size: 16px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0 0 25px 0;
-}
+/* cta row inside overlay */
+.cta-row{ display:flex; gap:10px; flex-wrap:wrap; }
 
-.overlay-content a {
-  display: inline-block;
-  padding: 12px 24px;
-  background: var(--lilac);
-  color: var(--cream);
+/* Project CTA used in overlay */
+.project-cta{
+  display: block;                 /* center via auto margins */
+  margin: 0 auto 10px;
+  font-family: wakaba, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: 2rem;            /* larger text */
+  padding: 10px 18px;
+  text-align: center;
   text-decoration: none;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  font-weight: 500;
+  text-transform: none;           /* default: not uppercase */
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  text-transform: lowercase;
 }
 
-.overlay-content a:hover {
-  background: #9b92f8;
-  transform: translateY(-2px);
+/* color classes (use your CSS variables) */
+.project-cta.lilac{ color: #141414; }
+.project-cta.orange{ color:  var(--lilac); }
+
+/* hover / focus / active: uppercase and stay charcoal */
+.project-cta:hover,
+.project-cta:focus,
+.project-cta:active{
+  text-transform: uppercase;
+  color: #141414;
+  outline: none;
 }
 
-/* Mobile: show arrows, hide grid layout */
-@media (max-width: 767px) {
-  .nav-arrows {
-    display: flex;
+/* optional focus-visible ring for keyboard users */
+.project-cta:focus-visible{
+  box-shadow: 0 0 0 4px rgba(255,165,0,0.12);
+}
+
+/* =======================================================
+   MOBILE CAROUSEL (ONE blob at a time + FIXED arrows)
+   JS owns transform; CSS sets proper slide sizing.
+======================================================= */
+@media (max-width: 767px){
+
+:root { --mobile-blob-top: 0px; } /* try 0, 8, 16, 24... */
+
+
+  .wrap{ padding: 0 !important; }
+
+  .showcase{
+    position: fixed !important;
+    top: var(--site-header-h) !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 
-  .blob-layer .blob {
+  /* blob layer just fills the stage */
+  #blobLayer{
+    position: absolute !important;
+    inset: 0 !important;
+    overflow: visible !important;
+    z-index: 3 !important;
+  }
+
+  /* NEW: top-aligned blob wrapper created by JS */
+  #blobLayer .blob-outer{
+    position: absolute !important;
+    inset: 0 !important;
+
+    display: flex !important;
+    justify-content: flex-start !important; /* TOP */
+    align-items: center !important;         /* horizontal center */
+
+    padding-top: var(--mobile-blob-top, 16px) !important;
+  }
+
+  /* the actual button inside */
+  #blobLayer .blob-inner{
+    position: relative !important;
+  }
+
+  /* blob size */
+  #blobLayer .blob-svg{
+    width: 130vw !important;
+    height: 130vw !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+
+  /* arrows under the blob (not fixed at bottom) */
+  #navArrows{
+    position: absolute !important;
     left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-  }
-
-  .overlay-panel {
-    width: 95%;
-    padding: 30px 20px;
-  }
-}
-
-/* Tablet: show arrows if many projects */
-@media (min-width: 768px) and (max-width: 1199px) {
-  .nav-arrows {
-    display: flex;
-  }
-}
-
-/* Desktop: hide arrows, show grid mosaic */
-@media (min-width: 1200px) {
-  .nav-arrows {
-    display: none;
-  }
-}
-
-/* Fade-in animation for page content */
-header,
-main {
-  animation: fadeIn 1s ease-in;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+    transform: translateX(-50%) !important;
+    top: calc(var(--mobile-blob-top, 16px) + 130vw + 12px) !important;
+    bottom: auto !important;
+    z-index: 10 !important;
+    display: flex !important;
+    gap: 14px !important;
+    pointer-events: auto !important;
   }
 }

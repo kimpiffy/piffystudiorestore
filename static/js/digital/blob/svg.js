@@ -16,6 +16,8 @@ export function makeWarpSVG({ uid, cover, title, initialD }) {
           ? `<image href="${escapeHtml(cover)}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"></image>`
           : `<rect x="0" y="0" width="100" height="100" fill="rgba(255,255,255,0.12)"></rect>`
         }
+        <!-- Purple overlay that hides on hover -->
+        <rect x="0" y="0" width="100" height="100" class="blob-shade"></rect>
       </g>
 
       ${!hasCover

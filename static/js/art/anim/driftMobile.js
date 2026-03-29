@@ -5,7 +5,7 @@ export function createMobileDrift() {
   let running = false;
   let last = performance.now();
 
-  // a single "particle"
+  // a single “particle”
   let innerEl = null;
   let x = 0, y = 0;
   let vx = 0, vy = 0;
@@ -44,7 +44,7 @@ export function createMobileDrift() {
     }
 
     const cfg = {
-      accelNoise: 0.10,   // random "breeze"
+      accelNoise: 0.10,   // random “breeze”
       noiseSpeed: 0.0012, // slow noise phase
       damping: 0.985,
       maxSpeed: 0.55,

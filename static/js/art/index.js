@@ -1,7 +1,8 @@
 import { $, safeJsonParse, mod } from "./utils.js";
 import { isMobile, mqMobile, mqTablet, DESKTOP_PAGE_SIZE } from "./state.js";
 
-import { createEdgePressure } from "./anim/edgePressure.js";
+import { createEdgeWarp } from "./anim/edgeWarp.js";
+import { createDesktopDrift } from "./anim/driftDesktop.js";
 import { createMobileDrift } from "./anim/driftMobile.js";
 
 import { createOverlay } from "./ui/overlay.js";
@@ -29,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // services
-  const edgePressure = createEdgePressure(blobLayer);
+  const edgeWarp = createEdgeWarp(blobLayer);
+  const desktopDrift = createDesktopDrift();
   const mobileDrift = createMobileDrift();
 
   // state
@@ -37,14 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
   let mobileIndex = 0;
 
   function stopAll() {
-    edgePressure.stop();
+    desktopDrift.stop();
     mobileDrift.stop();
+    edgeWarp.stop();
   }
 
   function updateArrowVisibility() {
     if (!navArrows) return;
     if (isMobile()) navArrows.style.display = "flex";
-    else navArrows.style.display = projects.length > DESKTOP_PAGE_SIZE ? "flex" : "none";
+    else navArrows.style.display = (projects.length > DESKTOP_PAGE_SIZE) ? "flex" : "none";
   }
 
   const overlay = createOverlay({
@@ -75,25 +78,24 @@ document.addEventListener("DOMContentLoaded", () => {
         onProjectClick
       });
 
-      // edge pressure animates the blob edge deformation
-      edgePressure.start();
+      // edge warp animates the blob path
+      edgeWarp.start();
 
-      // mobile drift animates inner element position
+      // mobile drift animates inner element position (safe vs slide transform)
       mobileDrift.start(blobLayer, innerEl);
 
       return;
     }
 
-    // Desktop: fixed grid with edge deformation
-    const { segments } = renderDesktopBlobs({
+    const { particles } = renderDesktopBlobs({
       blobLayer,
       projects,
       setIndex,
       onProjectClick
     });
 
-    // Only animate edge pressure - blobs stay fixed
-    edgePressure.start(segments);
+    edgeWarp.start();
+    desktopDrift.start(blobLayer, particles);
   }
 
   bindControls({
