@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
       onProjectClick
     });
 
-    edgeWarp.start();
+    edgeWarp.start(particles);
     desktopDrift.start(blobLayer, particles);
   }
 

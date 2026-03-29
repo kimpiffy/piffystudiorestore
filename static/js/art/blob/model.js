@@ -41,21 +41,43 @@ export function createBlobModel(id) {
   return { id, N, angles, baseR: base.radii, rip: base.rip };
 }
 
-export function computePathFromModel(model, timeSec) {
+export function computePathFromModel(model, timeSec, options = {}) {
   const cx = 50, cy = 50;
   const pts = [];
   const { N, angles, baseR, rip } = model;
+  const { neighbors = [] } = options;
 
   for (let i = 0; i < N; i++) {
     const a = angles[i];
     let r = baseR[i];
 
+    // Ripple animation
     let dr = 0;
     for (let k = 0; k < rip.amps.length; k++) {
       dr += Math.sin(a * rip.freqs[k] + rip.phases[k] + timeSec * rip.speeds[k]) * rip.amps[k];
     }
 
     r += dr * rip.strength;
+
+    // Apply compression from neighbors
+    // This makes edges compress inward where neighbors push
+    if (neighbors.length > 0) {
+      for (const neighbor of neighbors) {
+        const angleToNeighbor = neighbor.angle;
+        const compression = neighbor.compression;
+
+        // Calculate how much this point faces the neighbor
+        const angleDiff = Math.abs(a - angleToNeighbor);
+        const normalizedDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
+
+        // If this edge faces a neighbor, compress it
+        if (normalizedDiff < Math.PI * 0.4) {
+          const facingStrength = 1 - (normalizedDiff / (Math.PI * 0.4));
+          r -= facingStrength * compression * 8;  // Compress inward
+        }
+      }
+    }
+
     r = Math.max(26, Math.min(52, r));
     pts.push({ x: cx + Math.cos(a)*r, y: cy + Math.sin(a)*r });
   }
