@@ -94,4 +94,49 @@ def digital(request):
     )
 
 def art(request):
-    return render(request, "portfolio/art.html")
+    projects = [
+        {
+            "id": "piece-one",
+            "title": "Untitled I",
+            "description": "A series exploring color dialogue and form.",
+            "cover": static("img/art/piece-one.jpg"),
+            "slug": "untitled-i",
+        },
+        {
+            "id": "piece-two",
+            "title": "Transition",
+            "description": "Digital exploration of movement and transformation.",
+            "cover": static("img/art/piece-two.jpg"),
+            "slug": "transition",
+        },
+        {
+            "id": "piece-three",
+            "title": "Luminescence",
+            "description": "Mixed media study on light and perception.",
+            "cover": static("img/art/piece-three.jpg"),
+            "slug": "luminescence",
+        },
+        {
+            "id": "piece-four",
+            "title": "Fragments",
+            "description": "Conceptual work examining broken systems.",
+            "cover": static("img/art/piece-four.jpg"),
+            "slug": "fragments",
+        },
+        {
+            "id": "piece-five",
+            "title": "Emergence",
+            "description": "Organic forms responding to audio data.",
+            "cover": static("img/art/piece-five.jpg"),
+            "slug": "emergence",
+        },
+        {
+            "id": "piece-six",
+            "title": "Flux",
+            "description": "Interactive installation exploring fluid dynamics.",
+            "cover": static("img/art/piece-six.jpg"),
+            "slug": "flux",
+        },
+    ]
+
+    return render(request, "portfolio/art.html", {"projects": projects})
