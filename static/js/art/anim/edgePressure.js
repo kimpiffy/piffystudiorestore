@@ -68,10 +68,10 @@ export function createEdgePressure(blobLayer) {
           const minDist = seg.radius + other.radius + 2; // Small gap
 
           // Only consider neighbors that are close enough
-          if (dist < minDist * 1.3) {
+          if (dist < minDist * 1.5) {
             const angle = Math.atan2(dy, dx);
             const overlap = Math.max(0, minDist - dist);
-            const compression = Math.min(1, overlap / (minDist * 0.3));
+            const compression = Math.min(1, overlap / (minDist * 0.2)); // More sensitive
 
             neighborData[seg.id].push({
               angle,

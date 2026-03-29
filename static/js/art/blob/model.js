@@ -23,11 +23,11 @@ function buildBaseRadii(id, N) {
   }
 
   const rip = {
-    amps: [2.0 + rnd()*1.2, 1.4 + rnd()*1.0, 1.0 + rnd()*0.8, 0.75 + rnd()*0.7, 0.55 + rnd()*0.55],
+    amps: [1.0 + rnd()*0.6, 0.7 + rnd()*0.5, 0.5 + rnd()*0.4, 0.35 + rnd()*0.35, 0.25 + rnd()*0.25],
     freqs: [2 + Math.floor(rnd()*4), 4 + Math.floor(rnd()*5), 7 + Math.floor(rnd()*6), 11 + Math.floor(rnd()*7), 16 + Math.floor(rnd()*7)],
     phases: [rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2],
     speeds: [2.1 + rnd()*1.2, 1.8 + rnd()*1.1, 1.4 + rnd()*1.0, 1.2 + rnd()*0.9, 1.0 + rnd()*0.8],
-    strength: 1.25 + rnd()*0.60
+    strength: 0.5 + rnd()*0.3  // Reduced ripple strength
   };
 
   return { radii, rip };
@@ -73,7 +73,7 @@ export function computePathFromModel(model, timeSec, options = {}) {
         // If this edge faces a neighbor, compress it
         if (normalizedDiff < Math.PI * 0.4) {
           const facingStrength = 1 - (normalizedDiff / (Math.PI * 0.4));
-          r -= facingStrength * compression * 14;  // Stronger compression
+          r -= facingStrength * compression * 22;  // Much stronger compression
         }
       }
     }
