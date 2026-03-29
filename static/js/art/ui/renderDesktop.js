@@ -1,8 +1,6 @@
 import { escapeHtml } from "../utils.js";
-import { isTablet } from "../state.js";
 import { makeWarpSVG } from "../blob/svg.js";
 import { createBlobModel, computePathFromModel } from "../blob/model.js";
-import { hashToSeed, mulberry32 } from "../blob/rng.js";
 
 function coverUrl(p) {
   return (p && p.cover ? String(p.cover) : "").trim();
@@ -15,7 +13,6 @@ function getSet(projects, setIndex) {
 
 export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectClick }) {
   const set = getSet(projects, setIndex);
-  const uniform = isTablet() ? 380 : 440;  // Blob size
 
   blobLayer.innerHTML = set.map((p) => {
     const cover = coverUrl(p);
@@ -24,9 +21,10 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
     const model = createBlobModel(p.id);
     const initialD = computePathFromModel(model, 0, { neighbors: [] });
 
+    // Size will be determined by grid - use placeholder
     return `
       <button class="blob" type="button" data-id="${escapeHtml(p.id)}" aria-label="${escapeHtml(p.title)}"
-        style="width:${uniform}px;height:${uniform}px;left:0;top:0;"
+        style="left:0;top:0;"
       >
         ${makeWarpSVG({ uid, cover, title: p.title, initialD })}
       </button>
@@ -44,7 +42,6 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
   // Fixed grid layout - no drifting, just fixed positions
   const segments = buttons.map((btn, idx) => {
     const id = btn.getAttribute("data-id") || "";
-    const size = btn.getBoundingClientRect().width || uniform;
 
     // Grid-based fixed positioning (centered, tight packing)
     const cols = Math.ceil(Math.sqrt(set.length));
@@ -58,17 +55,26 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
     const x = (col + 0.5) * cellW;
     const y = (row + 0.5) * cellH;
 
+    // Blob radius with margin - leaves gap between blobs
+    const cellRadius = Math.min(cellW, cellH) / 2;
+    const margin = 6; // pixels between blobs
+    const radius = Math.max(cellRadius - margin, 10);
+
     return {
       btn, id, x, y,
-      radius: size / 2,  // Half the blob size = its radius
-      col, row
+      radius,
+      col, row,
+      cellW, cellH
     };
   });
 
-  // Position blobs in grid
+  // Position blobs in grid - centered in their cells
   segments.forEach(seg => {
     seg.btn.style.transform =
       `translate(${(seg.x - seg.radius).toFixed(2)}px, ${(seg.y - seg.radius).toFixed(2)}px)`;
+    // Update button size to match actual radius
+    seg.btn.style.width = `${seg.radius * 2}px`;
+    seg.btn.style.height = `${seg.radius * 2}px`;
   });
 
   return { segments };
