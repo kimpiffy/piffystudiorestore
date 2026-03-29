@@ -41,37 +41,29 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
 
   const r0 = blobLayer.getBoundingClientRect();
 
-  // Initialize particles in a loose grid pattern for mosaic effect
+  // Initialize particles spread across the container
   const particles = buttons.map((btn, idx) => {
     const id = btn.getAttribute("data-id") || "";
     const rnd = mulberry32(hashToSeed(id));
     const size = btn.getBoundingClientRect().width || uniform;
 
-    // Distribute blobs across the container in rows
-    const cols = Math.ceil(Math.sqrt(set.length));
-    const col = idx % cols;
-    const row = Math.floor(idx / cols);
-
-    const cellW = r0.width / cols;
-    const cellH = r0.height / cols;
-
-    // Place blob in center of cell, with minimal randomness for tight packing
-    const gridX = (col + 0.5) * cellW + (rnd() - 0.5) * cellW * 0.05;
-    const gridY = (row + 0.5) * cellH + (rnd() - 0.5) * cellH * 0.05;
+    // Distribute blobs randomly across entire container
+    const gridX = rnd() * r0.width;
+    const gridY = rnd() * r0.height;
 
     return {
       btn, id,
       x: gridX,
       y: gridY,
-      vx: (rnd()-0.5)*0.10,
-      vy: (rnd()-0.5)*0.10,
+      vx: (rnd()-0.5)*0.08,
+      vy: (rnd()-0.5)*0.08,
       radius: size * (0.42 + rnd()*0.04),
       grabbed: false,
       px: rnd()*1000,
       py: rnd()*1000,
       ph: rnd()*Math.PI*2,
-      biasX: (rnd()-0.5)*0.04,   // Reduced bias for more stable mosaic
-      biasY: (rnd()-0.5)*0.04
+      biasX: (rnd()-0.5)*0.02,   // Very subtle individual bias
+      biasY: (rnd()-0.5)*0.02
     };
   });
 

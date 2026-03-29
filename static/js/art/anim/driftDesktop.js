@@ -32,14 +32,14 @@ export function createDesktopDrift() {
       offBottom: -30,
       padding: 10,
       edgePush: 0.020,
-      flowStrength: 0.15,    // Reduced for mosaic - less random drift
-      swirlStrength: 0.05,   // Reduced for mosaic
-      noiseStrength: 0.08,   // Reduced for mosaic
-      maxSpeed: 0.35,        // Slower movement for stable mosaic
+      flowStrength: 0.08,    // Very subtle flow
+      swirlStrength: 0.02,   // Minimal swirl
+      noiseStrength: 0.12,   // More individual noise
+      maxSpeed: 0.25,        // Slow, gentle movement
       damping: 0.992,
-      repel: 0.35,           // VERY STRONG for tight packing (was 0.25)
-      centerPull: 0.0003,    // Reduced to let blobs stay more distributed
-      avoidTLStrength: 0.028,
+      repel: 0,             // NO repulsion - let them overlap
+      centerPull: 0,        // No center pull
+      avoidTLStrength: 0,   // No corner avoidance
       avoidTLRadiusFrac: 0.40
     };
 
