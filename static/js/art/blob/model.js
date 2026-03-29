@@ -23,11 +23,11 @@ function buildBaseRadii(id, N) {
   }
 
   const rip = {
-    amps: [1.0 + rnd()*0.6, 0.7 + rnd()*0.5, 0.5 + rnd()*0.4, 0.35 + rnd()*0.35, 0.25 + rnd()*0.25],
+    amps: [2.0 + rnd()*1.2, 1.4 + rnd()*1.0, 1.0 + rnd()*0.8, 0.75 + rnd()*0.7, 0.55 + rnd()*0.55],
     freqs: [2 + Math.floor(rnd()*4), 4 + Math.floor(rnd()*5), 7 + Math.floor(rnd()*6), 11 + Math.floor(rnd()*7), 16 + Math.floor(rnd()*7)],
     phases: [rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2, rnd()*Math.PI*2],
     speeds: [2.1 + rnd()*1.2, 1.8 + rnd()*1.1, 1.4 + rnd()*1.0, 1.2 + rnd()*0.9, 1.0 + rnd()*0.8],
-    strength: 0.5 + rnd()*0.3  // Reduced ripple strength
+    strength: 1.25 + rnd()*0.60
   };
 
   return { radii, rip };
@@ -41,52 +41,21 @@ export function createBlobModel(id) {
   return { id, N, angles, baseR: base.radii, rip: base.rip };
 }
 
-export function computePathFromModel(model, timeSec, options = {}) {
+export function computePathFromModel(model, timeSec) {
   const cx = 50, cy = 50;
   const pts = [];
   const { N, angles, baseR, rip } = model;
-  const { neighbors = [], avgPressure = 0 } = options;
-
-  // Global pressure breathing - all blobs pulse together based on average pressure
-  const breathePhase = timeSec * 1.5 + avgPressure * Math.PI;
-  const globalBreath = Math.sin(breathePhase) * avgPressure * 0.3;
 
   for (let i = 0; i < N; i++) {
     const a = angles[i];
     let r = baseR[i];
 
-    // Ripple animation - modulated by pressure (breathing together)
     let dr = 0;
     for (let k = 0; k < rip.amps.length; k++) {
-      const pressureModulation = 1 - avgPressure * 0.4; // More pressure = damped ripples
-      dr += Math.sin(a * rip.freqs[k] + rip.phases[k] + timeSec * rip.speeds[k]) * rip.amps[k] * pressureModulation;
+      dr += Math.sin(a * rip.freqs[k] + rip.phases[k] + timeSec * rip.speeds[k]) * rip.amps[k];
     }
 
     r += dr * rip.strength;
-
-    // Global breathing effect - all edges respond together
-    r += globalBreath;
-
-    // Smooth neighbor interaction - anticipatory deformation
-    if (neighbors.length > 0) {
-      for (const neighbor of neighbors) {
-        const angleToNeighbor = neighbor.angle;
-        const dist = neighbor.dist;
-        const minDist = neighbor.minDist;
-        const pressure = Math.max(0, (minDist - dist) / minDist);
-
-        // Calculate how much this point faces the neighbor
-        const angleDiff = Math.abs(a - angleToNeighbor);
-        const normalizedDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
-
-        // Smooth, anticipatory compression - no harsh collisions
-        if (normalizedDiff < Math.PI * 0.5) {
-          const facingStrength = Math.cos(normalizedDiff / (Math.PI * 0.5) * (Math.PI / 2)); // Smooth cosine falloff
-          r -= facingStrength * pressure * 20; // Gentle, coordinated compression
-        }
-      }
-    }
-
     r = Math.max(26, Math.min(52, r));
     pts.push({ x: cx + Math.cos(a)*r, y: cy + Math.sin(a)*r });
   }
