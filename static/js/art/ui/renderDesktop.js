@@ -57,7 +57,7 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
 
     // Blob radius with margin - leaves gap between blobs
     const cellRadius = Math.min(cellW, cellH) / 2;
-    const margin = 6; // pixels between blobs
+    const margin = 1; // Tiny gap - blobs forced together
     const radius = Math.max(cellRadius - margin, 10);
 
     return {
