@@ -73,7 +73,7 @@ export function computePathFromModel(model, timeSec, options = {}) {
         // If this edge faces a neighbor, compress it
         if (normalizedDiff < Math.PI * 0.4) {
           const facingStrength = 1 - (normalizedDiff / (Math.PI * 0.4));
-          r -= facingStrength * compression * 8;  // Compress inward
+          r -= facingStrength * compression * 14;  // Stronger compression
         }
       }
     }

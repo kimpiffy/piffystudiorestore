@@ -15,7 +15,7 @@ function getSet(projects, setIndex) {
 
 export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectClick }) {
   const set = getSet(projects, setIndex);
-  const uniform = isTablet() ? 520 : 580;  // Larger for tight mosaic packing
+  const uniform = isTablet() ? 600 : 680;  // Much larger - pack tight
 
   blobLayer.innerHTML = set.map((p) => {
     const cover = coverUrl(p);
@@ -65,7 +65,7 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
       y: gridY,
       vx: (rnd()-0.5)*0.08,
       vy: (rnd()-0.5)*0.08,
-      radius: size * (0.48 + rnd()*0.02),  // Larger, tighter packing
+      radius: size * (0.52 + rnd()*0.01),  // Nearly fill entire cell
       grabbed: false,
       px: rnd()*1000,
       py: rnd()*1000,
