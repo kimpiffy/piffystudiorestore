@@ -32,14 +32,14 @@ export function createDesktopDrift() {
       offBottom: -30,
       padding: 10,
       edgePush: 0.020,
-      flowStrength: 0.08,    // Very subtle flow
-      swirlStrength: 0.02,   // Minimal swirl
-      noiseStrength: 0.12,   // More individual noise
-      maxSpeed: 0.25,        // Slow, gentle movement
+      flowStrength: 0.15,
+      swirlStrength: 0.05,
+      noiseStrength: 0.12,   // Individual wobble
+      maxSpeed: 0.30,        // Coordinated movement
       damping: 0.992,
-      repel: 0,             // NO repulsion - let them overlap
-      centerPull: 0,        // No center pull
-      avoidTLStrength: 0,   // No corner avoidance
+      repel: 0.40,           // Strong repulsion - no intersection
+      centerPull: 0.0005,    // Subtle centering for mosaic feel
+      avoidTLStrength: 0.028,
       avoidTLRadiusFrac: 0.40
     };
 

@@ -15,7 +15,7 @@ function getSet(projects, setIndex) {
 
 export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectClick }) {
   const set = getSet(projects, setIndex);
-  const uniform = isTablet() ? 450 : 500;  // Larger blobs to fill screen
+  const uniform = isTablet() ? 520 : 580;  // Larger for tight mosaic packing
 
   blobLayer.innerHTML = set.map((p) => {
     const cover = coverUrl(p);
@@ -41,15 +41,23 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
 
   const r0 = blobLayer.getBoundingClientRect();
 
-  // Initialize particles spread across the container
+  // Initialize particles in grid for tight mosaic packing
   const particles = buttons.map((btn, idx) => {
     const id = btn.getAttribute("data-id") || "";
     const rnd = mulberry32(hashToSeed(id));
     const size = btn.getBoundingClientRect().width || uniform;
 
-    // Distribute blobs randomly across entire container
-    const gridX = rnd() * r0.width;
-    const gridY = rnd() * r0.height;
+    // Grid-based distribution for tight packing
+    const cols = Math.ceil(Math.sqrt(set.length));
+    const col = idx % cols;
+    const row = Math.floor(idx / cols);
+
+    const cellW = r0.width / cols;
+    const cellH = r0.height / cols;
+
+    // Center in cell with minimal jitter
+    const gridX = (col + 0.5) * cellW + (rnd() - 0.5) * cellW * 0.1;
+    const gridY = (row + 0.5) * cellH + (rnd() - 0.5) * cellH * 0.1;
 
     return {
       btn, id,
@@ -57,12 +65,12 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
       y: gridY,
       vx: (rnd()-0.5)*0.08,
       vy: (rnd()-0.5)*0.08,
-      radius: size * (0.42 + rnd()*0.04),
+      radius: size * (0.48 + rnd()*0.02),  // Larger, tighter packing
       grabbed: false,
       px: rnd()*1000,
       py: rnd()*1000,
       ph: rnd()*Math.PI*2,
-      biasX: (rnd()-0.5)*0.02,   // Very subtle individual bias
+      biasX: (rnd()-0.5)*0.02,
       biasY: (rnd()-0.5)*0.02
     };
   });
