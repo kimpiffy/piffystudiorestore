@@ -47,17 +47,24 @@ body.art-page header {
 }
 
 .showcase {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  height: 90vh;
   overflow: hidden;
   background: var(--ink);
+  border-radius: 8px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
 }
 
 .blob-layer {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
+  top: 0;
+  left: 0;
 }
 
 /* Blob styling */
@@ -109,7 +116,7 @@ body.art-page header {
 .nav-arrows {
   position: absolute;
   left: 50%;
-  bottom: 40px;
+  bottom: -60px;
   transform: translateX(-50%);
   display: none;
   gap: 20px;
