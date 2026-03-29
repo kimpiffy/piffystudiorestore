@@ -54,9 +54,6 @@ body.art-page header {
   width: 90vw;
   height: 90vh;
   overflow: hidden;
-  background: var(--ink);
-  border-radius: 8px;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
 }
 
 .blob-layer {

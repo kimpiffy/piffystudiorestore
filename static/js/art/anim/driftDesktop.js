@@ -26,20 +26,20 @@ export function createDesktopDrift() {
     const rect = () => containerEl.getBoundingClientRect();
 
     const cfg = {
-      offLeft: -140,
-      offRight: -140,
-      offTop: -180,
-      offBottom: -30,
-      padding: 10,
-      edgePush: 0.020,
+      offLeft: 0,            // Hard boundary at container edge
+      offRight: 0,           // Hard boundary at container edge
+      offTop: 0,             // Hard boundary at container edge
+      offBottom: 0,          // Hard boundary at container edge
+      padding: 20,           // Small breathing room inside bounds
+      edgePush: 0.12,        // Much stronger boundary push - keep them IN
       flowStrength: 0.15,
       swirlStrength: 0.05,
       noiseStrength: 0.12,
       maxSpeed: 0.30,
       damping: 0.992,
-      repel: 0.55,           // Much stronger repulsion - squeeze them together
-      centerPull: 0.0008,    // Stronger centering for tighter pack
-      avoidTLStrength: 0.028,
+      repel: 0.55,           // Strong repulsion keeps them together
+      centerPull: 0.0015,    // Increased - pull toward center
+      avoidTLStrength: 0,    // No corner avoidance - stay centered
       avoidTLRadiusFrac: 0.40
     };
 
@@ -146,6 +146,12 @@ export function createDesktopDrift() {
         p.vy = safeNumber(p.vy, 0.2);
         p.x  = safeNumber(p.x + p.vx, Math.random()*W);
         p.y  = safeNumber(p.y + p.vy, Math.random()*H);
+
+        // Hard clamp to container bounds - reverse velocity if hitting edges
+        if (p.x < minX + p.radius) { p.x = minX + p.radius; p.vx *= -0.5; }
+        if (p.x > maxX - p.radius) { p.x = maxX - p.radius; p.vx *= -0.5; }
+        if (p.y < minY + p.radius) { p.y = minY + p.radius; p.vy *= -0.5; }
+        if (p.y > maxY - p.radius) { p.y = maxY - p.radius; p.vy *= -0.5; }
 
         p.btn.style.transform =
           `translate(${(p.x - p.btn.offsetWidth/2).toFixed(2)}px, ${(p.y - p.btn.offsetHeight/2).toFixed(2)}px)`;
