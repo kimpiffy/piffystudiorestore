@@ -59,8 +59,8 @@ export function computePathFromModel(model, timeSec, options = {}) {
 
     r += dr * rip.strength;
 
-    // Apply compression from neighbors
-    // This makes edges compress inward where neighbors push
+    // Synergistic neighbor interaction
+    // Edges compress inward where neighbors push, but also "push back" with ripples
     if (neighbors.length > 0) {
       for (const neighbor of neighbors) {
         const angleToNeighbor = neighbor.angle;
@@ -70,11 +70,25 @@ export function computePathFromModel(model, timeSec, options = {}) {
         const angleDiff = Math.abs(a - angleToNeighbor);
         const normalizedDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
 
-        // If this edge faces a neighbor, compress it
-        if (normalizedDiff < Math.PI * 0.4) {
-          const facingStrength = 1 - (normalizedDiff / (Math.PI * 0.4));
-          r -= facingStrength * compression * 22;  // Much stronger compression
+        // Direct compression where edges face neighbors
+        if (normalizedDiff < Math.PI * 0.35) {
+          const facingStrength = 1 - (normalizedDiff / (Math.PI * 0.35));
+          r -= facingStrength * compression * 24;  // Strong inward push
         }
+
+        // Reciprocal "push back" - edges on opposite side push outward (reaction)
+        const oppositeSide = normalizedDiff > Math.PI * 0.65; // Far side from neighbor
+        if (oppositeSide && compression > 0.2) {
+          const reactStrength = 1 - ((normalizedDiff - Math.PI * 0.65) / (Math.PI * 0.35));
+          if (reactStrength > 0.1) {
+            r += reactStrength * compression * 12;  // Push outward in reaction
+          }
+        }
+
+        // Ripple propagation - create wave that spreads across edge
+        const wavePhase = timeSec * 3 + Math.sin(angleToNeighbor * 2) * Math.PI;
+        const wave = Math.sin(a * 3 + wavePhase) * compression * 8;
+        r += wave * Math.max(0, 1 - normalizedDiff / (Math.PI * 0.5));
       }
     }
 
