@@ -12,8 +12,10 @@ def digital(request):
             "title": "Piffy Studio",
             "tagline": "Self-built static portfolio site",
             "blurb": (
-                "A simple, static portfolio website for an artist transitioning into web development. "
-                "A simple, personal site with clear presentation, layout fundamentals, and a focus on learning-by-doing."
+                "A simple, static portfolio website for an artist "
+                "transitioning into web development. "
+                "A simple, personal site with clear presentation, "
+                "layout fundamentals, and a focus on learning-by-doing."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
             "cover": "/static/img/digital/piffy.png",
@@ -25,8 +27,11 @@ def digital(request):
             "title": "WebDevination",
             "tagline": "Web-based tarot game + digital divination tool",
             "blurb": (
-                "A browser-based tarot reading experience with a retro-futuristic terminal style design, playful interactions and an AI-powered oracle. "
-                "Built with JavaScript and API integrations to generate entertaining insights."
+                "A browser-based tarot reading experience with a "
+                "retro-futuristic terminal style design, playful "
+                "interactions and an AI-powered oracle. "
+                "Built with JavaScript and API integrations to "
+                "generate entertaining insights."
             ),
             "stack": ["JavaScript", "APIs", "HTML", "CSS"],
             "cover": "/static/img/digital/wd.png",
@@ -36,10 +41,16 @@ def digital(request):
         {
             "id": "the-english-studio",
             "title": "The English Studio",
-            "tagline": "Modern full-stack website for an English language school in Corvetto, Milan.",
+            "tagline": (
+                "Modern full-stack website for an English language "
+                "school in Corvetto, Milan."
+            ),
             "blurb": (
-                "A full-stack website for an English language school in Corvetto, Milan. Designed to create a clear and intuitive user experience. "
-                "Custom backend functionality lets the school manage their content easily, avoiding unnecessary complexity."
+                "A full-stack website for an English language school "
+                "in Corvetto, Milan. Designed to create a clear and "
+                "intuitive user experience. Custom backend functionality "
+                "lets the school manage their content easily, avoiding "
+                "unnecessary complexity."
             ),
             "stack": ["Django", "Python", "HTML", "CSS", "JavaScript"],
             "cover": "/static/img/digital/tes.png",
@@ -51,8 +62,11 @@ def digital(request):
             "title": "Phoebe Collins Tattoo",
             "tagline": "Static site with Instagram-fed galleries",
             "blurb": (
-                "A lightweight portfolio site for a tattoo artist, designed to stay fresh without constant manual updates. "
-                "Gallery content is pulled from Instagram so new work appears automatically, saving time and keeping the site current."
+                "A lightweight portfolio site for a tattoo artist, "
+                "designed to stay fresh without constant manual updates. "
+                "Gallery content is pulled from Instagram so new work "
+                "appears automatically, saving time and keeping the "
+                "site current."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
             "cover": "/static/img/digital/phoebecollins.png",
@@ -64,8 +78,10 @@ def digital(request):
             "title": "Think English",
             "tagline": "Professional website + branding for an academy",
             "blurb": (
-                "A simple, professional web presence for an English language academy in Vigevano, Italy. "
-                "Handling both the website build and the brand direction creates a consistent, confident online identity."
+                "A simple, professional web presence for an English "
+                "language academy in Vigevano, Italy. Handling both "
+                "the website build and the brand direction creates a "
+                "consistent, confident online identity."
             ),
             "stack": ["HTML", "CSS", "JavaScript"],
             "cover": "/static/img/digital/thinkeng.png",
@@ -75,10 +91,14 @@ def digital(request):
         {
             "id": "finding-myself",
             "title": "Finding Myself",
-            "tagline": "Creative-coded self-portrait (conceptual web artwork)",
+            "tagline": (
+                "Creative-coded self-portrait (conceptual web artwork)"
+            ),
             "blurb": (
-                "A conceptual, coded self-portrait using astrological placements as data sources. "
-                "The piece visualizes identity through an interactive sonar dial; blending symbolism, and design."
+                "A conceptual, coded self-portrait using astrological "
+                "placements as data sources. The piece visualizes "
+                "identity through an interactive sonar dial; blending "
+                "symbolism, and design."
             ),
             "stack": ["JavaScript", "Creative Coding", "HTML", "CSS"],
             "cover": "/static/img/digital/findmyself.jpeg",
@@ -87,11 +107,8 @@ def digital(request):
         },
     ]
 
-    return render(
-        request,
-        "portfolio/digital.html",
-        {"projects": projects}
-    )
+    return render(request, "portfolio/digital.html", {"projects": projects})
+
 
 def art(request):
     projects = [
@@ -105,7 +122,9 @@ def art(request):
         {
             "id": "piece-two",
             "title": "Transition",
-            "description": "Digital exploration of movement and transformation.",
+            "description": (
+                "Digital exploration of movement and transformation."
+            ),
             "cover": "/static/img/art/piece-two.jpg",
             "slug": "transition",
         },
@@ -133,11 +152,12 @@ def art(request):
         {
             "id": "piece-six",
             "title": "Flux",
-            "description": "Interactive installation exploring fluid dynamics.",
+            "description": (
+                "Interactive installation exploring fluid dynamics."
+            ),
             "cover": "/static/img/art/piece-six.jpg",
             "slug": "flux",
         },
     ]
 
     return render(request, "portfolio/art.html", {"projects": projects})
-
