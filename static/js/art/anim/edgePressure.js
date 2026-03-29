@@ -51,13 +51,13 @@ export function createEdgePressure(blobLayer) {
 
       const t = now * 0.001;
 
-      // Calculate neighbor compression for each segment
-      const neighborData = {};
+      // Build shared pressure field - all blobs calculate pressure together
+      const pressureField = {};
       for (let i = 0; i < segments.length; i++) {
         const seg = segments[i];
-        neighborData[seg.id] = [];
+        const allAdjacent = [];
 
-        // Find neighbors (adjacent in grid)
+        // Find all adjacent neighbors
         for (let j = 0; j < segments.length; j++) {
           if (i === j) continue;
           const other = segments[j];
@@ -65,27 +65,37 @@ export function createEdgePressure(blobLayer) {
           const dx = other.x - seg.x;
           const dy = other.y - seg.y;
           const dist = Math.hypot(dx, dy);
-          const minDist = seg.radius + other.radius + 2; // Small gap
+          const minDist = seg.radius + other.radius + 1;
 
-          // Only consider neighbors that are close enough
-          if (dist < minDist * 1.5) {
-            const angle = Math.atan2(dy, dx);
-            const overlap = Math.max(0, minDist - dist);
-            const compression = Math.min(1, overlap / (minDist * 0.2)); // More sensitive
-
-            neighborData[seg.id].push({
-              angle,
-              compression,
-              dist
+          // Track distance and angle to all neighbors
+          if (dist < minDist * 1.2) {
+            allAdjacent.push({
+              angle: Math.atan2(dy, dx),
+              dist,
+              minDist,
+              id: other.id,
+              other
             });
           }
         }
+
+        // Store unified pressure data
+        pressureField[seg.id] = {
+          neighbors: allAdjacent,
+          avgPressure: allAdjacent.length > 0
+            ? allAdjacent.reduce((sum, n) => sum + Math.max(0, (n.minDist - n.dist) / n.minDist), 0) / allAdjacent.length
+            : 0
+        };
       }
 
-      // Update blob edges based on neighbor pressure
+      // Update blob edges with synchronized neighbor data
       for (const bv of blobVisuals) {
-        const neighbors = neighborData[bv.id] || [];
-        const d = computePathFromModel(bv.model, t, { neighbors });
+        const pressure = pressureField[bv.id] || { neighbors: [], avgPressure: 0 };
+        const d = computePathFromModel(bv.model, t, {
+          neighbors: pressure.neighbors,
+          avgPressure: pressure.avgPressure,
+          allPressure: pressureField
+        });
         bv.pathEl.setAttributeNS(null, "d", d);
         bv.outlineEl.setAttributeNS(null, "d", d);
       }

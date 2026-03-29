@@ -45,50 +45,45 @@ export function computePathFromModel(model, timeSec, options = {}) {
   const cx = 50, cy = 50;
   const pts = [];
   const { N, angles, baseR, rip } = model;
-  const { neighbors = [] } = options;
+  const { neighbors = [], avgPressure = 0 } = options;
+
+  // Global pressure breathing - all blobs pulse together based on average pressure
+  const breathePhase = timeSec * 1.5 + avgPressure * Math.PI;
+  const globalBreath = Math.sin(breathePhase) * avgPressure * 0.3;
 
   for (let i = 0; i < N; i++) {
     const a = angles[i];
     let r = baseR[i];
 
-    // Ripple animation
+    // Ripple animation - modulated by pressure (breathing together)
     let dr = 0;
     for (let k = 0; k < rip.amps.length; k++) {
-      dr += Math.sin(a * rip.freqs[k] + rip.phases[k] + timeSec * rip.speeds[k]) * rip.amps[k];
+      const pressureModulation = 1 - avgPressure * 0.4; // More pressure = damped ripples
+      dr += Math.sin(a * rip.freqs[k] + rip.phases[k] + timeSec * rip.speeds[k]) * rip.amps[k] * pressureModulation;
     }
 
     r += dr * rip.strength;
 
-    // Synergistic neighbor interaction
-    // Edges compress inward where neighbors push, but also "push back" with ripples
+    // Global breathing effect - all edges respond together
+    r += globalBreath;
+
+    // Smooth neighbor interaction - anticipatory deformation
     if (neighbors.length > 0) {
       for (const neighbor of neighbors) {
         const angleToNeighbor = neighbor.angle;
-        const compression = neighbor.compression;
+        const dist = neighbor.dist;
+        const minDist = neighbor.minDist;
+        const pressure = Math.max(0, (minDist - dist) / minDist);
 
         // Calculate how much this point faces the neighbor
         const angleDiff = Math.abs(a - angleToNeighbor);
         const normalizedDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
 
-        // Direct compression where edges face neighbors
-        if (normalizedDiff < Math.PI * 0.35) {
-          const facingStrength = 1 - (normalizedDiff / (Math.PI * 0.35));
-          r -= facingStrength * compression * 24;  // Strong inward push
+        // Smooth, anticipatory compression - no harsh collisions
+        if (normalizedDiff < Math.PI * 0.5) {
+          const facingStrength = Math.cos(normalizedDiff / (Math.PI * 0.5) * (Math.PI / 2)); // Smooth cosine falloff
+          r -= facingStrength * pressure * 20; // Gentle, coordinated compression
         }
-
-        // Reciprocal "push back" - edges on opposite side push outward (reaction)
-        const oppositeSide = normalizedDiff > Math.PI * 0.65; // Far side from neighbor
-        if (oppositeSide && compression > 0.2) {
-          const reactStrength = 1 - ((normalizedDiff - Math.PI * 0.65) / (Math.PI * 0.35));
-          if (reactStrength > 0.1) {
-            r += reactStrength * compression * 12;  // Push outward in reaction
-          }
-        }
-
-        // Ripple propagation - create wave that spreads across edge
-        const wavePhase = timeSec * 3 + Math.sin(angleToNeighbor * 2) * Math.PI;
-        const wave = Math.sin(a * 3 + wavePhase) * compression * 8;
-        r += wave * Math.max(0, 1 - normalizedDiff / (Math.PI * 0.5));
       }
     }
 
