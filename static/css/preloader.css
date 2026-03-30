@@ -42,6 +42,12 @@ header,
   height: 100%;
   object-fit: contain;
   display: block;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.preloader.video-active video {
+  opacity: 1;
 }
 
 .preloader-content {
@@ -54,11 +60,15 @@ header,
 }
 
 .preloader-fallback {
-  display: none;
+  display: flex;
   width: 100%;
   height: 100%;
   align-items: center;
   justify-content: center;
+}
+
+.preloader.video-active .preloader-fallback {
+  display: none;
 }
 
 .preloader-dot {

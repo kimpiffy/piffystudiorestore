@@ -3,6 +3,8 @@ const MIN_FALLBACK_CYCLE_MS = 2200;
 let pageLoaded = false;
 let minCycleComplete = false;
 let preloaderHidden = false;
+let usingFallback = false;
+let videoActive = false;
 
 function hidePreloader() {
   const preloader = document.getElementById('preloader');
@@ -30,23 +32,20 @@ function maybeHidePreloader() {
   }
 }
 
-function enableFallbackPreloader() {
-  const preloader = document.getElementById('preloader');
-  if (preloader) {
-    preloader.classList.add('no-video');
+function enableFallbackPreloader(preloader) {
+  if (!preloader || usingFallback) {
+    return;
   }
-}
 
-function startFallbackMinimumCycle(video) {
-  const fallbackCycleMs =
-    Number.isFinite(video?.duration) && video.duration > 0
-      ? Math.max(Math.round(video.duration * 1000), MIN_FALLBACK_CYCLE_MS)
-      : MIN_FALLBACK_CYCLE_MS;
+  usingFallback = true;
+  preloader.classList.remove('video-active');
+  preloader.classList.add('no-video');
 
+  // Fallback still respects the "minimum one cycle" rule.
   setTimeout(() => {
     minCycleComplete = true;
     maybeHidePreloader();
-  }, fallbackCycleMs);
+  }, MIN_FALLBACK_CYCLE_MS);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -58,51 +57,69 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (!video) {
-    enableFallbackPreloader();
-    startFallbackMinimumCycle(null);
+    enableFallbackPreloader(preloader);
     return;
   }
 
-  // We manually restart playback at the end of each cycle so we can
-  // reliably count a full first cycle before allowing hide.
+  // We manually replay so we can count one full cycle reliably.
   video.loop = false;
 
   const supportsWebm =
     typeof video.canPlayType === 'function' &&
-    video.canPlayType('video/webm') !== '';
+    (video.canPlayType('video/webm; codecs="vp9,opus"') !== '' ||
+      video.canPlayType('video/webm') !== '');
 
-  if (!supportsWebm) {
-    enableFallbackPreloader();
-    startFallbackMinimumCycle(video);
+  const supportsMp4 =
+    typeof video.canPlayType === 'function' &&
+    (video.canPlayType('video/mp4; codecs="avc1.42E01E,mp4a.40.2"') !== '' ||
+      video.canPlayType('video/mp4') !== '');
+
+  if (!supportsWebm && !supportsMp4) {
+    enableFallbackPreloader(preloader);
     return;
   }
 
+  video.addEventListener('playing', function() {
+    if (!videoActive) {
+      videoActive = true;
+      preloader.classList.add('video-active');
+    }
+  }, { once: true });
+
   video.addEventListener('ended', function() {
+    // First full cycle completed.
     if (!minCycleComplete) {
       minCycleComplete = true;
       maybeHidePreloader();
     }
 
+    // Continue cycling until page is fully loaded.
     if (!pageLoaded) {
       video.currentTime = 0;
       const replayAttempt = video.play();
       if (replayAttempt && typeof replayAttempt.then === 'function') {
         replayAttempt.catch(() => {
-          enableFallbackPreloader();
+          enableFallbackPreloader(preloader);
         });
       }
     }
   });
 
-  // If metadata never loads or ended never fires on a device,
-  // fallback timer guarantees at least one visible cycle duration.
-  startFallbackMinimumCycle(video);
+  video.addEventListener('error', function() {
+    enableFallbackPreloader(preloader);
+  });
+
+  // If the browser claims support but never starts rendering, fall back.
+  setTimeout(() => {
+    if (!videoActive) {
+      enableFallbackPreloader(preloader);
+    }
+  }, 1200);
 
   const playAttempt = video.play();
   if (playAttempt && typeof playAttempt.then === 'function') {
     playAttempt.catch(() => {
-      // Typical on iOS autoplay-blocked scenarios.
-      enableFallbackPreloader();
+      enableFallbackPreloader(preloader);
     });
   }
 });
@@ -111,3 +128,7 @@ window.addEventListener('load', function() {
   pageLoaded = true;
   maybeHidePreloader();
 });
+
+if (document.readyState === 'complete') {
+  pageLoaded = true;
+}
