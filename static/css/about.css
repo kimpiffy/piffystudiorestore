@@ -295,9 +295,22 @@ body.about-page .overlay-panel{
   overflow: auto;
 
   border-radius: 34px;
-  background: #ffa931; /* var orange */
+  background: #f960d0;
   padding: clamp(0.5rem, 1vw, 1rem) clamp(2rem, 4vw, 3rem) clamp(1rem, 2.5vw, 1.75rem) clamp(2rem, 4vw, 3rem); /* Further reduced bottom padding */
   color: #141414; /* charcoal text */
+}
+
+body.about-page .overlay-panel,
+body.about-page .overlay-panel p,
+body.about-page .overlay-panel h1,
+body.about-page .overlay-panel h2,
+body.about-page .overlay-panel h3,
+body.about-page .overlay-panel h4,
+body.about-page .overlay-panel h5,
+body.about-page .overlay-panel h6,
+body.about-page .overlay-panel a,
+body.about-page .overlay-panel button {
+  color: #141414;
 }
 
 body.about-page .overlay-close{

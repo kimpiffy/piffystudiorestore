@@ -1,5 +1,6 @@
 :root{
   --blob: #7B6CF6;
+  --modal-pink: #f960d0;
   --text: #141414;
   --page: #141414;
   --orange: #ffa931;  /* Your var orange */
@@ -436,7 +437,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 /* Modal content */
 .contact-modal{
   width: min(560px, 92vw);
-  background: var(--blob);
+  background: var(--modal-pink);
   border-radius: 18px;
   padding: 2.2rem 1.6rem 1.6rem;
   border: 1px solid rgba(0,0,0,0.25);
@@ -491,7 +492,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   font-family: 'wakaba', sans-serif;
   font-size: 1.8rem;
   line-height: 1;
-  color: #000 !important;
+  color: #141414 !important;
   text-transform: lowercase;
   transition: text-transform 120ms ease, transform 120ms ease;
   padding: 0;
@@ -501,7 +502,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-modal-x:focus,
 .contact-modal-x:active {
   text-transform: uppercase;
-  color: #000 !important;
+  color: #141414 !important;
   outline: none;
 }
 
@@ -523,7 +524,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   padding: 6px;
   background: transparent;
   border: none;
-  color: #000;
+  color: #141414;
   text-decoration: none;
   border-radius: 6px;
   transition: transform 140ms ease;
@@ -533,7 +534,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-social-btn i {
   font-size: 36px;
   line-height: 1;
-  color: #000;
+  color: #141414;
   display: block;
 }
 

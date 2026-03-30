@@ -21,9 +21,12 @@
   <!-- Preloader -->
   <div id="preloader" class="preloader">
     <div class="preloader-content">
-      <video autoplay muted playsinline preload="auto">
+      <video id="preloader-video" autoplay muted playsinline preload="auto" aria-hidden="true">
         <source src="{% static 'video/preloader.webm' %}" type="video/webm">
       </video>
+      <div class="preloader-fallback" aria-hidden="true">
+        <span class="preloader-dot"></span>
+      </div>
     </div>
   </div>
 

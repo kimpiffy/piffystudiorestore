@@ -15,13 +15,41 @@ function hidePreloader() {
   }
 }
 
+function enableFallbackPreloader() {
+  const preloader = document.getElementById('preloader');
+  if (preloader) {
+    preloader.classList.add('no-video');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const preloader = document.getElementById('preloader');
   const video = preloader?.querySelector('video');
 
-  if (video) {
-    // Hide preloader when video finishes playing
-    video.addEventListener('ended', hidePreloader);
+  if (!preloader || !video) {
+    return;
+  }
+
+  const supportsWebm =
+    typeof video.canPlayType === 'function' &&
+    video.canPlayType('video/webm') !== '';
+
+  if (!supportsWebm) {
+    enableFallbackPreloader();
+    setTimeout(hidePreloader, 2200);
+    return;
+  }
+
+  // Hide preloader when video finishes playing
+  video.addEventListener('ended', hidePreloader);
+
+  // On some mobile browsers autoplay fails despite muted + playsinline.
+  const playAttempt = video.play();
+  if (playAttempt && typeof playAttempt.then === 'function') {
+    playAttempt.catch(() => {
+      enableFallbackPreloader();
+      setTimeout(hidePreloader, 2200);
+    });
   }
 });
 

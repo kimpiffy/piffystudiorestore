@@ -168,9 +168,22 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
   max-height: calc(100vh - 24px);
   overflow:auto;
   border-radius: 34px;
-  background: var(--orange);
+  background: #f960d0;
   padding: 18px;
-  color: #141515;
+  color: #141414;
+}
+
+.overlay-panel,
+.overlay-panel p,
+.overlay-panel h1,
+.overlay-panel h2,
+.overlay-panel h3,
+.overlay-panel h4,
+.overlay-panel h5,
+.overlay-panel h6,
+.overlay-panel a,
+.overlay-panel button {
+  color: #141414;
 }
 
 
@@ -258,7 +271,7 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
 
 /* color classes (use your CSS variables) */
 .project-cta.lilac{ color: #141414; }
-.project-cta.orange{ color:  var(--lilac); }
+.project-cta.orange{ color: #141414; }
 
 /* hover / focus / active: uppercase and stay charcoal */
 .project-cta:hover,

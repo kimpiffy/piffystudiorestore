@@ -1,10 +1,12 @@
 // static/js/about/config.js
 
-export const BIO_TEXT = `I work with a vivid palette, light-responsive materials, and layered media, creating work that ranges from conceptual fine art and immersive installations to interactive web design.
+export const BIO_TEXT = `I am an artist, web designer, and mother. My practice is a record; a personal mythology through which I trace lived experience. Often drawing on archetypes and symbology, I frequently revisit the use of textiles, layered mixed-media, and light-responsive materials. 
 
-I am passionate about exploring the intersection of art and technology, and I strive to create experiences that engage and inspire audiences.
+My digital projects share this emphasis on atmosphere, which allows me to craft beautiful and intuitive user experiences. My current focus is on building anarchic digital spaces imbued with ritual and presence. 
 
-To learn more about my work click on the buttons below. You can reach out via the contact page if you'd like to collaborate or learn more.`;
+Motherhood lies at the core of my approach, not as subject matter, but as a quiet act of resistance that informs every aspect of my work. I treat domestic and digital spaces as laboratories for self-discovery and creative exchange.
+
+Alongside my conceptual practice, studying Visual Communications and designing websites, I lead community art projects; running workshops and building immersive environments that allow space for reflection, and aim to restore a sense of wonder in our restless world.`;
 
 // portraits cycle on click (keep as many as you want)
 export const PORTRAITS = [
