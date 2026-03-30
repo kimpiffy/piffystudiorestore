@@ -1,11 +1,10 @@
-// Track preloader state
-let preloaderReady = false;
-let contentReady = false;
+const MIN_FALLBACK_CYCLE_MS = 2200;
 
-function checkAndHidePreloader() {
-  // Only hide if both conditions met
-  if (!preloaderReady || !contentReady) return;
+let pageLoaded = false;
+let minCycleComplete = false;
+let preloaderHidden = false;
 
+function hidePreloader() {
   const preloader = document.getElementById('preloader');
   const body = document.body;
 
@@ -13,10 +12,21 @@ function checkAndHidePreloader() {
     preloader.classList.add('hidden');
     body.classList.add('content-visible');
 
-    // Remove preloader from DOM after fade transition
     setTimeout(() => {
       preloader.style.display = 'none';
     }, 500);
+  }
+}
+
+function maybeHidePreloader() {
+  if (preloaderHidden) {
+    return;
+  }
+
+  // Hard rule: never hide before one cycle completes.
+  if (pageLoaded && minCycleComplete) {
+    preloaderHidden = true;
+    hidePreloader();
   }
 }
 
@@ -27,117 +37,77 @@ function enableFallbackPreloader() {
   }
 }
 
-function isContentLoaded() {
-  // Check if actual visible content exists (header, main content, etc)
-  const header = document.querySelector('header');
-  const content = document.querySelector('[role="main"], main, .page-content, body > section, body > article');
-  
-  if (!header && !content) return false;
-  
-  // At least one major element must be present and have content
-  return !!(
-    (document.querySelectorAll('img').length > 0) ||
-    (document.body.textContent.trim().length > 100) ||
-    document.readyState === 'complete'
-  );
+function startFallbackMinimumCycle(video) {
+  const fallbackCycleMs =
+    Number.isFinite(video?.duration) && video.duration > 0
+      ? Math.max(Math.round(video.duration * 1000), MIN_FALLBACK_CYCLE_MS)
+      : MIN_FALLBACK_CYCLE_MS;
+
+  setTimeout(() => {
+    minCycleComplete = true;
+    maybeHidePreloader();
+  }, fallbackCycleMs);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   const preloader = document.getElementById('preloader');
   const video = preloader?.querySelector('video');
 
-  if (!preloader || !video) {
+  if (!preloader) {
     return;
   }
+
+  if (!video) {
+    enableFallbackPreloader();
+    startFallbackMinimumCycle(null);
+    return;
+  }
+
+  // We manually restart playback at the end of each cycle so we can
+  // reliably count a full first cycle before allowing hide.
+  video.loop = false;
 
   const supportsWebm =
     typeof video.canPlayType === 'function' &&
     video.canPlayType('video/webm') !== '';
 
   if (!supportsWebm) {
-    // Use fallback loader on mobile/unsupported
     enableFallbackPreloader();
-    preloaderReady = true;
-    
-    // Wait for content, minimum 2.2s
-    setTimeout(() => {
-      const checkContent = setInterval(() => {
-        if (isContentLoaded()) {
-          contentReady = true;
-          clearInterval(checkContent);
-          checkAndHidePreloader();
-        }
-      }, 200);
-      
-      // Force hide after 15s max
-      setTimeout(() => {
-        contentReady = true;
-        checkAndHidePreloader();
-      }, 15000);
-    }, 2200);
+    startFallbackMinimumCycle(video);
     return;
   }
 
-  // Video loaded and playing - wait for one complete cycle minimum
-  let videoHasPlayed = false;
-  
   video.addEventListener('ended', function() {
-    videoHasPlayed = true;
-    preloaderReady = true;
-    checkAndHidePreloader();
+    if (!minCycleComplete) {
+      minCycleComplete = true;
+      maybeHidePreloader();
+    }
+
+    if (!pageLoaded) {
+      video.currentTime = 0;
+      const replayAttempt = video.play();
+      if (replayAttempt && typeof replayAttempt.then === 'function') {
+        replayAttempt.catch(() => {
+          enableFallbackPreloader();
+        });
+      }
+    }
   });
 
-  // Attempt to play video
+  // If metadata never loads or ended never fires on a device,
+  // fallback timer guarantees at least one visible cycle duration.
+  startFallbackMinimumCycle(video);
+
   const playAttempt = video.play();
   if (playAttempt && typeof playAttempt.then === 'function') {
-    playAttempt
-      .then(() => {
-        // Video playing successfully
-        // Wait for content while video loops
-        const checkContent = setInterval(() => {
-          if (isContentLoaded()) {
-            contentReady = true;
-            clearInterval(checkContent);
-            preloaderReady = true;
-            checkAndHidePreloader();
-          }
-        }, 200);
-        
-        // Force hide after 15s max even if content not loaded
-        setTimeout(() => {
-          contentReady = true;
-          preloaderReady = true;
-          checkAndHidePreloader();
-        }, 15000);
-      })
-      .catch(() => {
-        // Autoplay failed - use fallback
-        enableFallbackPreloader();
-        preloaderReady = true;
-        
-        // Wait for content, minimum 2.2s
-        setTimeout(() => {
-          const checkContent = setInterval(() => {
-            if (isContentLoaded()) {
-              contentReady = true;
-              clearInterval(checkContent);
-              checkAndHidePreloader();
-            }
-          }, 200);
-          
-          // Force hide after 15s max
-          setTimeout(() => {
-            contentReady = true;
-            checkAndHidePreloader();
-          }, 15000);
-        }, 2200);
-      });
+    playAttempt.catch(() => {
+      // Typical on iOS autoplay-blocked scenarios.
+      enableFallbackPreloader();
+    });
   }
 });
 
-// Additional safety: hide on page fully loaded if not already hidden
 window.addEventListener('load', function() {
-  contentReady = true;
-  preloaderReady = true;
-  checkAndHidePreloader();
+  pageLoaded = true;
+  maybeHidePreloader();
 });
