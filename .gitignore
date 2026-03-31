@@ -12,6 +12,7 @@ env/
 *.env
 .env
 .env.local
+.venv
 
 
 # ---- DJANGO ----
