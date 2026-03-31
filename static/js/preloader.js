@@ -51,6 +51,8 @@ function enableFallbackPreloader(preloader) {
 document.addEventListener('DOMContentLoaded', function() {
   const preloader = document.getElementById('preloader');
   const video = preloader?.querySelector('video');
+  const mp4Source = document.getElementById('preloader-mp4');
+  const webmSource = document.getElementById('preloader-webm');
 
   if (!preloader) {
     return;
@@ -63,6 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // We manually replay so we can count one full cycle reliably.
   video.loop = false;
+  video.muted = true;
+  video.defaultMuted = true;
+  video.setAttribute('muted', '');
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
 
   const supportsWebm =
     typeof video.canPlayType === 'function' &&
@@ -79,11 +86,41 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
-  video.addEventListener('playing', function() {
+  const ua = window.navigator.userAgent || '';
+  const platform = window.navigator.platform || '';
+  const maxTouchPoints = window.navigator.maxTouchPoints || 0;
+  const isIOSDevice = /iPhone|iPad|iPod/i.test(ua);
+  const isIPadOSDesktopMode = platform === 'MacIntel' && maxTouchPoints > 1;
+  const shouldPreferMp4 = isIOSDevice || isIPadOSDesktopMode;
+
+  // Use WebM wherever practical; force MP4 on iOS-class devices for reliability.
+  if (!shouldPreferMp4 && supportsWebm && webmSource?.src) {
+    video.src = webmSource.src;
+  } else if (supportsMp4 && mp4Source?.src) {
+    video.src = mp4Source.src;
+  } else if (supportsWebm && webmSource?.src) {
+    video.src = webmSource.src;
+  }
+
+  video.load();
+
+  function markVideoActive() {
     if (!videoActive) {
       videoActive = true;
       preloader.classList.add('video-active');
     }
+  }
+
+  video.addEventListener('playing', function() {
+    markVideoActive();
+  }, { once: true });
+
+  video.addEventListener('play', function() {
+    markVideoActive();
+  }, { once: true });
+
+  video.addEventListener('canplay', function() {
+    markVideoActive();
   }, { once: true });
 
   video.addEventListener('ended', function() {
@@ -114,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!videoActive) {
       enableFallbackPreloader(preloader);
     }
-  }, 1200);
+  }, 2000);
 
   const playAttempt = video.play();
   if (playAttempt && typeof playAttempt.then === 'function') {
