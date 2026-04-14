@@ -1,49 +1,62 @@
 {% load static %}
 
-<footer class="site-footer fixed-bottom" aria-label="Site footer">
-  <div class="container-fluid px-3 px-lg-5 py-3 py-lg-4">
-    <div class="row g-4 align-items-center">
-      <div class="col-12 col-lg-3">
-        <div class="footer-block footer-social-block">
-          <h2 class="footer-label mb-0">social</h2>
-          <div class="footer-social-links">
-            <a class="btn footer-icon-btn" href="https://www.instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-              <span>instagram</span>
-            </a>
-            <a class="btn footer-icon-btn" href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-              <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
-              <span>linkedin</span>
-            </a>
-            <a class="btn footer-icon-btn footer-mail-btn" href="{% url 'pages:contact' %}" aria-label="Contact page">
-              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-              <span>mail</span>
-            </a>
+<footer class="site-footer" aria-label="Site footer">
+  <button
+    class="footer-peek-toggle"
+    type="button"
+    aria-label="Open footer"
+    aria-expanded="false"
+    aria-controls="site-footer-panel"
+  >
+    <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+  </button>
+
+  <div class="footer-panel" id="site-footer-panel">
+    <div class="container-fluid px-2 px-lg-4 py-2 py-lg-3">
+      <div class="row g-4 align-items-center">
+        <div class="col-12 col-sm-5">
+          <div class="footer-prompt text-center" data-prompt-widget data-prompt-endpoint="{% url 'interactions:creative_prompt' %}">
+            <button class="footer-prompt-trigger" type="button" data-prompt-trigger aria-live="polite">Need some inspiration? Click here to generate a prompt</button>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-2">
+          <div class="footer-block footer-social-block">
+            <div class="footer-social-links">
+              <a class="footer-icon-link" href="https://www.instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+              </a>
+              <a class="footer-icon-link" href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+              </a>
+              <a class="footer-icon-link footer-mail-link" href="{% url 'pages:contact' %}" aria-label="Contact page">
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-5">
+          <div class="footer-block footer-nav-block">
+            <nav class="footer-nav" aria-label="Footer navigation">
+              <a class="footer-nav-link" href="{% url 'pages:about' %}">about</a>
+              <a class="footer-nav-link" href="{% url 'portfolio:art' %}">art</a>
+              <a class="footer-nav-link" href="{% url 'portfolio:digital' %}">digital</a>
+              <a class="footer-nav-link" href="{% url 'portfolio:installations' %}">people</a>
+              <a class="footer-nav-link" href="{% url 'pages:contact' %}">contact</a>
+            </nav>
+            <a class="btn footer-login-btn" href="{% url 'login' %}">login</a>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-lg-6">
-        <div class="footer-prompt text-center" data-prompt-widget data-prompt-endpoint="{% url 'interactions:creative_prompt' %}">
-          <h2 class="footer-title mb-0">need inspo?</h2>
-          <button class="footer-prompt-trigger" type="button" data-prompt-trigger aria-live="polite">click here for a prompt</button>
-          <button class="footer-refresh-btn" type="button" data-prompt-refresh aria-label="Generate a new prompt">
-            <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-3">
-        <div class="footer-block footer-nav-block">
-          <h2 class="footer-label mb-0 text-lg-end">site nav</h2>
-          <nav class="footer-nav" aria-label="Footer navigation">
-            <a class="footer-nav-link" href="{% url 'pages:about' %}">about</a>
-            <a class="footer-nav-link" href="{% url 'portfolio:art' %}">art</a>
-            <a class="footer-nav-link" href="{% url 'portfolio:digital' %}">digital</a>
-            <a class="footer-nav-link" href="{% url 'portfolio:installations' %}">people</a>
-            <a class="footer-nav-link" href="{% url 'pages:contact' %}">contact</a>
-          </nav>
-          <a class="btn footer-login-btn" href="{% url 'login' %}">login</a>
+      <div class="row">
+        <div class="col-12 text-center">
+          <p class="footer-signoff mb-0">
+            Made with
+            <i class="fa-solid fa-heart" aria-hidden="true"></i>
+            by Kim Piffy
+          </p>
         </div>
       </div>
     </div>

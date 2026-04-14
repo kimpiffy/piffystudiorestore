@@ -17,7 +17,12 @@ if os.getenv("RENDER") is None:
 # -------------------------------
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-default-for-dev")
 
-DEBUG = os.getenv("DEBUG", "false").strip().lower() in ("1", "true", "yes", "on")
+DEBUG = os.getenv("DEBUG", "false").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+    "on",
+)
 
 raw_allowed = os.getenv(
     "ALLOWED_HOSTS",
@@ -102,11 +107,13 @@ DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+
 def _is_postgres(url: str) -> bool:
     return url.startswith("postgresql://") or url.startswith("postgres://")
 
+
 if DATABASE_URL:
-    # Parse WITHOUT forcing SSL (because DATABASE_URL might be sqlite:// locally)
+    # Parse without forcing SSL; local DATABASE_URL may be sqlite.
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -115,7 +122,11 @@ if DATABASE_URL:
     }
 
     # Only require SSL options when the parsed engine is Postgres
-    if DATABASES["default"].get("ENGINE") == "django.db.backends.postgresql" or _is_postgres(DATABASE_URL):
+    is_pg_engine = (
+        DATABASES["default"].get("ENGINE")
+        == "django.db.backends.postgresql"
+    )
+    if is_pg_engine or _is_postgres(DATABASE_URL):
         DATABASES["default"].setdefault("OPTIONS", {})
         DATABASES["default"]["OPTIONS"]["sslmode"] = "require"
 else:
@@ -130,10 +141,25 @@ else:
 # PASSWORD VALIDATION
 # -------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        )
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        )
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "NumericPasswordValidator"
+        )
+    },
 ]
 
 LOGIN_REDIRECT_URL = "/accounts/dashboard/"
@@ -172,9 +198,7 @@ STORAGES = {
     },
 }
 
-# Cloudinary configuration (expects env vars: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET)
-import cloudinary
-import cloudinary_storage
+# Cloudinary reads credentials from env vars configured at deploy/runtime.
 
 # -------------------------------
 # EMAIL CONFIGURATION (Gmail SMTP)
