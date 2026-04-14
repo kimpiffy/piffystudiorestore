@@ -141,6 +141,22 @@ body.contact-body{
   letter-spacing: 3px;
   text-transform: lowercase;
   color: var(--orange);
+  -webkit-text-stroke: 1px var(--modal-pink);
+  text-stroke: 1px var(--modal-pink);
+  text-shadow:
+    0 0 6px rgba(124, 108, 247, 0.5),
+    0 0 12px rgba(124, 108, 247, 0.32),
+    0 0 18px rgba(124, 108, 247, 0.18),
+    1px 1px 2px rgba(0, 0, 0, 0.55);
+  transition: color 180ms ease, text-transform 180ms ease, -webkit-text-stroke-color 180ms ease;
+}
+
+.contact-title:hover,
+.contact-title:focus-visible {
+  text-transform: uppercase;
+  color: var(--blob);
+  -webkit-text-stroke-color: var(--modal-pink);
+  text-stroke-color: var(--modal-pink);
 }
 
 /* ------------------------------------
@@ -198,7 +214,7 @@ body.contact-body{
   width: 100%;
   background: var(--orange) !important; /* force orange always */
   color: #141414;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(249, 96, 208, 0.9);
   border-radius: 12px;
   padding: 0.85rem 0.95rem;
   outline: none;
@@ -222,8 +238,9 @@ body.contact-body{
 .contact-form input:focus,
 .contact-form select:focus,
 .contact-form textarea:focus{
-  border-color: #141414;
-  box-shadow: 0 0 0 2px rgba(20, 20, 20, 0.2);
+  background: var(--modal-pink) !important;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 2px rgba(255, 169, 49, 0.34);
 }
 
 .is-hidden{
@@ -350,18 +367,28 @@ body.contact-body{
   background: none;
   border: none;
   color: var(--orange);
+  -webkit-text-stroke: 0.8px var(--modal-pink);
+  text-stroke: 0.8px var(--modal-pink);
+  text-shadow:
+    0 0 6px rgba(124, 108, 247, 0.5),
+    0 0 12px rgba(124, 108, 247, 0.32),
+    0 0 18px rgba(124, 108, 247, 0.18),
+    1px 1px 2px rgba(0, 0, 0, 0.55);
   letter-spacing: 3px;
   font-size: clamp(1.6rem, 2.5vw, 2rem);
   text-transform: lowercase;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: text-transform 200ms ease;
+  transition: color 180ms ease, text-transform 200ms ease, -webkit-text-stroke-color 180ms ease;
 }
 
 .contact-btn:hover,
 .contact-btn:focus,
 .contact-btn:active{
   text-transform: uppercase;
+  color: var(--blob);
+  -webkit-text-stroke-color: var(--modal-pink);
+  text-stroke-color: var(--modal-pink);
 }
 
 /* ------------------------------------

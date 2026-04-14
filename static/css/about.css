@@ -72,6 +72,24 @@ body.about-page .about-word.is-wobbling .wobble-span{
   animation: navWobbleTouch 420ms ease;
 }
 
+@keyframes navWobbleTouch {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.04, 0.97) rotate(-1.5deg);
+  }
+  50% {
+    transform: scale(0.98, 1.03) rotate(1.2deg);
+  }
+  75% {
+    transform: scale(1.03, 0.98) rotate(-0.8deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
 
 /* =========================================
    Portrait blob (centered, does NOT roam)
@@ -153,6 +171,10 @@ body.about-page .about-word{
   line-height: 1;
   text-transform: lowercase;
 
+  color: #ffa931;
+  -webkit-text-stroke: 1.2px #ff4fb3;
+  text-stroke: 1.2px #ff4fb3;
+
   background: transparent !important;
   border: 0 !important;
   outline: none !important;
@@ -169,6 +191,7 @@ body.about-page .about-word{
 
   transition:
     color 140ms ease,
+    -webkit-text-stroke-color 140ms ease,
     transform 160ms ease,
     text-transform 120ms ease,
     letter-spacing 160ms ease;
@@ -181,20 +204,40 @@ body.about-page .about-word:focus{
 }
 
 /* default colour */
-body.about-page .about-word{ color: #ffa931; }
+body.about-page .about-word{
+  color: #ffa931;
+  -webkit-text-stroke-color: #ff4fb3;
+  text-stroke-color: #ff4fb3;
+}
 
 /* section hover colours */
 body.about-page .about-word[data-key="bio"]:hover,
-body.about-page .about-word[data-key="bio"]:focus{ color: var(--bio-hot); }
+body.about-page .about-word[data-key="bio"]:focus{
+  color: #ff4fb3;
+  -webkit-text-stroke-color: #ffa931;
+  text-stroke-color: #ffa931;
+}
 
 body.about-page .about-word[data-key="art"]:hover,
-body.about-page .about-word[data-key="art"]:focus{ color: var(--art-hot); }
+body.about-page .about-word[data-key="art"]:focus{
+  color: #ff4fb3;
+  -webkit-text-stroke-color: #ffa931;
+  text-stroke-color: #ffa931;
+}
 
 body.about-page .about-word[data-key="digital"]:hover,
-body.about-page .about-word[data-key="digital"]:focus{ color: var(--digital-hot); }
+body.about-page .about-word[data-key="digital"]:focus{
+  color: #ff4fb3;
+  -webkit-text-stroke-color: #ffa931;
+  text-stroke-color: #ffa931;
+}
 
 body.about-page .about-word[data-key="people"]:hover,
-body.about-page .about-word[data-key="people"]:focus{ color: var(--people-hot); }
+body.about-page .about-word[data-key="people"]:focus{
+  color: #ff4fb3;
+  -webkit-text-stroke-color: #ffa931;
+  text-stroke-color: #ffa931;
+}
 
 /* =========================================
    Mobile carousel (kept but hidden on mobile now)
@@ -572,5 +615,12 @@ body.about-page .about-word .wobble-inner {
     0 0 20px rgba(124, 108, 247, 0.6),
     0 0 30px rgba(124, 108, 247, 0.4),
     2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 767px) {
+  body.about-page .orbit .about-word,
+  body.about-page .about-word .wobble-inner {
+    animation: none !important;
+  }
 }
 

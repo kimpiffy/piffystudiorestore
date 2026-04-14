@@ -14,13 +14,46 @@
   <div class="footer-panel" id="site-footer-panel">
     <div class="container-fluid px-2 px-lg-4 py-2 py-lg-3">
       <div class="row g-4 align-items-center">
-        <div class="col-12 col-sm-5">
+        <div class="col-12 col-sm-5 order-2 order-sm-3">
           <div class="footer-prompt text-center" data-prompt-widget data-prompt-endpoint="{% url 'interactions:creative_prompt' %}">
-            <button class="footer-prompt-trigger" type="button" data-prompt-trigger aria-live="polite">Need some inspiration? Click here to generate a prompt</button>
+            <h3 class="footer-section-title text-center mb-2">need inspiration?</h3>
+            <button class="footer-prompt-trigger" type="button" data-prompt-trigger aria-live="polite">Click here for a creative prompt...</button>
           </div>
         </div>
 
-        <div class="col-12 col-sm-2">
+        <div class="col-12 col-sm-2 order-1 order-sm-2">
+          <div class="footer-badge-row text-center">
+            <img
+              class="footer-badge-logo"
+              src="{% static 'img/badgelogo.png' %}"
+              alt="Piffy Studio badge logo"
+              loading="lazy"
+              decoding="async"
+            >
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-5 order-3 order-sm-1">
+          <div class="footer-block footer-nav-block">
+            <h3 class="footer-section-title text-center mb-2">feeling lost?</h3>
+          </div>
+          <div class="footer-nav-pill">
+            <nav class="footer-nav" aria-label="Footer navigation">
+              <a class="footer-nav-link" href="{% url 'pages:about' %}"><span class="footer-nav-label">about</span></a>
+              <a class="footer-nav-link" href="{% url 'portfolio:art' %}"><span class="footer-nav-label">art</span></a>
+              <a class="footer-nav-link" href="{% url 'portfolio:digital' %}"><span class="footer-nav-label">digital</span></a>
+              <a class="footer-nav-link" href="{% url 'portfolio:installations' %}"><span class="footer-nav-label">people</span></a>
+              <a class="footer-nav-link" href="{% url 'pages:contact' %}"><span class="footer-nav-label">contact</span></a>
+              <a class="footer-nav-link" href="{% url 'login' %}"><span class="footer-nav-label">login</span></a>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-1 align-items-center">
+        <div class="d-none d-sm-block col-sm-5"></div>
+
+        <div class="col-12 col-sm-2 order-4 order-sm-0">
           <div class="footer-block footer-social-block">
             <div class="footer-social-links">
               <a class="footer-icon-link" href="https://www.instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
@@ -36,18 +69,7 @@
           </div>
         </div>
 
-        <div class="col-12 col-sm-5">
-          <div class="footer-block footer-nav-block">
-            <nav class="footer-nav" aria-label="Footer navigation">
-              <a class="footer-nav-link" href="{% url 'pages:about' %}">about</a>
-              <a class="footer-nav-link" href="{% url 'portfolio:art' %}">art</a>
-              <a class="footer-nav-link" href="{% url 'portfolio:digital' %}">digital</a>
-              <a class="footer-nav-link" href="{% url 'portfolio:installations' %}">people</a>
-              <a class="footer-nav-link" href="{% url 'pages:contact' %}">contact</a>
-            </nav>
-            <a class="btn footer-login-btn" href="{% url 'login' %}">login</a>
-          </div>
-        </div>
+        <div class="d-none d-sm-block col-sm-5"></div>
       </div>
 
       <div class="row">

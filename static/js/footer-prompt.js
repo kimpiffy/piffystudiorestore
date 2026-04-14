@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const footer = document.querySelector(".site-footer");
   const toggle = footer?.querySelector(".footer-peek-toggle");
   const isPhone = window.matchMedia("(max-width: 767.98px)");
+  let collapseTimeout;
 
   const syncMobileScroll = () => {
     if (!footer) {
@@ -27,13 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (footer) {
     footer.addEventListener("mouseenter", () => {
       if (!isPhone.matches) {
+        clearTimeout(collapseTimeout);
         setFooterOpen(true);
       }
     });
 
     footer.addEventListener("mouseleave", () => {
       if (!isPhone.matches) {
-        setFooterOpen(false);
+        collapseTimeout = setTimeout(() => {
+          setFooterOpen(false);
+        }, 300);
       }
     });
 
@@ -47,8 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.addEventListener("pointerdown", (event) => {
-      if (!footer.contains(event.target)) {
-        setFooterOpen(false);
+      const isToggleButton = event.target === toggle || toggle?.contains(event.target);
+      if (!footer.contains(event.target) || (isPhone.matches && isToggleButton)) {
+        if (!isToggleButton) {
+          setFooterOpen(false);
+        }
       }
     });
   }
