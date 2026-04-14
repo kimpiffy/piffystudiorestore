@@ -189,6 +189,12 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # -------------------------------
+# OPENAI PROMPT WIDGET
+# -------------------------------
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_PROMPT_MODEL = os.getenv("OPENAI_PROMPT_MODEL", "gpt-4o-mini")
+
+# -------------------------------
 # STRIPE CONFIGURATION
 # -------------------------------
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
