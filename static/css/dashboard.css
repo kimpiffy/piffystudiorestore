@@ -235,6 +235,9 @@ hr {
   opacity: 1; 
   transform: translate(-50%, -50%) translateY(-5px) scale(1);  /* move up 5px when lowercase */
   color: #ff4fb3;  /* old pink for lowercase */
+  text-shadow:
+    0 0 5px rgba(124, 108, 247, 0.45),
+    0 0 12px rgba(124, 108, 247, 0.2);
   text-align: center;
   line-height: 0.7;  /* tighter line-height for lowercase */
 }

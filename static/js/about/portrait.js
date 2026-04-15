@@ -29,6 +29,8 @@ export function createPortraitController(portraitBtn) {
 
     const isLandscape = w > h;
 
+    const isPhone = Math.min(w, h) < 700;
+
     // Tablet-like: coarse pointer OR no hover, plus a decent minimum size
     const isTabletLike =
       (window.matchMedia("(pointer: coarse)").matches ||
@@ -50,8 +52,8 @@ export function createPortraitController(portraitBtn) {
     }
 
     const top =
-      isTabletLike && isLandscape ? "40%" :
-      isTabletLike ? "44%" :
+      isPhone && isLandscape ? "40%" :
+      isPhone ? "35%" :
       "50%";
 
     portraitBtn.style.left = "50%";

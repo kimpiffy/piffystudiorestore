@@ -398,11 +398,6 @@ body.contact-body{
 @media (max-width: 768px){
   .contact-content{
     padding: 1rem;
-    transition: opacity 800ms ease, transform 240ms ease;
-  }
-
-  body.contact-body.nav-expanded .contact-content{
-    transform: translateY(clamp(100px, 15vh, 160px));
   }
 
   .contact-inner{

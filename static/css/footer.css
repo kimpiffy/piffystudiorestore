@@ -404,8 +404,18 @@
 
 @media (max-width: 767.98px) {
   .site-footer .container-fluid {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .footer-peek-toggle {
+    min-height: 44px;
+    height: 44px;
+    padding-inline: 1rem;
+  }
+
+  .footer-peek-toggle i {
+    font-size: 0.75rem;
   }
 
   .footer-social-block {

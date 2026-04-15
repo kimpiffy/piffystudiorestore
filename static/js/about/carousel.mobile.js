@@ -1,5 +1,5 @@
 // static/js/about/carousel.mobile.js
-import { NAV_ORDER } from "./config.js";
+import { BIO_TEXT, NAV_ORDER } from "./config.js";
 
 export function createCarouselController({ overlay, routes, arcTextEl, prevBtn, nextBtn }) {
   let idx = 0;
@@ -22,12 +22,11 @@ export function createCarouselController({ overlay, routes, arcTextEl, prevBtn, 
   }
 
   function openBio() {
-    // Simple for now; we’ll unify bio HTML with desktop next pass
     const contactHref = routes?.contact || "/contact/";
     overlay.open(`
-      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 10px 0; text-transform: lowercase; text-align:center;">bio</h2>
-      <p style="opacity:.85; text-align:center; margin:0;">
-        Opened bio overlay (we’ll use the same content as desktop next).
+      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 10px 0; text-align:center;">artist, web designer & mother...</h2>
+      <p style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
+        ${BIO_TEXT}
       </p>
       <div style="display:flex; justify-content:center; margin-top: 14px;">
         <a class="btn project-cta lilac"

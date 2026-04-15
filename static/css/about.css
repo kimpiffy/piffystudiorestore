@@ -403,6 +403,15 @@ body.about-page .overlay-panel .overlay-close:focus-visible{
   box-shadow: 0 0 0 4px rgba(177,255,43,0.12);
 }
 
+/* Bio heading: keep original text, uppercase only on hover */
+body.about-page .overlay-panel #overlayContent h2{
+  transition: text-transform 120ms ease;
+}
+
+body.about-page .overlay-panel #overlayContent h2:hover{
+  text-transform: uppercase;
+}
+
 /* Project CTA buttons - add hover effects */
 body.about-page .project-cta:hover,
 body.about-page .project-cta:focus,
@@ -523,7 +532,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
   /* Slightly higher */
   body.about-page .orbit .about-word[data-key="bio"]{
     top: 4.5%;
-    left: 25%;
+    left: 35%;
   }
 
   body.about-page .orbit .about-word[data-key="people"]{
