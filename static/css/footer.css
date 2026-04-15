@@ -407,15 +407,15 @@
 }
 
 @media (max-width: 767.98px) {
-  .site-footer:hover,
-  .site-footer:focus-within {
+  .site-footer:not(.is-open):hover,
+  .site-footer:not(.is-open):focus-within {
     height: var(--footer-collapsed-h);
     background: linear-gradient(90deg, #ff4fb3, #ff72c2);
     box-shadow: 0 -6px 20px rgba(20, 20, 20, 0.18);
   }
 
-  .site-footer:hover .footer-panel,
-  .site-footer:focus-within .footer-panel {
+  .site-footer:not(.is-open):hover .footer-panel,
+  .site-footer:not(.is-open):focus-within .footer-panel {
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
@@ -424,21 +424,21 @@
     overflow-y: hidden;
   }
 
-  .site-footer:hover .footer-peek-toggle,
-  .site-footer:focus-within .footer-peek-toggle {
+  .site-footer:not(.is-open):hover .footer-peek-toggle,
+  .site-footer:not(.is-open):focus-within .footer-peek-toggle {
     background: transparent;
   }
 
-  .site-footer:hover .footer-peek-toggle::before,
-  .site-footer:focus-within .footer-peek-toggle::before {
+  .site-footer:not(.is-open):hover .footer-peek-toggle::before,
+  .site-footer:not(.is-open):focus-within .footer-peek-toggle::before {
     background: rgba(255, 169, 49, 0.95);
     box-shadow:
       0 0 4px rgba(255, 169, 49, 0.55),
       0 0 8px rgba(255, 169, 49, 0.25);
   }
 
-  .site-footer:hover .footer-peek-toggle i,
-  .site-footer:focus-within .footer-peek-toggle i {
+  .site-footer:not(.is-open):hover .footer-peek-toggle i,
+  .site-footer:not(.is-open):focus-within .footer-peek-toggle i {
     transform: translateY(-1px);
   }
 
