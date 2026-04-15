@@ -536,7 +536,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
   }
 
   body.about-page .orbit .about-word[data-key="people"]{
-    top: 75%;
+    top: 63%;
     left: 15%;
   }
 
@@ -548,7 +548,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
 
   /* Lower + a bit to the right (staggered) */
   body.about-page .orbit .about-word[data-key="art"]{
-    top: 85%;
+    top: 73%;
     left: 62.5%; /* Adjusted to position correctly without transform */
   }
 
