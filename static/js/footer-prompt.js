@@ -1,8 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
   const footer = document.querySelector(".site-footer");
   const toggle = footer?.querySelector(".footer-peek-toggle");
+  const badgeCloseZone = footer?.querySelector(".footer-badge-col");
   const isPhone = window.matchMedia("(max-width: 767.98px)");
+  const isTouch = window.matchMedia("(hover: none), (pointer: coarse)");
   let collapseTimeout;
+
+  const isTouchMobileFooter = () => isPhone.matches && isTouch.matches;
+
+  const syncTouchModeClass = () => {
+    if (!footer) {
+      return;
+    }
+
+    footer.classList.toggle("is-touch-mobile", isTouchMobileFooter());
+  };
 
   const syncMobileScroll = () => {
     if (!footer) {
@@ -24,6 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     syncMobileScroll();
   };
+
+  syncTouchModeClass();
 
   if (footer) {
     footer.addEventListener("mouseenter", () => {
@@ -67,7 +81,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  if (badgeCloseZone) {
+    badgeCloseZone.addEventListener("click", () => {
+      if (isTouchMobileFooter() && footer?.classList.contains("is-open")) {
+        setFooterOpen(false);
+      }
+    });
+  }
+
   isPhone.addEventListener("change", syncMobileScroll);
+  isPhone.addEventListener("change", syncTouchModeClass);
+  isTouch.addEventListener("change", syncTouchModeClass);
 
   document.querySelectorAll("[data-prompt-widget]").forEach((widget) => {
     const endpoint = widget.dataset.promptEndpoint;

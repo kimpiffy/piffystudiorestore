@@ -83,6 +83,10 @@
   transform: rotate(180deg);
 }
 
+.site-footer.is-touch-mobile.is-open .footer-peek-toggle i {
+  opacity: 0;
+}
+
 .site-footer.is-open .footer-peek-toggle,
 .site-footer:hover .footer-peek-toggle,
 .site-footer:focus-within .footer-peek-toggle {
