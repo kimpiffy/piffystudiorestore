@@ -4,7 +4,7 @@ import { ABOUT_LOOP_VIDEO } from "./config.js";
 import { createBlobModel, computePathFromModel } from "./blob/model.js";
 
 export function createPortraitController(portraitBtn) {
-  const uid = `p_${Math.floor(Math.random() * 1e9)}`;
+  const uid = "about-portrait";
   const model = createBlobModel(uid);
 
   let edgeRAF = null;
@@ -27,15 +27,15 @@ export function createPortraitController(portraitBtn) {
     const base = Math.min(w, h);
 
     let scale =
-      isTabletLike && isLandscape ? 2.15 :
-      isTabletLike ? 1.65 :
+      isTabletLike && isLandscape ? 1.04 :
+      isTabletLike ? 1.02 :
       1;
 
     // Big screens: make the blob feel properly massive.
     if (!isTabletLike) {
-      if (base >= 1400) scale = 1.18;
-      if (base >= 1800) scale = 1.30;
-      if (base >= 2200) scale = 1.45;
+      if (base >= 1400) scale = 1.03;
+      if (base >= 1800) scale = 1.06;
+      if (base >= 2200) scale = 1.1;
     }
 
     const top =
@@ -52,46 +52,32 @@ export function createPortraitController(portraitBtn) {
   function renderSVG() {
     const d0 = computePathFromModel(model, performance.now() * 0.001);
 
+    const clipPath = toPercentPath(d0);
+
     portraitBtn.innerHTML = `
-      <svg class="blob-svg"
-           xmlns="http://www.w3.org/2000/svg"
-           viewBox="0 0 100 100"
-           data-uid="${uid}"
-           aria-hidden="true"
-           focusable="false">
-        <defs>
-          <clipPath id="${uid}_clip">
-            <path id="${uid}_path" d="${d0}"></path>
-          </clipPath>
-        </defs>
-
-        <g clip-path="url(#${uid}_clip)">
-          <foreignObject x="0" y="0" width="100" height="100">
-            <div xmlns="http://www.w3.org/1999/xhtml" class="blob-media" id="${uid}_media" aria-hidden="true">
-              <video
-                class="blob-video"
-                id="${uid}_video"
-                autoplay
-                loop
-                muted
-                playsinline
-                webkit-playsinline
-                preload="auto"
-                aria-hidden="true"
-              >
-                <source src="${escapeHtml(ABOUT_LOOP_VIDEO)}" type="video/mp4">
-              </video>
-              <div class="blob-shade" aria-hidden="true"></div>
-            </div>
-          </foreignObject>
-        </g>
-
-        <path class="blob-outline" id="${uid}_outline" d="${d0}" fill="none"></path>
-      </svg>
+      <div class="blob-media" id="${uid}_media" aria-hidden="true">
+        <video
+          class="blob-video"
+          id="${uid}_video"
+          autoplay
+          loop
+          muted
+          playsinline
+          webkit-playsinline
+          preload="auto"
+          aria-hidden="true"
+        >
+          <source src="${escapeHtml(ABOUT_LOOP_VIDEO)}" type="video/mp4">
+        </video>
+      </div>
     `;
 
     const media = portraitBtn.querySelector(`#${uid}_media`);
-    if (media) media.setAttribute("data-blob-media", "true");
+    if (media) {
+      media.setAttribute("data-blob-media", "true");
+      media.style.clipPath = `path('${clipPath}')`;
+      media.style.webkitClipPath = `path('${clipPath}')`;
+    }
 
     const video = portraitBtn.querySelector(`#${uid}_video`);
     if (video) {
@@ -121,11 +107,13 @@ export function createPortraitController(portraitBtn) {
     function frame(now) {
       const t = now * 0.001;
       const d = computePathFromModel(model, t);
+      const clipPath = toPercentPath(d);
 
-      const pathEl = portraitBtn.querySelector(`#${uid}_path`);
-      const outlineEl = portraitBtn.querySelector(`#${uid}_outline`);
-      if (pathEl) pathEl.setAttribute("d", d);
-      if (outlineEl) outlineEl.setAttribute("d", d);
+      const media = portraitBtn.querySelector(`#${uid}_media`);
+      if (media) {
+        media.style.clipPath = `path('${clipPath}')`;
+        media.style.webkitClipPath = `path('${clipPath}')`;
+      }
 
       edgeRAF = requestAnimationFrame(frame);
     }
@@ -154,4 +142,8 @@ export function createPortraitController(portraitBtn) {
   }
 
   return { mount, destroy };
+}
+
+function toPercentPath(d) {
+  return d.replace(/-?\d*\.?\d+/g, (token) => `${Number(token)}%`);
 }

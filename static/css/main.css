@@ -220,8 +220,8 @@ img, svg, video {
   text-shadow:
     0 0 5px rgba(124, 108, 247, 0.45),
     0 0 12px rgba(124, 108, 247, 0.2);
-  -webkit-text-stroke-color: #ffa931;
-  text-stroke-color: #ffa931;
+  -webkit-text-stroke-color: #7B6CF6;
+  text-stroke-color: #7B6CF6;
   text-align: center;
   line-height: 0.7;  /* tighter line-height for lowercase */
 }

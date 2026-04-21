@@ -117,23 +117,18 @@ body.about-page .portrait-blob{
 }
 
 body.about-page .portrait-blob .blob-svg{
+  display: none;
+}
+
+body.about-page .portrait-blob .blob-media{
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  display:block;
-  overflow: visible;
-  filter: none !important;
-  pointer-events: none;
-}
-
-body.about-page .portrait-blob .blob-media{
-  width: 100%;
-  height: 100%;
-  display: flex;
-  position: relative;
+  display: block;
   pointer-events: none;
   overflow: hidden;
+  z-index: 0;
 }
 
 body.about-page .portrait-blob .blob-video{
@@ -144,21 +139,11 @@ body.about-page .portrait-blob .blob-video{
 }
 
 body.about-page .portrait-blob .blob-shade{
-  position: absolute;
-  inset: 0;
-  background: rgba(124, 108, 246, 0.35);
-  pointer-events: none;
+  display: none;
 }
 
 body.about-page .portrait-blob .blob-outline{
-  stroke: transparent !important;
-  stroke-width: 0 !important;
-  opacity: 0 !important;
-}
-
-/* Match the blob shade color from home page */
-body.about-page .portrait-blob .blob-shade{
-  fill: #7c6cf689;
+  display: none;
 }
 
 /* =========================================
@@ -459,8 +444,8 @@ body.about-page .about-word.is-wobbling .wobble-span{
 /* Desktop/tablet: orbit visible */
 @media (min-width: 768px){
   body.about-page .portrait-blob{
-    width: min(62vmin, 760px);
-    height: min(62vmin, 760px);
+    width: min(92vmin, 1120px);
+    height: min(92vmin, 1120px);
   }
 
   body.about-page .orbit{
@@ -574,10 +559,10 @@ body.about-page .about-word.is-wobbling .wobble-span{
   }
 
 
-  /* Blob should spill off sides, but stage clips it */
+  /* Keep mobile blob visible but not oversized */
   body.about-page .portrait-blob{
-    width: 150vmin;
-    height: 150vmin;
+    width: min(125vmin, 920px);
+    height: min(125vmin, 920px);
   }
 }
 
@@ -588,34 +573,26 @@ body.about-page .about-word.is-wobbling .wobble-span{
   }
 }
 
-/* Big desktop / 2K+ */
-@media (min-width: 750px){
-  body.about-page .portrait-blob{
-    width: min(70vmin, 820px);
-    height: min(70vmin, 820px);
-  }
-}
-
 @media (min-width: 768px) and (max-width: 1180px) and (orientation: landscape){
   body.about-page .portrait-blob{
-    width: min(55vmin, 700px);
-    height: min(55vmin, 700px);
+    width: min(86vmin, 980px);
+    height: min(86vmin, 980px);
   }
 }
 
 /* Big desktop / 2K+ */
 @media (min-width: 1600px){
   body.about-page .portrait-blob{
-    width: min(202vmin, 1980px);
-    height: min(202vmin, 1980px);
+    width: min(88vmin, 1400px);
+    height: min(88vmin, 1400px);
   }
 }
 
 /* 4K-ish and up */
 @media (min-width: 2560px){
   body.about-page .portrait-blob{
-    width: min(202vmin, 2320px);
-    height: min(202vmin, 2320px);
+    width: min(86vmin, 1700px);
+    height: min(86vmin, 1700px);
   }
   :root{
     --word-size: clamp(4.2rem, 3.2vw, 10.5rem);
