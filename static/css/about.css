@@ -8,7 +8,7 @@
   --lilac: #7B6CF6;
 
   /* MUST match your navbar height */
-  --site-header-h: 92px;
+  --site-header-h: 76px;
 
   /* Word sizing */
   --word-size: clamp(5rem, 5vw, 10rem);
@@ -30,6 +30,22 @@ body.about-page{
   background: var(--ink);
   color: #ffa931;
   overflow:hidden;
+}
+
+@media (min-width: 768px){
+  html, body.about-page{
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body.about-page .site-content{
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  body.about-page .site-footer{
+    position: fixed;
+  }
 }
 
 /* Make sure header is always above stage */
@@ -61,6 +77,18 @@ body.about-page .about-stage{
 
   overflow: visible;
   z-index: 1 !important;
+}
+
+@media (min-width: 768px){
+  body.about-page .about-stage{
+    height: calc(100vh - var(--site-header-h));
+  }
+}
+
+@media (min-width: 1024px){
+  :root{
+    --site-header-h: 62px;
+  }
 }
 
 
@@ -120,18 +148,52 @@ body.about-page .portrait-blob .blob-svg{
   display: none;
 }
 
-body.about-page .portrait-blob .blob-media{
-  position: absolute;
+body.about-page .about-blob-layers{
+  position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+body.about-page .blob-media{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100dvh;
   display: block;
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
+  transform: translate(-50%, -50%) scale(1.06);
+  transform-origin: center center;
 }
 
-body.about-page .portrait-blob .blob-video{
+body.about-page .blob-mask{
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  pointer-events: none;
+  z-index: 2;
+}
+
+body.about-page .blob-mask-svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+body.about-page .blob-mask-fill{
+  fill: #141414;
+}
+
+body.about-page .blob-hole-edge{
+  display: none;
+}
+
+body.about-page .blob-video{
   width: 100%;
   height: 100%;
   display: block;
@@ -153,7 +215,10 @@ body.about-page .portrait-blob .blob-outline{
 
 body.about-page .orbit{
   position:absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: -10vh;
+  bottom: 10vh;
   pointer-events: none; /* words re-enable */
   z-index: 20 !important;
 }
