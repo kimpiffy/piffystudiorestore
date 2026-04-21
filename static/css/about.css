@@ -100,6 +100,7 @@ body.about-page .portrait-blob{
   position:absolute;
   left: 50%;
   top: 50%;
+  overflow: visible;
 
   /* IMPORTANT: do not set transform here;
      portrait.js sets translate/scale consistently */
@@ -116,11 +117,37 @@ body.about-page .portrait-blob{
 }
 
 body.about-page .portrait-blob .blob-svg{
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display:block;
   overflow: visible;
   filter: none !important;
+  pointer-events: none;
+}
+
+body.about-page .portrait-blob .blob-media{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+body.about-page .portrait-blob .blob-video{
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+body.about-page .portrait-blob .blob-shade{
+  position: absolute;
+  inset: 0;
+  background: rgba(124, 108, 246, 0.35);
+  pointer-events: none;
 }
 
 body.about-page .portrait-blob .blob-outline{
@@ -173,7 +200,6 @@ body.about-page .about-word{
 
   color: #ffa931;
   -webkit-text-stroke: 1.2px #ff4fb3;
-  text-stroke: 1.2px #ff4fb3;
 
   background: transparent !important;
   border: 0 !important;
@@ -207,7 +233,6 @@ body.about-page .about-word:focus{
 body.about-page .about-word{
   color: #ffa931;
   -webkit-text-stroke-color: #ff4fb3;
-  text-stroke-color: #ff4fb3;
 }
 
 /* section hover colours */
@@ -215,28 +240,24 @@ body.about-page .about-word[data-key="bio"]:hover,
 body.about-page .about-word[data-key="bio"]:focus{
   color: #ff4fb3;
   -webkit-text-stroke-color: #ffa931;
-  text-stroke-color: #ffa931;
 }
 
 body.about-page .about-word[data-key="art"]:hover,
 body.about-page .about-word[data-key="art"]:focus{
   color: #ff4fb3;
   -webkit-text-stroke-color: #ffa931;
-  text-stroke-color: #ffa931;
 }
 
 body.about-page .about-word[data-key="digital"]:hover,
 body.about-page .about-word[data-key="digital"]:focus{
   color: #ff4fb3;
   -webkit-text-stroke-color: #ffa931;
-  text-stroke-color: #ffa931;
 }
 
 body.about-page .about-word[data-key="people"]:hover,
 body.about-page .about-word[data-key="people"]:focus{
   color: #ff4fb3;
   -webkit-text-stroke-color: #ffa931;
-  text-stroke-color: #ffa931;
 }
 
 /* =========================================

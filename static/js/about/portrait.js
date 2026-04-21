@@ -1,26 +1,13 @@
 // static/js/about/portrait.js
 import { escapeHtml } from "./utils.js";
-import { PORTRAITS, PORTRAIT_FIT } from "./config.js";
+import { ABOUT_LOOP_VIDEO } from "./config.js";
 import { createBlobModel, computePathFromModel } from "./blob/model.js";
 
 export function createPortraitController(portraitBtn) {
   const uid = `p_${Math.floor(Math.random() * 1e9)}`;
   const model = createBlobModel(uid);
 
-  let index = 0;
   let edgeRAF = null;
-
-  let rotateTimer = null;
-  const ROTATE_MS = 5000;
-
-  const currentPortrait = () => PORTRAITS[index % PORTRAITS.length];
-
-  function setImage(src) {
-    const imgEl = portraitBtn.querySelector(`#${uid}_img`);
-    if (!imgEl) return;
-    imgEl.setAttribute("href", src);
-    imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", src);
-  }
 
   // Layout: tablet gets your hero scale; big desktops get extra scale
   function applyLayout() {
@@ -64,16 +51,14 @@ export function createPortraitController(portraitBtn) {
 
   function renderSVG() {
     const d0 = computePathFromModel(model, performance.now() * 0.001);
-    const img = currentPortrait();
 
     portraitBtn.innerHTML = `
       <svg class="blob-svg"
            xmlns="http://www.w3.org/2000/svg"
-           xmlns:xlink="http://www.w3.org/1999/xlink"
            viewBox="0 0 100 100"
            data-uid="${uid}"
-           role="img"
-           aria-label="portrait">
+           aria-hidden="true"
+           focusable="false">
         <defs>
           <clipPath id="${uid}_clip">
             <path id="${uid}_path" d="${d0}"></path>
@@ -81,39 +66,52 @@ export function createPortraitController(portraitBtn) {
         </defs>
 
         <g clip-path="url(#${uid}_clip)">
-          <image id="${uid}_img"
-                 href="${escapeHtml(img)}"
-                 xlink:href="${escapeHtml(img)}"
-                 x="10" y="10" width="80" height="80"
-                 preserveAspectRatio="${PORTRAIT_FIT}"></image>
-          <rect class="blob-shade" x="0" y="0" width="100" height="100"></rect>
+          <foreignObject x="0" y="0" width="100" height="100">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="blob-media" id="${uid}_media" aria-hidden="true">
+              <video
+                class="blob-video"
+                id="${uid}_video"
+                autoplay
+                loop
+                muted
+                playsinline
+                webkit-playsinline
+                preload="auto"
+                aria-hidden="true"
+              >
+                <source src="${escapeHtml(ABOUT_LOOP_VIDEO)}" type="video/mp4">
+              </video>
+              <div class="blob-shade" aria-hidden="true"></div>
+            </div>
+          </foreignObject>
         </g>
 
         <path class="blob-outline" id="${uid}_outline" d="${d0}" fill="none"></path>
       </svg>
     `;
-  }
 
-  function nextPortrait() {
-    index = (index + 1) % PORTRAITS.length;
-    setImage(currentPortrait());
-  }
+    const media = portraitBtn.querySelector(`#${uid}_media`);
+    if (media) media.setAttribute("data-blob-media", "true");
 
-  function startAutoRotate() {
-    stopAutoRotate();
+    const video = portraitBtn.querySelector(`#${uid}_video`);
+    if (video) {
+      video.loop = true;
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute("muted", "");
+      video.setAttribute("playsinline", "");
+      video.setAttribute("webkit-playsinline", "");
 
-    // If only 0/1 portrait, don't schedule
-    if (!PORTRAITS || PORTRAITS.length <= 1) return;
+      const tryPlay = () => {
+        const playback = video.play();
+        if (playback && typeof playback.catch === "function") {
+          playback.catch(() => {});
+        }
+      };
 
-    rotateTimer = window.setInterval(() => {
-      nextPortrait();
-    }, ROTATE_MS);
-  }
-
-  function stopAutoRotate() {
-    if (rotateTimer) {
-      window.clearInterval(rotateTimer);
-      rotateTimer = null;
+      video.addEventListener("canplay", tryPlay, { once: true });
+      video.addEventListener("loadeddata", tryPlay, { once: true });
+      window.requestAnimationFrame(tryPlay);
     }
   }
 
@@ -144,14 +142,12 @@ export function createPortraitController(portraitBtn) {
     renderSVG();
     applyLayout();
     startEdgeWarp();
-    startAutoRotate();
 
     window.addEventListener("resize", applyLayout);
     window.addEventListener("orientationchange", applyLayout);
   }
 
   function destroy() {
-    stopAutoRotate();
     stopEdgeWarp();
     window.removeEventListener("resize", applyLayout);
     window.removeEventListener("orientationchange", applyLayout);
