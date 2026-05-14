@@ -136,7 +136,7 @@ body.contact-body{
 .contact-title{
   text-align: center;
   margin: 0 0 2rem 0;
-  font-family: 'wakaba', sans-serif;
+  font-family: 'picnic', sans-serif;
   font-size: clamp(2.4rem, 4.2vw, 3.6rem);
   letter-spacing: 3px;
   text-transform: lowercase;
@@ -180,7 +180,7 @@ body.contact-body{
 .contact-form input,
 .contact-form select,
 .contact-form textarea{
-  font-family: "Inconsolata", monospace;
+  font-family: "velvelyne-regular", monospace;
   letter-spacing: 2px;
   color: #141414;
   font-size: 13px;
@@ -363,7 +363,7 @@ body.contact-body{
 }
 
 .contact-btn{
-  font-family: 'wakaba', sans-serif;
+  font-family: 'picnic', sans-serif;
   background: none;
   border: none;
   color: var(--orange);
@@ -481,14 +481,14 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 /* Typography */
 .contact-modal h1,
 .contact-modal .thankyou {
-  font-family: 'wakaba', sans-serif;
+  font-family: 'picnic', sans-serif;
   font-size: 3rem;
   color: #141414;
   margin: 0 0 0.6rem 0;
 }
 
 .contact-modal .contact-modal-title {
-  font-family: "wakaba", sans-serif;
+  font-family: "picnic", sans-serif;
   font-size: 2.5rem;
   color: #141414;
   margin: 0 0 0.6rem 0;
@@ -497,7 +497,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 
 .contact-modal .contact-modal-text,
 .contact-modal .contact-modal-subtext {
-  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   color: #141414;
   margin: 0 0 0 0;
   font-size: 0.95rem;
@@ -511,7 +511,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   border: none;
   background: transparent;
   cursor: pointer;
-  font-family: 'wakaba', sans-serif;
+  font-family: 'picnic', sans-serif;
   font-size: 1.8rem;
   line-height: 1;
   color: #141414 !important;

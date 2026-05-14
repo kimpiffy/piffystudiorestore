@@ -32,14 +32,14 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
 
     overlay.open(
       `
-      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 6px 0; text-align:center;">Artist, web designer & mother...</h2>
+      <h2 style="font-family: picnic; font-size: 3rem; margin:0 0 6px 0; text-align:center;">Artist, web designer & mother...</h2>
       <p style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
         ${escapeHtml(BIO_TEXT)}
       </p>
       <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top: 18px;">
         <a class="btn project-cta lilac"
            href="${escapeHtml(contactHref)}"
-           style="font-family: wakaba; font-size: 2rem; text-decoration:none;">
+           style="font-family: picnic; font-size: 2rem; text-decoration:none;">
           contact
         </a>
         ${
@@ -48,7 +48,7 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
           <a class="btn project-cta lilac"
              href="${escapeHtml(cvHref)}"
              target="_blank" rel="noopener noreferrer"
-             style="font-family: wakaba; font-size: 2rem; text-decoration:none;">
+             style="font-family: picnic; font-size: 2rem; text-decoration:none;">
             c.v
           </a>`
             : ""

@@ -1,7 +1,7 @@
 // static/js/about/blotterCursor.js
 export function initBlotterCursor(holders, {
   color = "#141515",
-  font = "wakaba",
+  font = "picnic",
   baseSize = 120,
   padX = 26,
   padY = 18,

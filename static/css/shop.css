@@ -29,7 +29,7 @@
   border: 0;
   padding: 0;
   color: var(--lilac);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-family: "velvelyne-regular", sans-serif;
   cursor: pointer;
 }
 .like.is-liked{ color: var(--orange); }
@@ -76,7 +76,7 @@
 }
 
 .price{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-family: "velvelyne-regular", sans-serif;
   font-size: 13px;
   letter-spacing: 1px;
   opacity: .92;

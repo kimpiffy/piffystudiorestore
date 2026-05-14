@@ -21,7 +21,7 @@ export function makeWarpSVG({ uid, cover, title, initialD }) {
       </g>
 
       ${!hasCover
-        ? `<text x="50" y="54" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="7" font-family="wakaba">${escapeHtml(title)}</text>`
+        ? `<text x="50" y="54" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="7" font-family="picnic">${escapeHtml(title)}</text>`
         : ""
       }
 

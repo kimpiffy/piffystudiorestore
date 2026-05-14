@@ -18,7 +18,7 @@ export function createOverlay(nodes, { onOpen, onClose }) {
     const stack = Array.isArray(project.stack) ? project.stack : [];
 
     overlayContent.innerHTML = `
-      <h2 style="font-size: 3rem; margin:0 0 10px 0; font-family: wakaba; text-transform: lowercase; display: flex; justify-content: center;">${title}</h2>
+      <h2 style="font-size: 3rem; margin:0 0 10px 0; font-family: picnic; text-transform: lowercase; display: flex; justify-content: center;">${title}</h2>
       ${blurb ? `<p style="margin:18px 0 12px 0; opacity:.75; display: flex; justify-content: center; text-align:justify;">${blurb}</p>` : ""}
 
       ${stack.length ? `

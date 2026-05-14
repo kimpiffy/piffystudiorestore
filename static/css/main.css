@@ -3,12 +3,20 @@
 ------------------------------------ */
 
 /* Body / menu font */
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;600&display=swap');
 
 @font-face {
-  font-family: "wakaba";
-  src: url('../fonts/wakaba.woff2') format('woff2'),
-       url('../fonts/wakaba.woff') format('woff');
+  font-family: "velvelyne-regular";
+  src: url('../fonts/Velvelyne-Light.ttf') format('truetype'),
+       url('../fonts/Velvelyne-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "picnic";
+  src: url('../fonts/PicNic.woff2') format('woff2'),
+       url('../fonts/PicNic.woff') format('woff');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -66,7 +74,7 @@ html, body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--orange);
-    font-family: 'wakaba', sans-serif;
+    font-family: 'picnic', sans-serif;
     font-size: 1.5rem;
     text-align: center;
     z-index: 99999;
@@ -87,7 +95,7 @@ html, body {
 
 body {
   background-color: var(--background);
-  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
   letter-spacing: 2px;
   overscroll-behavior-y: none;
@@ -160,6 +168,8 @@ img, svg, video {
   width: 50px;     /* controls alignment + tap target */
   height: 50px;
   display: inline-block;
+  filter: drop-shadow(0 0 10px rgba(124, 108, 247, 0.8)) drop-shadow(0 0 20px rgba(124, 108, 247, 0.6)) drop-shadow(0 0 30px rgba(124, 108, 247, 0.4));
+  overflow: visible;
 }
 
 /* both glyphs are centered exactly */
@@ -171,7 +181,7 @@ img, svg, video {
   transform: translate(-50%, -50%);
   transform-origin: 50% 50%;
 
-  font-family: "wakaba", system-ui;
+  font-family: "picnic", system-ui;
   font-size: 34px;
   line-height: 0.7;
   letter-spacing: 0.02em;
@@ -196,15 +206,28 @@ img, svg, video {
 
 /* Piffy sizing adjustments */
 .nav-x__lower .nav-x__piffy {
-  font-size: 1.07em;  /* 5px larger for lowercase */
+  font-size: 1.15em;
   text-align: center;
   display: inline-block;
+  transform: translateY(10px);
+  white-space: nowrap;
+}
+
+.nav-x__lower .nav-x__pif {
+  display: inline-block;
+  transform: translateY(-3px);
+}
+
+.nav-x__lower .nav-x__fy {
+  display: inline-block;
+  margin-left: -5px;
 }
 
 .nav-x__upper .nav-x__piffy {
   font-size: 0.96em;  /* 3px smaller for uppercase */
   text-align: center;
   display: inline-block;
+  transform: translate(-3px, 2px);
 }
 
 /* start state: show lowercase with old pink color */
@@ -215,15 +238,12 @@ img, svg, video {
 }
 .nav-x__lower{
   opacity: 1;
-  transform: translate(-50%, -50%) translateY(-5px) scale(1);  /* move up 5px when lowercase */
-  color: #ff4fb3;  /* old pink for lowercase */
-  text-shadow:
-    0 0 5px rgba(124, 108, 247, 0.45),
-    0 0 12px rgba(124, 108, 247, 0.2);
-  -webkit-text-stroke-color: #7B6CF6;
-  text-stroke-color: #7B6CF6;
+  transform: translate(-50%, -50%) scale(1);
+  color: #ff4fb3;
+  -webkit-text-stroke-color: var(--lilac);
+  text-stroke-color: var(--lilac);
   text-align: center;
-  line-height: 0.7;  /* tighter line-height for lowercase */
+  line-height: 0.8;
 }
 
 /* hover/focus/open: show uppercase and scale from centre */
@@ -242,11 +262,7 @@ img, svg, video {
   color: var(--lilac);
   -webkit-text-stroke-color: #ff4fb3;
   text-stroke-color: #ff4fb3;
-  text-shadow:
-    0 0 6px rgba(124, 108, 247, 0.5),
-    0 0 12px rgba(124, 108, 247, 0.32),
-    0 0 18px rgba(124, 108, 247, 0.18),
-    1px 1px 2px rgba(0, 0, 0, 0.55);
+  /* glow handled at .nav-x__stack level to avoid doubling */
 }
 
 /* mobile tap highlight fix */
@@ -256,11 +272,7 @@ img, svg, video {
 }
 .nav-x:active .nav-x__upper {
   color: var(--orange);
-  text-shadow:
-    0 0 6px rgba(124, 108, 247, 0.5),
-    0 0 12px rgba(124, 108, 247, 0.32),
-    0 0 18px rgba(124, 108, 247, 0.18),
-    1px 1px 2px rgba(0, 0, 0, 0.55);
+  /* glow handled at .nav-x__stack level to avoid doubling */
 }
 
 .site-content {
@@ -343,7 +355,7 @@ img, svg, video {
 
 /* menu links: smaller + tighter */
 .nav-links .nav-link{
-  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 16px;
   letter-spacing: 0.01em;
   line-height: 1.0;
@@ -358,26 +370,45 @@ img, svg, video {
   border-radius: 12px;
   width: fit-content;
 
-  transition: text-decoration 150ms ease;
+  transition: color 300ms linear;
+}
+
+@keyframes navHueShift {
+  0% { color: #ff4fb3; }
+  33% { color: var(--orange); }
+  66% { color: var(--lilac); }
+  100% { color: #ff4fb3; }
 }
 
 .nav-links .nav-link:hover,
 .nav-links .nav-link:focus-visible{
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: var(--orange);
-  text-underline-offset: 4px;
+  text-decoration: none;
   outline: none;
+  animation: navHueShift 2s linear infinite;
 }
 
 /* keep dropdown from going offscreen on small devices */
 @media (max-width: 576px){
   #navbar{
-    left: 25px; /* moved kim piffy further from left edge */
-    top: 15px;
+    left: 32px; /* keep the icon away from the corner on phones */
+    top: 24px;
     right: 15px;
   }
   /* No nav-panel overrides - let it behave exactly like desktop */
+}
+
+@media (min-width: 992px) {
+  #navbar {
+    left: 52px;
+    top: 52px;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 991.98px) {
+  #navbar {
+    left: 40px;
+    top: 40px;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -444,7 +475,7 @@ img, svg, video {
 .dropdown-menu.show .dropdown-item:nth-child(3) { transition-delay: 150ms; }
 
 .dropdown-item {
-  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 16px;
   letter-spacing: 0.01em;
   line-height: 1.0;
@@ -463,12 +494,10 @@ img, svg, video {
 .dropdown-item:hover,
 .dropdown-item:focus-visible {
   background: transparent !important;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: #ff4fb3;
-  text-underline-offset: 4px;
-  color: #ff4fb3 !important;
+  text-decoration: none;
   outline: none;
+  animation: navHueShift 2s linear infinite;
+  color: #ff4fb3 !important;
 }
 
 .dropdown-item:active {
@@ -548,7 +577,7 @@ img, svg, video {
 
 .product-title {
   color: var(--charcoal);
-  font-family: wakaba, sans-serif;
+  font-family: picnic, sans-serif;
   font-size: 2.8rem;
   font-weight: 700;
   text-transform: lowercase;
@@ -615,7 +644,7 @@ img, svg, video {
 }
 
 .buy-btn {
-  font-family: wakaba, sans-serif;
+  font-family: picnic, sans-serif;
   background-color: transparent !important;
   text-transform: lowercase;
   border: none !important;

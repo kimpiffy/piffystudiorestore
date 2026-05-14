@@ -1,9 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;600;700&display=swap');
-
 @font-face {
-  font-family: "wakaba";
-  src: url('../fonts/wakaba.woff2') format('woff2'),
-       url('../fonts/wakaba.woff') format('woff');
+  font-family: "picnic";
+  src: url('../fonts/PicNic.woff2') format('woff2'),
+       url('../fonts/PicNic.woff') format('woff');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -186,14 +184,14 @@
 .footer-icon-link,
 .footer-nav-link,
 .footer-prompt-trigger {
-  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.14em;
   text-transform: lowercase;
 }
 
 .footer-icon-link,
 .footer-prompt-trigger {
-  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.14em;
   text-transform: lowercase;
 }
@@ -335,7 +333,7 @@
 
 .footer-signoff {
   margin-top: 0.7rem;
-  font-family: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.78rem;
   line-height: 1;
   letter-spacing: 0.08em;
@@ -366,7 +364,7 @@
 }
 
 .footer-section-title {
-  font-family: "wakaba", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-family: "picnic", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   font-size: clamp(1.38rem, 2.4vw, 1.85rem);
   line-height: 1;
   letter-spacing: 0.03em;

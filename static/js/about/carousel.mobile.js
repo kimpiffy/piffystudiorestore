@@ -24,14 +24,14 @@ export function createCarouselController({ overlay, routes, arcTextEl, prevBtn, 
   function openBio() {
     const contactHref = routes?.contact || "/contact/";
     overlay.open(`
-      <h2 style="font-family: wakaba; font-size: 3rem; margin:0 0 10px 0; text-align:center;">artist, web designer & mother...</h2>
+      <h2 style="font-family: picnic; font-size: 3rem; margin:0 0 10px 0; text-align:center;">artist, web designer & mother...</h2>
       <p style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
         ${BIO_TEXT}
       </p>
       <div style="display:flex; justify-content:center; margin-top: 14px;">
         <a class="btn project-cta lilac"
            href="${contactHref}"
-           style="font-family: wakaba; font-size: 2rem; text-decoration:none;">
+           style="font-family: picnic; font-size: 2rem; text-decoration:none;">
           contact
         </a>
       </div>

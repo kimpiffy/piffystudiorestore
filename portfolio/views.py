@@ -1,8 +1,36 @@
 from django.shortcuts import render
 
 
-def installations(request):
-    return render(request, "portfolio/installations.html")
+def people(request):
+    projects = [
+        {
+            "id": "wishing-tree",
+            "title": "The Wishing Tree",
+            "blurb": (
+                "An immersive, sensory calming space with public participation "
+                "inside The Hive Library for The Festival of Play hosted by Scala, Worcester."
+            ),
+            "stack": ["Installation", "Community"],
+        },
+        {
+            "id": "imagining-bright-future",
+            "title": "Imagining a Bright Future",
+            "blurb": (
+                "An immersive light installation created with local community groups, for Severn Arts in Worcester."
+            ),
+            "stack": ["Light", "Community"],
+        },
+        {
+            "id": "elgar-at-the-asylum",
+            "title": "Elgar at the Asylum",
+            "blurb": (
+                "Visual Arts with The Monday Night Club, culminating in a triptych of banners installed at Malvern Theatres."
+            ),
+            "stack": ["Visual Arts", "Public Installation"],
+        },
+    ]
+
+    return render(request, "portfolio/people.html", {"projects": projects})
 
 
 def digital(request):
