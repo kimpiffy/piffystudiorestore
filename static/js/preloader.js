@@ -53,13 +53,46 @@ document.addEventListener('DOMContentLoaded', function() {
   const video = preloader?.querySelector('video');
   const mp4Source = document.getElementById('preloader-mp4');
   const webmSource = document.getElementById('preloader-webm');
+  const sequence = preloader?.querySelector('.preloader-sequence');
+
+  // Show the preloader sequence only after fonts are ready.
+  // This keeps the charcoal background visible while fonts load, reducing stutter.
+  function showPreloaderWhenReady() {
+    if (sequence && !sequence.classList.contains('ready')) {
+      sequence.classList.add('ready');
+    }
+  }
+  
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => showPreloaderWhenReady());
+  } else {
+    // Wait 2 seconds for fonts to fully load and parse before starting animation
+    setTimeout(showPreloaderWhenReady, 2000);
+  }
 
   if (!preloader) {
     return;
   }
 
-  if (!video) {
-    enableFallbackPreloader(preloader);
+  // If there's no video but a sequence is present, run the animated text sequence.
+  if (!video && sequence) {
+    // play the CSS animations by adding the play class and animated classes
+    sequence.classList.add('play');
+
+    // add animate class to elements so their animations fire (they respect animation-delay)
+    sequence.querySelectorAll('.small').forEach(el => el.classList.add('animate'));
+    sequence.querySelectorAll('.big').forEach(el => el.classList.add('animate'));
+
+    // Calculate total duration (last big animation end).
+    // CSS delays updated: sequence runs through ~5600ms total (safe upper bound).
+    const totalDuration = 3195; // milliseconds (3 item pairs with seamless transitions)
+
+    // Ensure the sequence plays fully at least once before allowing the preloader to hide.
+    setTimeout(() => {
+      minCycleComplete = true;
+      maybeHidePreloader();
+    }, Math.max(MIN_FALLBACK_CYCLE_MS, totalDuration));
+
     return;
   }
 

@@ -6,9 +6,9 @@
 
 @font-face {
   font-family: "velvelyne-regular";
-  src: url('../fonts/Velvelyne-Light.ttf') format('truetype'),
-       url('../fonts/Velvelyne-Light.otf') format('opentype');
-  font-weight: 300;
+  src: url('../fonts/Velvelyne-Regular.woff2') format('woff2'),
+       url('../fonts/Velvelyne-Regular.woff') format('woff');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -40,6 +40,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: visible;
 }
 
 /* ------------------------------------
@@ -101,6 +102,13 @@ body {
   overscroll-behavior-y: none;
 }
 
+button,
+input,
+textarea,
+select {
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 img, svg, video {
   display: block;
   max-width: 100%;
@@ -146,20 +154,36 @@ img, svg, video {
   z-index: 2000;
   padding: 0 !important;
   background: transparent !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
 }
 
 /* Bootstrap toggler reset */
+button.nav-x {
+  border: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  overflow: visible !important;
+  display: inline-block;
+  cursor: pointer;
+}
+
 .nav-x {
   border: 0 !important;
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
   outline: none !important;
+  overflow: visible !important;
 }
 
 /* kill Bootstrap toggler icon */
 .nav-x.navbar-toggler {
   background-image: none !important;
+  overflow: visible !important;
 }
 
 /* stacked glyph container so x/X share the same centre */
@@ -227,7 +251,7 @@ img, svg, video {
   font-size: 0.96em;  /* 3px smaller for uppercase */
   text-align: center;
   display: inline-block;
-  transform: translate(-3px, 2px);
+  transform: translate(0, 2px);
 }
 
 /* start state: show lowercase with old pink color */
@@ -282,8 +306,8 @@ img, svg, video {
 /* dropdown panel: tight width, charcoal bg, green text, directly under X */
 .nav-panel{
   position: absolute;        /* anchor to #navbar */
-  top: calc(100% + 6px);     /* just below the X */
-  left: -25px;               /* align with left edge of kim piffy text */
+  top: calc(100% + 16px);    /* shifted down additional 5px */
+  left: -37px;               /* shifted left additional 2px */
   margin-top: 0 !important;
 
   display: none;             /* hidden by default */
@@ -349,7 +373,7 @@ img, svg, video {
 /* prevent ul stretching */
 .nav-links{
   margin: 0;
-  padding: 5px 0 0 0;  /* add gap above first item */
+  padding: 10px 0 0 0;  /* shift top item down an extra 5px */
   width: fit-content;
 }
 
@@ -361,30 +385,32 @@ img, svg, video {
   line-height: 1.0;
 
   color: var(--orange) !important;
+  background: transparent !important;
   text-decoration: none;
-  text-transform: none;
+  text-transform: lowercase;
 
   padding: 5px 0px !important;
   margin: 0;
 
   border-radius: 12px;
   width: fit-content;
+  display: inline-block;
+  white-space: nowrap;
 
-  transition: color 300ms linear;
-}
-
-@keyframes navHueShift {
-  0% { color: #ff4fb3; }
-  33% { color: var(--orange); }
-  66% { color: var(--lilac); }
-  100% { color: #ff4fb3; }
+  transition: color 300ms ease, text-transform 300ms ease;
 }
 
 .nav-links .nav-link:hover,
-.nav-links .nav-link:focus-visible{
+.nav-links .nav-link:focus-visible,
+.nav-links .nav-link.active{
   text-decoration: none;
   outline: none;
-  animation: navHueShift 2s linear infinite;
+  text-transform: uppercase;
+  /* pink -> orange gradient fill on hover */
+  background: linear-gradient(90deg, #ff4fb3 0%, var(--orange) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
 }
 
 /* keep dropdown from going offscreen on small devices */
@@ -427,7 +453,7 @@ img, svg, video {
   backdrop-filter: none !important;
   border: none;
   border-radius: 12px;
-  padding: 6px 8px;
+  padding: 10px 0px;
   margin-top: 0px;
   margin-left: -7px !important;
   left: 0 !important;
@@ -480,32 +506,39 @@ img, svg, video {
   letter-spacing: 0.01em;
   line-height: 1.0;
   
-  color: #ff4fb3 !important;
+  color: var(--orange) !important;
+  background: transparent !important;
   text-decoration: none;
-  text-transform: none;
+  text-transform: lowercase;
   
   padding: 5px 0px !important; /* restore original spacing */
   margin: 0;
   border-radius: 8px;
+  display: inline-block;
+  white-space: nowrap;
   
-  transition: text-decoration 150ms ease;
+  transition: color 300ms ease, text-transform 300ms ease;
 }
 
 .dropdown-item:hover,
-.dropdown-item:focus-visible {
+.dropdown-item:focus-visible,
+.dropdown-item.active {
   background: transparent !important;
   text-decoration: none;
   outline: none;
-  animation: navHueShift 2s linear infinite;
-  color: #ff4fb3 !important;
+  /* pink -> orange gradient fill on hover */
+  background: linear-gradient(90deg, #ff4fb3 0%, var(--orange) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  text-transform: uppercase;
+}
 }
 
 .dropdown-item:active {
   background: transparent !important;
-  color: #ff4fb3 !important;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: #ff4fb3;
+  color: var(--lilac) !important;
+  text-transform: uppercase;
 }
 
 /* ------------------------------------
