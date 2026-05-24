@@ -277,8 +277,8 @@ overflow: visible !important;
   max-width: 100px;
 
   background: transparent;
-  border-radius: 18px;
-  padding: 0px 8px 16px 10px;
+  border-radius: 10px;
+  padding: 0px 8px 16px 0px;
 
   opacity: 0;
   transform: translateY(-15px) scale(0.95);
@@ -305,7 +305,7 @@ overflow: visible !important;
 
 
   margin: 0;
-  border-radius: 12px;
+  border-radius: 0px;
   width: fit-content;
   transition: text-decoration 150ms ease;
 }
