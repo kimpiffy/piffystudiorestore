@@ -1,356 +1,292 @@
-:root{
-  --pad: 16px;
-  --radius: 24px;
-  --overlay: rgba(0,0,0,0.55);
-
-  /* approx height of your top nav row on mobile */
-  --site-header-h: 92px;
+:root {
+  --art-charcoal: #111111;
+  --art-ink: #000000;
+  --art-orange: #ffa931;
+  --art-pink: #ff4fb3;
+  --art-purple: #7b6cf6;
+  --art-overlay: rgba(17, 17, 17, 0.78);
 }
 
-/* Page owns viewport */
 html,
-body.art-page{
-  height: 100%;
+body.art-page {
+  min-height: 100%;
   margin: 0;
-  background: #141414;
-  overflow: hidden;
+  background: var(--art-charcoal);
 }
 
-/* prevent any sideways gutters (DON’T apply max-width to everything) */
-body.art-page{ overflow-x: hidden; }
-body.art-page img,
-body.art-page svg,
-body.art-page video{
-  max-width: 100vw;
+body.art-page {
+  color: #f4f1e6;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
-/* theme vars (override main.css vars) */
-body.art-page{
-  --background: #141414;
-  --lilac: #7B6CF6;
-  --orange: #ffa931;
-  background: var(--background);
-}
-
-/* nav colours only on this page */
-body.art-page .nav-link,
-body.art-page .aboutlink{ color: var(--lilac); }
-body.art-page .nav-link:hover,
-body.art-page .nav-link:focus,
-body.art-page .aboutlink:hover,
-body.art-page .aboutlink:focus{ color: var(--orange); }
-
-/* wrap */
-.wrap{
-  padding: var(--pad);
-  min-height: 100vh;
-  background: #141515;
-}
-
-/* header spacer inside page (not the site nav) */
-.art-header{
-  position: relative;
-  z-index: 50;
-}
-.art-header h1{ margin:0; }
-
-/* Modes */
-.mode{ display:none; }
-.mode.is-active{ display:block; }
-
-/* Showcase */
-.showcase{
-  position: relative;
-  height: 100vh;
-  border-radius: 0;
-  z-index: 1;
-  overflow: hidden;
-}
-
-/* >=768: allow blobs to escape, keep body locked */
-@media (min-width: 768px){
-  .showcase{ overflow: visible; }
-  html, body.art-page{ overflow: hidden; }
-}
-
-/* Disable metaballs canvas */
-.lava-canvas{ display:none !important; }
-
-/* Blob layer */
-.blob-layer{
-  position:absolute;
-  overflow: visible;
-  inset:0;
-  width:100%;
-  height:100%;
-  z-index: 1;
-}
-
-/* Clickable blobs (desktop positioning) */
-.blob{
-  position:absolute;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  width: 420px;
-  height: 420px;
-  will-change: transform;
-}
-
-/* Blob SVG */
-.blob-svg{
-  width: 100%;
-  height: 100%;
-  display:block;
-  overflow: visible;
-  filter: none;
-  transition: transform 140ms ease;
-  transform: translateZ(0);
-}
-.blob-svg path[id$="_outline"] { stroke: transparent; }
-.blob:hover .blob-svg{ transform: scale(1.02); }
-
-/* Purple overlay on blobs - removes on hover */
-.blob-shade {
-  fill: #7c6cf689;
-  transition: fill 0.3s ease;
-}
-
-.blob:hover .blob-shade,
-.blob:focus .blob-shade {
-  fill: transparent;
-}
-
-.blob-outer { touch-action: pan-y; }
-.blob-inner { -webkit-tap-highlight-color: transparent; }
-
-
-/* Arrows */
-.nav-arrows{
-  position:absolute;
-  z-index: 3;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 12px;
-  display:flex;
-  gap: 10px;
-  pointer-events:auto;
-}
-.nav-arrows button{
-  border-radius: 999px;
-  padding: 10px 12px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(20,20,20,0.65);
-  color: #f2f2f2;
-  cursor:pointer;
-}
-.nav-arrows button:hover{
-  color: var(--orange);
-  border-color: rgba(177,255,43,0.35);
-}
-
-/* Overlay */
-.overlay{
+body.art-page .site-content {
+  flex: 0 0 auto;
   position: fixed;
-  inset:0;
-  display:none;
+  inset: 0;
+  overflow: hidden;
+}
+
+body.art-page .wrap {
+  position: fixed;
+  inset: 0;
+  min-height: 100vh;
+  padding: 0;
+  background: var(--art-charcoal);
+  overflow: hidden;
+}
+
+body.art-page footer {
+  display: none;
+}
+
+.art-header {
+  position: relative;
+  z-index: 2;
+}
+
+.mode,
+.showcase {
+  display: block;
+}
+
+.showcase {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.blob-layer {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.portfolio-mosaic-host {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.portfolio-mosaic {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  background: var(--art-charcoal);
+}
+
+.portfolio-cell {
+  cursor: pointer;
+  overflow: visible;
+}
+
+.portfolio-cell image {
+  display: block;
+}
+
+.cell-hit {
+  fill: transparent;
+  pointer-events: all;
+}
+
+.portfolio-void {
+  fill: var(--art-charcoal);
+  pointer-events: none;
+}
+
+.portfolio-mosaic.is-dimmed .portfolio-cell {
+  opacity: 0.18;
+  transition: opacity 360ms ease;
+}
+
+.portfolio-mosaic.is-dimmed .portfolio-cell.is-selected {
+  opacity: 1;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
   z-index: 100;
 }
-.overlay.is-open{ display:block; }
-.overlay-backdrop{ position:absolute; inset:0; background: var(--overlay); }
-.overlay-panel{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform: translate(-50%, -50%);
-  width: min(860px, calc(100vw - 24px));
-  max-height: calc(100vh - 24px);
-  overflow:auto;
-  border-radius: 34px;
-  background: #f960d0;
-  padding: 18px;
-  color: #141414;
+
+.overlay.is-open {
+  display: block;
 }
 
-.overlay-panel,
-.overlay-panel p,
-.overlay-panel h1,
-.overlay-panel h2,
-.overlay-panel h3,
-.overlay-panel h4,
-.overlay-panel h5,
-.overlay-panel h6,
-.overlay-panel a,
-.overlay-panel button {
-  color: #141414;
+.overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 17, 17, 0);
+  transition: background 360ms ease;
 }
 
-
-
-@media (max-width: 899px){
-  .overlay-panel{
-    left: 50%;
-    top: 50%;
-    bottom: auto;
-    transform: translate(-50%, -50%);
-    width: min(560px, calc(100vw - 24px));
-    max-height: calc(100vh - 24px);
-  }
-}
-.overlay-close{
-  position: sticky;
-  top: 8px;
-  margin-left: auto;
-  display:block;
-  border: 0;
-  background: rgba(0,0,0,0.06);
-  border-radius: 999px;
-  width: 40px;
-  height: 40px;
-  cursor:pointer;
+.overlay-backdrop.is-visible {
+  background: var(--art-overlay);
 }
 
-/* specifically target the close button inside the overlay panel only */
-.overlay-panel .overlay-close{
+.overlay-panel {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  padding: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.overlay-panel #overlayContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: center;
+  padding: 7rem 4vw 4rem;
+}
+
+.overlay-left,
+.overlay-right {
+  position: relative;
+  min-width: 0;
+}
+
+.overlay-left {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: sticky;
-  margin-left: auto;
-  margin-right: 0.1rem;
-  border: 0;
-  background: transparent;        /* NO semi‑transparent circle */
-  border-radius: 999px;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-
-  /* typography / default state */
-  color: #141414;                            /* inactive colour */
-  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  font-size: 2rem;
-  line-height: 1;
-  text-transform: lowercase;                    /* show 'x' lowercase by default */
-  transition: color 140ms ease, text-transform 120ms ease, transform 120ms ease;
-  -webkit-font-smoothing: antialiased;
 }
 
-/* hover / focus / active OR when .orange is present -> uppercase + stay charcoal */
-.overlay-panel .overlay-close:hover,
-.overlay-panel .overlay-close:focus,
-.overlay-panel .overlay-close:active,
-.overlay-panel .overlay-close.orange {
-  color: #141414;
-  text-transform: uppercase;                    /* become 'X' */
-  outline: none;
+.overlay-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-.overlay-panel .overlay-close:focus-visible{
-  box-shadow: 0 0 0 4px rgba(177,255,43,0.12);
+.overlay-preview-shell {
+  width: min(52vw, 640px);
+  aspect-ratio: 1 / 1;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 420ms ease, transform 420ms ease;
 }
 
-/* cta row inside overlay */
-.cta-row{ display:flex; gap:10px; flex-wrap:wrap; }
+.overlay.is-opened .overlay-preview-shell,
+.overlay-preview-shell.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
 
-/* Project CTA used in overlay */
-.project-cta{
-  display: block;                 /* center via auto margins */
-  margin: 0 auto 10px;
-  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  font-size: 2rem;            /* larger text */
-  padding: 10px 18px;
-  text-align: center;
-  text-decoration: none;
-  text-transform: none;           /* default: not uppercase */
-  border-radius: 10px;
-  background: transparent;
-  cursor: pointer;
+.overlay-preview {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.overlay-info {
+  max-width: 36rem;
+  opacity: 0;
+  transform: translateX(18px);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.overlay.is-opened .overlay-info {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.overlay-title {
+  margin: 0 0 1rem;
+  color: var(--art-orange);
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: clamp(2.25rem, 4.8vw, 4rem);
+  line-height: 0.92;
   text-transform: lowercase;
+  -webkit-text-stroke: 1px var(--art-pink);
+  text-shadow: 0 0 16px rgba(123, 108, 246, 0.35), 0 6px 22px rgba(123, 108, 246, 0.22);
 }
 
-/* color classes (use your CSS variables) */
-.project-cta.lilac{ color: #141414; }
-.project-cta.orange{ color: #141414; }
+.overlay-desc {
+  margin: 0;
+  color: rgba(244, 241, 230, 0.92);
+  font-size: clamp(1rem, 1.7vw, 1.15rem);
+  line-height: 1.55;
+}
 
-/* hover / focus / active: uppercase and stay charcoal */
-.project-cta:hover,
-.project-cta:focus,
-.project-cta:active{
-  text-transform: uppercase;
-  color: #141414;
+.overlay-close {
+  position: fixed;
+  top: 3.5vh;
+  right: 3.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: 1.8rem;
+  z-index: 130;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.overlay-close:hover,
+.overlay-close:focus-visible {
+  color: var(--art-orange);
   outline: none;
 }
 
-/* optional focus-visible ring for keyboard users */
-.project-cta:focus-visible{
-  box-shadow: 0 0 0 4px rgba(255,165,0,0.12);
+.nav-arrows {
+  display: none !important;
 }
 
-/* =======================================================
-   MOBILE CAROUSEL (ONE blob at a time + FIXED arrows)
-   JS owns transform; CSS sets proper slide sizing.
-======================================================= */
-@media (max-width: 767px){
-
-:root { --mobile-blob-top: 0px; } /* try 0, 8, 16, 24... */
-
-
-  .wrap{ padding: 0 !important; }
-
-  .showcase{
-    position: fixed !important;
-    top: var(--site-header-h) !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    height: auto !important;
-    overflow: visible !important;
+@media (max-width: 800px) {
+  .showcase,
+  .blob-layer {
+    width: 100vw;
+    height: 100vh;
   }
 
-  /* blob layer just fills the stage */
-  #blobLayer{
-    position: absolute !important;
-    inset: 0 !important;
-    overflow: visible !important;
-    z-index: 3 !important;
+  .portfolio-mosaic {
+    width: 100vw;
+    height: 100vh;
   }
 
-  /* NEW: top-aligned blob wrapper created by JS */
-  #blobLayer .blob-outer{
-    position: absolute !important;
-    inset: 0 !important;
-
-    display: flex !important;
-    justify-content: flex-start !important; /* TOP */
-    align-items: center !important;         /* horizontal center */
-
-    padding-top: var(--mobile-blob-top, 16px) !important;
+  .overlay-grid {
+    grid-template-columns: 1fr;
+    padding: 7rem 4vw 4rem;
   }
 
-  /* the actual button inside */
-  #blobLayer .blob-inner{
-    position: relative !important;
+  .overlay-left {
+    justify-content: center;
   }
 
-  /* blob size */
-  #blobLayer .blob-svg{
-    width: 130vw !important;
-    height: 130vw !important;
-    max-width: none !important;
-    max-height: none !important;
+  .overlay-preview-shell {
+    width: min(82vw, 520px);
   }
 
-  /* arrows under the blob (not fixed at bottom) */
-  #navArrows{
-    position: absolute !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: calc(var(--mobile-blob-top, 16px) + 130vw + 12px) !important;
-    bottom: auto !important;
-    z-index: 10 !important;
-    display: flex !important;
-    gap: 14px !important;
-    pointer-events: auto !important;
+  .overlay-right {
+    justify-content: center;
+  }
+
+  .overlay-info {
+    max-width: 100%;
   }
 }

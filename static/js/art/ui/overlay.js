@@ -1,47 +1,71 @@
 import { escapeHtml } from "../utils.js";
+import { buildPreviewMarkup } from "../mosaicLayout.js";
 
 export function createOverlay(nodes, { onOpen, onClose }) {
   const { overlay, overlayBackdrop, overlayClose, overlayContent } = nodes;
   const hasOverlay = !!(overlay && overlayBackdrop && overlayClose && overlayContent);
 
-  if (!hasOverlay) return { hasOverlay:false, open:()=>{}, close:()=>{} };
+  if (!hasOverlay) return { hasOverlay: false, open: () => {}, close: () => {} };
 
   overlayClose.classList.remove("orange");
   overlayClose.textContent = "x";
 
-  function open(project) {
+  function setMosaicSelection(projectId) {
+    const mosaic = document.querySelector(".portfolio-mosaic");
+    if (!mosaic) return;
+    mosaic.classList.add("is-dimmed");
+    mosaic.querySelectorAll(".portfolio-cell").forEach((cell) => {
+      cell.classList.toggle("is-selected", cell.getAttribute("data-id") === String(projectId));
+    });
+  }
+
+  function clearMosaicSelection() {
+    const mosaic = document.querySelector(".portfolio-mosaic");
+    if (!mosaic) return;
+    mosaic.classList.remove("is-dimmed");
+    mosaic.querySelectorAll(".portfolio-cell.is-selected").forEach((cell) => cell.classList.remove("is-selected"));
+  }
+
+  function open(project, spec) {
     onOpen?.();
 
     const title = escapeHtml(project.title);
-    const blurb = escapeHtml(project.blurb || project.tagline || "");
-    const url = project.url || "";
-    const stack = Array.isArray(project.stack) ? project.stack : [];
+    const blurb = escapeHtml(project.description || project.blurb || project.tagline || "");
 
     overlayContent.innerHTML = `
-      <h2 style="font-size: 3rem; margin:0 0 10px 0; font-family: picnic; text-transform: lowercase; display: flex; justify-content: center;">${title}</h2>
-      ${blurb ? `<p style="margin:18px 0 12px 0; opacity:.75; display: flex; justify-content: center; text-align:justify;">${blurb}</p>` : ""}
-
-      ${stack.length ? `
-        <div style="display:flex; justify-content: center; gap:8px; flex-wrap:wrap; margin: 5px 0 5px 0;">
-          ${stack.map(s => `<span style="padding:6px 10px; border:1px solid #141515; border-radius:999px; font-size: 13px;">${escapeHtml(s)}</span>`).join("")}
+      <div class="overlay-grid">
+        <div class="overlay-left">
+          <div class="overlay-preview-shell">
+            ${buildPreviewMarkup(project, spec)}
+          </div>
         </div>
-      ` : ""}
-
-      <div class="cta-row">
-        ${url ? `<a class="btn project-cta lilac" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View project</a>` : ""}
+        <div class="overlay-right">
+          <div class="overlay-info">
+            <h2 class="overlay-title">${title}</h2>
+            ${blurb ? `<p class="overlay-desc">${blurb}</p>` : ""}
+          </div>
+        </div>
       </div>
     `;
 
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
-    overlayClose.classList.remove("orange");
-    overlayClose.textContent = "x";
+    overlayBackdrop.classList.add("is-visible");
+    setMosaicSelection(project.id);
+
+    requestAnimationFrame(() => {
+      overlay.classList.add("is-opened");
+      const shell = overlayContent.querySelector(".overlay-preview-shell");
+      if (shell) shell.classList.add("is-visible");
+    });
   }
 
   function close() {
-    overlay.classList.remove("is-open");
+    overlayBackdrop.classList.remove("is-visible");
+    overlay.classList.remove("is-open", "is-opened");
     overlay.setAttribute("aria-hidden", "true");
-    overlayClose.classList.remove("orange");
+    clearMosaicSelection();
+    overlayContent.innerHTML = "";
     onClose?.();
   }
 
@@ -51,5 +75,5 @@ export function createOverlay(nodes, { onOpen, onClose }) {
     if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
   });
 
-  return { hasOverlay:true, open, close };
+  return { hasOverlay: true, open, close };
 }

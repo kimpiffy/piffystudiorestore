@@ -1,10 +1,6 @@
 import { $, safeJsonParse, mod } from "./utils.js";
 import { isMobile, mqMobile, mqTablet, DESKTOP_PAGE_SIZE } from "./state.js";
 
-import { createEdgeWarp } from "./anim/edgeWarp.js";
-import { createDesktopDrift } from "./anim/driftDesktop.js";
-import { createMobileDrift } from "./anim/driftMobile.js";
-
 import { createOverlay } from "./ui/overlay.js";
 import { renderDesktopBlobs } from "./ui/renderDesktop.js";
 import { renderMobileOne } from "./ui/renderMobile.js";
@@ -29,25 +25,16 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // services
-  const edgeWarp = createEdgeWarp(blobLayer);
-  const desktopDrift = createDesktopDrift();
-  const mobileDrift = createMobileDrift();
-
   // state
   let setIndex = 0;
   let mobileIndex = 0;
 
   function stopAll() {
-    desktopDrift.stop();
-    mobileDrift.stop();
-    edgeWarp.stop();
   }
 
   function updateArrowVisibility() {
     if (!navArrows) return;
-    if (isMobile()) navArrows.style.display = "flex";
-    else navArrows.style.display = (projects.length > DESKTOP_PAGE_SIZE) ? "flex" : "none";
+    navArrows.style.display = "none";
   }
 
   const overlay = createOverlay({
@@ -60,9 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
     onClose: () => render(0)
   });
 
-  function onProjectClick(id) {
-    const proj = projects.find(x => String(x.id) === String(id));
-    if (proj) overlay.open(proj);
+  function onProjectClick(id, project, spec) {
+    const proj = project || projects.find(x => String(x.id) === String(id));
+    if (proj && spec) overlay.open(proj, spec);
   }
 
   function render(dir = 0) {
@@ -70,19 +57,13 @@ document.addEventListener("DOMContentLoaded", () => {
     stopAll();
 
     if (isMobile()) {
-      const { innerEl } = renderMobileOne({
+      renderMobileOne({
         blobLayer,
         projects,
         index: mobileIndex,
         dir,
         onProjectClick
       });
-
-      // edge warp animates the blob path
-      edgeWarp.start();
-
-      // mobile drift animates inner element position (safe vs slide transform)
-      mobileDrift.start(blobLayer, innerEl);
 
       return;
     }
@@ -93,9 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
       setIndex,
       onProjectClick
     });
-
-    edgeWarp.start();
-    desktopDrift.start(blobLayer, particles);
   }
 
   bindControls({

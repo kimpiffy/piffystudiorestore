@@ -1,8 +1,8 @@
 // static/js/about/config.js
 
-export const BIO_TEXT = `My work is a personal record. My own mythology explored through layered visuals, text, and light. I create artworks, digital spaces, and community-led immersive environments that restore a sense of wonder; offering moments of calm in a restless world.`;
+export const BIO_TEXT = `I would like to make the world a better place, but all I got was  lateral thinking.`;
 
-export const ABOUT_LOOP_VIDEO = "/static/video/aboutloop.mp4?v=20260421";
+export const ABOUT_LOOP_VIDEO = "/static/video/aboutvideo.mp4?v=20260524";
 
 // portraits cycle on click (keep as many as you want)
 export const PORTRAITS = [

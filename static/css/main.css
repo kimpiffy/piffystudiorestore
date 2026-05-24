@@ -213,8 +213,6 @@ button.nav-x {
   color: var(--lilac);  /* uppercase/hover state */
   -webkit-text-stroke-width: 0.7px;
   -webkit-text-stroke-color: transparent;
-  text-stroke-width: 0.7px;
-  text-stroke-color: transparent;
   text-shadow: none;
 
   transition: opacity 140ms ease, transform 160ms ease, color 160ms ease, filter 160ms ease;
@@ -264,8 +262,8 @@ button.nav-x {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
   color: #ff4fb3;
-  -webkit-text-stroke-color: var(--lilac);
-  text-stroke-color: var(--lilac);
+  /* outline the text: use -webkit-text-stroke for broad browser support */
+  -webkit-text-stroke: 1px var(--lilac);
   text-align: center;
   line-height: 0.8;
 }
@@ -284,8 +282,7 @@ button.nav-x {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.15);
   color: var(--lilac);
-  -webkit-text-stroke-color: #ff4fb3;
-  text-stroke-color: #ff4fb3;
+  -webkit-text-stroke: 1px #ff4fb3;
   /* glow handled at .nav-x__stack level to avoid doubling */
 }
 
@@ -307,7 +304,7 @@ button.nav-x {
 .nav-panel{
   position: absolute;        /* anchor to #navbar */
   top: calc(100% + 16px);    /* shifted down additional 5px */
-  left: -37px;               /* shifted left additional 2px */
+  left: 0;                   /* align panel under the toggler */
   margin-top: 0 !important;
 
   display: none;             /* hidden by default */
@@ -317,7 +314,7 @@ button.nav-x {
 
   background: transparent;
   border-radius: 18px;
-  padding: 0px 8px 16px 10px; /* increased bottom padding from 0px to 16px */
+  padding: 8px 10px 16px 10px; /* restore comfortable top/bottom padding */
   
   opacity: 0;
   transform: translateY(-15px) scale(0.95);
@@ -373,7 +370,7 @@ button.nav-x {
 /* prevent ul stretching */
 .nav-links{
   margin: 0;
-  padding: 10px 0 0 0;  /* shift top item down an extra 5px */
+  padding: 14px 6px;  /* restore vertical breathing room for submenu items */
   width: fit-content;
 }
 
@@ -389,7 +386,7 @@ button.nav-x {
   text-decoration: none;
   text-transform: lowercase;
 
-  padding: 5px 0px !important;
+  padding: 10px 6px !important;
   margin: 0;
 
   border-radius: 12px;
@@ -406,11 +403,13 @@ button.nav-x {
   text-decoration: none;
   outline: none;
   text-transform: uppercase;
-  /* pink -> orange gradient fill on hover */
-  background: linear-gradient(90deg, #ff4fb3 0%, var(--orange) 100%);
+  /* vertical lilac -> pink gradient fill on hover */
+  background: linear-gradient(180deg, var(--lilac) 0%, #ff4fb3 100%);
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent !important;
+  white-space: nowrap; /* prevent uppercase from wrapping */
 }
 
 /* keep dropdown from going offscreen on small devices */
@@ -453,13 +452,13 @@ button.nav-x {
   backdrop-filter: none !important;
   border: none;
   border-radius: 12px;
-  padding: 10px 0px;
+  padding: 12px 6px;
   margin-top: 0px;
   margin-left: -7px !important;
   left: 0 !important;
-  max-width: 100px !important;
-  width: 90px !important; /* force specific width with !important */
-  min-width: 90px !important; /* also set min-width to prevent expansion */
+  max-width: none !important;
+  width: fit-content !important;
+  min-width: 0 !important;
   box-sizing: border-box !important; /* ensure padding doesn't expand width */
   
   display: none;
@@ -533,7 +532,7 @@ button.nav-x {
   color: transparent !important;
   text-transform: uppercase;
 }
-}
+
 
 .dropdown-item:active {
   background: transparent !important;
@@ -599,18 +598,20 @@ button.nav-x {
 ------------------------------------ */
 
 .product-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   max-width: 1200px;
   margin: auto;
   padding: 4rem 2rem;
 }
 
+.product-container .dropdown-item {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .product-title {
   color: var(--charcoal);
-  font-family: picnic, sans-serif;
+    padding: 10px 6px !important; /* restore comfortable vertical spacing */
   font-size: 2.8rem;
   font-weight: 700;
   text-transform: lowercase;
@@ -626,16 +627,15 @@ button.nav-x {
 
 .product-description {
   font-size: 1.05rem;
-  line-height: 1.7;
+    background: linear-gradient(180deg, var(--lilac) 0%, #ff4fb3 100%);
   color: var(--charcoal);
   margin-top: 2rem;
+    -webkit-text-fill-color: transparent;
   white-space: pre-line;
 }
 
-/* Image layout */
-.image-wrapper {
-  width: 100%;
-  border-radius: 10px;
+
+.dropdown-item:active {
   overflow: hidden;
 }
 
@@ -703,4 +703,3 @@ button.nav-x {
   .buy-box { position: relative; top: 0; margin-top: 2rem; }
 }
 
-/* dashboard nav moved to css/dashboard.css to avoid conflicts */
