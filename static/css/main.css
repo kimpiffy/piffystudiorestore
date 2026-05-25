@@ -424,6 +424,11 @@ button.nav-x {
   --bs-dropdown-link-hover-color: #ff4fb3;
 }
 
+.nav-action--work{
+  color: var(--lilac) !important;
+  --bs-dropdown-link-color: var(--lilac);
+}
+
 .nav-action:is(:hover, :focus-visible, :focus, :active, .active, .show){
   color: #ff4fb3 !important;
   background: transparent !important;
@@ -590,12 +595,6 @@ button.nav-x {
   padding: 4rem 2rem;
 }
 
-.product-container .dropdown-item {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 .product-title {
   color: var(--charcoal);
   padding: 10px 6px !important; /* restore comfortable vertical spacing */
@@ -619,11 +618,6 @@ button.nav-x {
   margin-top: 2rem;
   -webkit-text-fill-color: transparent;
   white-space: pre-line;
-}
-
-
-.product-container .dropdown-item:active {
-  overflow: hidden;
 }
 
 .main-image {

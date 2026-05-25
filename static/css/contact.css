@@ -459,6 +459,8 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 /* Modal content */
 .contact-modal{
   width: min(560px, 92vw);
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
   background: var(--modal-pink);
   border-radius: 18px;
   padding: 2.2rem 1.6rem 1.6rem;
@@ -571,6 +573,23 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 
 .contact-social-btn:focus-visible{
   box-shadow: 0 0 0 4px rgba(0,0,0,0.06);
+}
+
+@media (max-width: 576px){
+  .contact-modal-overlay{
+    padding: 0.5rem;
+  }
+
+  .contact-modal{
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    border-radius: 14px;
+    padding: 1.1rem 0.85rem 0.9rem;
+  }
+
+  .contact-modal .contact-modal-title {
+    font-size: 2rem;
+  }
 }
 
 /* ensure form field text is always dark */

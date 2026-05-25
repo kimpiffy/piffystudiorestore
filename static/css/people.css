@@ -40,14 +40,6 @@ body.people-page footer {
   display: flex;
 }
 
-body.people-page .nav-link,
-body.people-page .aboutlink { color: var(--people-lilac) !important; }
-
-body.people-page .nav-link:hover,
-body.people-page .nav-link:focus,
-body.people-page .aboutlink:hover,
-body.people-page .aboutlink:focus { color: var(--people-orange) !important; }
-
 .people-header {
   position: relative;
   z-index: 2;
@@ -354,5 +346,18 @@ body.people-page .aboutlink:focus { color: var(--people-orange) !important; }
     display: flex !important;
     gap: 14px !important;
     pointer-events: auto !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .overlay-panel {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    border-radius: 18px;
+    padding: 12px 10px 10px;
+  }
+
+  .overlay-panel .overlay-close {
+    margin-right: 0;
   }
 }

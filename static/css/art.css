@@ -271,7 +271,18 @@ body.art-page footer {
 
   .overlay-grid {
     grid-template-columns: 1fr;
-    padding: 7rem 4vw 4rem;
+    position: relative;
+    inset: auto;
+    min-height: 100%;
+    align-content: start;
+    gap: 1rem;
+    padding: 5.5rem 1rem 1.5rem;
+  }
+
+  .overlay-panel {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: auto;
   }
 
   .overlay-left {
@@ -279,7 +290,7 @@ body.art-page footer {
   }
 
   .overlay-preview-shell {
-    width: min(82vw, 520px);
+    width: min(88vw, 420px);
   }
 
   .overlay-right {
@@ -287,6 +298,11 @@ body.art-page footer {
   }
 
   .overlay-info {
-    max-width: 100%;
+    max-width: min(92vw, 34rem);
+  }
+
+  .overlay-close {
+    top: 8px;
+    right: 8px;
   }
 }

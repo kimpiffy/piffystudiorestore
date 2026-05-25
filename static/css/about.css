@@ -476,11 +476,13 @@ body.about-page .overlay-panel .overlay-close:focus-visible{
 
 /* Bio heading: keep original text, uppercase only on hover */
 body.about-page .overlay-panel #overlayContent h2{
-  transition: text-transform 120ms ease;
+  text-transform: none;
 }
 
-body.about-page .overlay-panel #overlayContent h2:hover{
-  text-transform: uppercase;
+body.about-page .overlay-panel #overlayContent .bio-modal-copy{
+  font-size: 13pt;
+  text-transform: lowercase;
+  text-align: center;
 }
 
 /* Project CTA buttons - add hover effects */
@@ -628,6 +630,21 @@ body.about-page .about-word.is-wobbling .wobble-span{
   body.about-page .portrait-blob{
     width: min(125vmin, 920px);
     height: min(125vmin, 920px);
+  }
+}
+
+@media (max-width: 576px){
+  body.about-page .overlay-panel{
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    border-radius: 18px;
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  body.about-page .overlay-panel .overlay-close{
+    top: 2px;
+    transform: translateX(0);
+    margin-right: 0;
   }
 }
 

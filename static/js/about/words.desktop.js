@@ -74,7 +74,7 @@ export function createWordsController({ bioZone, linksZone, overlay, routes }) {
 
     overlay.open(`
       <h2 style="font-family: picnic; font-size: 3rem; margin:0 0 6px 0; text-align:center;">artist, web designer & mother...</h2>
-      <p style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
+      <p class="bio-modal-copy" style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
         ${escapeHtml(BIO_TEXT)}
       </p>
       <div class="cta-row" style="display:flex; justify-content:center; margin-top: 18px;">
