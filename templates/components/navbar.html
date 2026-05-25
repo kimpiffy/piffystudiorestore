@@ -22,26 +22,26 @@
   <div class="collapse navbar-collapse nav-panel" id="navbarNav">
     <ul class="navbar-nav nav-links">
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'pages:about' %}">About</a>
+        <a class="nav-link nav-action nav-action--top" href="{% url 'pages:about' %}">About</a>
       </li>
 
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="workDropdown" role="button" aria-expanded="false">
+        <a class="nav-link dropdown-toggle nav-action nav-action--top" href="#" id="workDropdown" role="button" aria-expanded="false">
           Work
         </a>
         <ul class="dropdown-menu" aria-labelledby="workDropdown">
-          <li><a class="dropdown-item" href="{% url 'portfolio:art' %}">Art</a></li>
-          <li><a class="dropdown-item" href="{% url 'portfolio:digital' %}">Digital</a></li>
-          <li><a class="dropdown-item" href="{% url 'portfolio:people' %}">People</a></li>
+          <li><a class="dropdown-item nav-action nav-action--submenu" href="{% url 'portfolio:art' %}">Art</a></li>
+          <li><a class="dropdown-item nav-action nav-action--submenu" href="{% url 'portfolio:digital' %}">Digital</a></li>
+          <li><a class="dropdown-item nav-action nav-action--submenu" href="{% url 'portfolio:people' %}">People</a></li>
         </ul>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'shop:shop_index' %}">Shop</a>
+        <a class="nav-link nav-action nav-action--top" href="{% url 'shop:shop_index' %}">Shop</a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'pages:contact' %}">Contact</a>
+        <a class="nav-link nav-action nav-action--top" href="{% url 'pages:contact' %}">Contact</a>
       </li>
     </ul>
   </div>

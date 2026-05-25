@@ -34,11 +34,11 @@ body.digital-page{
 
 /* nav colours only on this page */
 body.digital-page .nav-link,
-body.digital-page .aboutlink{ color: var(--lilac); }
+body.digital-page .aboutlink{ color: var(--lilac) !important; }
 body.digital-page .nav-link:hover,
 body.digital-page .nav-link:focus,
 body.digital-page .aboutlink:hover,
-body.digital-page .aboutlink:focus{ color: var(--orange); }
+body.digital-page .aboutlink:focus{ color: var(--orange) !important; }
 
 /* wrap */
 .wrap{
@@ -111,15 +111,9 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
 .blob-svg path[id$="_outline"] { stroke: transparent; }
 .blob:hover .blob-svg{ transform: scale(1.02); }
 
-/* Purple overlay on blobs - removes on hover */
+/* Remove overlay entirely on the digital page */
 .blob-shade {
-  fill: rgba(123, 108, 246, 0.533);
-  transition: fill 0.3s ease;
-}
-
-.blob:hover .blob-shade,
-.blob:focus .blob-shade {
-  fill: transparent;
+  display: none;
 }
 
 .blob-outer { touch-action: pan-y; }
@@ -331,12 +325,13 @@ body.digital-page .aboutlink:focus{ color: var(--orange); }
   /* the actual button inside */
   #blobLayer .blob-inner{
     position: relative !important;
+    display: flex !important;
   }
 
   /* blob size */
   #blobLayer .blob-svg{
-    width: 130vw !important;
-    height: 130vw !important;
+    width: 100% !important;
+    height: 100% !important;
     max-width: none !important;
     max-height: none !important;
   }

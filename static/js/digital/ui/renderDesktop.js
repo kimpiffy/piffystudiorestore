@@ -19,9 +19,9 @@ function getSet(projects, setIndex) {
   return slice;
 }
 
-export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectClick }) {
+export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectClick, blobScale = 1 }) {
   const set = getSet(projects, setIndex);
-  const uniform = isTablet() ? 520 : 560;
+  const uniform = (isTablet() ? 520 : 560) * blobScale;
 
   blobLayer.innerHTML = set.map((p) => {
     const cover = coverUrl(p);

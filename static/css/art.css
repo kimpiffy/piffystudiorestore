@@ -37,7 +37,7 @@ body.art-page .wrap {
 }
 
 body.art-page footer {
-  display: none;
+  display: flex;
 }
 
 .art-header {

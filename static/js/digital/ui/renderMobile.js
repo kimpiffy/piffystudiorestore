@@ -11,7 +11,7 @@ function coverUrl(p) {
 /**
  * Returns { innerEl } for mobile drift to animate.
  */
-export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClick }) {
+export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClick, mobileSizeVw = 104 }) {
   const mobileIndex = mod(index, projects.length);
   const p = projects[mobileIndex];
   const cover = coverUrl(p);
@@ -48,6 +48,8 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
         data-id="${escapeHtml(p.id)}"
         style="
           position:relative;
+          width:${mobileSizeVw}vw;
+          height:${mobileSizeVw}vw;
           display:flex;
           align-items:center;
           justify-content:center;

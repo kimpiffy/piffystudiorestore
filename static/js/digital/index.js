@@ -75,7 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
         projects,
         index: mobileIndex,
         dir,
-        onProjectClick
+        onProjectClick,
+        mobileSizeVw: 130
       });
 
       // edge warp animates the blob path
@@ -91,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
       blobLayer,
       projects,
       setIndex,
+      blobScale: 1,
       onProjectClick
     });
 
