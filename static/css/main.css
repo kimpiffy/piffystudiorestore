@@ -148,9 +148,11 @@ img, svg, video {
 ------------------------------------ */
 
 #navbar {
+  --nav-anchor-left: 60px;
+  --nav-panel-left-base: -52px;
   position: fixed;
   top: 30px;
-  left: 60px;
+  left: var(--nav-anchor-left);
   z-index: 2000;
   padding: 0px, 2rem !important;
   background: transparent !important;
@@ -162,6 +164,13 @@ img, svg, video {
 #navbar,
 #navbar * {
   overflow: visible !important;
+}
+
+#navbar,
+#navbar * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Bootstrap toggler reset */
@@ -276,6 +285,16 @@ button.nav-x {
   line-height: 0.8;
 }
 
+.nav-x[aria-expanded="false"] .nav-x__upper {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.88);
+}
+
+.nav-x[aria-expanded="false"] .nav-x__lower {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
 /* hover/focus/open: show uppercase and scale from centre */
 .nav-x:hover .nav-x__lower,
 .nav-x:focus-visible .nav-x__lower,
@@ -322,20 +341,23 @@ button.nav-x {
 .nav-x * {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
+
+.nav-action,
+.nav-action--top,
+.nav-action--submenu,
+.dropdown-item {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
 .nav-x:active .nav-x__upper {
   color: var(--orange);
   /* glow handled at .nav-x__stack level to avoid doubling */
-}
-
-.site-content {
-  transition: transform 240ms ease;
 }
 
 /* dropdown panel: tight width, charcoal bg, green text, directly under X */
 .nav-panel{
   position: absolute;        /* anchor to #navbar */
   top: calc(100% + 20px);    /* shifted down additional 5px */
-  left: -52px;               /* nudge panel slightly left so links sit nearer the page edge */
+  left: calc(var(--nav-panel-left-base) - (var(--nav-anchor-left) - 60px));
   margin-top: 0 !important;
   display: none;             /* hidden by default */
   width: fit-content;
@@ -442,30 +464,49 @@ button.nav-x {
 /* keep dropdown from going offscreen on small devices */
 @media (max-width: 576px){
   #navbar{
-    left: 32px; /* keep the icon away from the corner on phones */
-    top: 24px;
+    --nav-anchor-left: 46px;
+    top: 34px;
     right: 15px;
   }
-  /* No nav-panel overrides - let it behave exactly like desktop */
+
+  /* Keep open-state menu aligned with the adjusted mobile nav anchor. */
+  .nav-panel {
+    left: var(--nav-panel-left-base);
+  }
+
+  .nav-links {
+    padding-left: 4px;
+  }
+
+  .nav-x:hover .nav-x__upper,
+  .nav-x:focus-visible .nav-x__upper,
+  .nav-x[aria-expanded="true"] .nav-x__upper {
+    transform: translate(-44%, -50%) scale(1.15);
+  }
 }
 
 @media (min-width: 992px) {
   #navbar {
-    left: 52px;
+    --nav-anchor-left: 52px;
     top: 52px;
   }
 }
 
 @media (min-width: 577px) and (max-width: 991.98px) {
   #navbar {
-    left: 40px;
+    --nav-anchor-left: 40px;
     top: 40px;
   }
 }
 
 @media (max-width: 767.98px) {
-  body.nav-expanded .site-content {
-    transform: translateY(clamp(100px, 15vh, 160px));
+  body.nav-expanded::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: #141414;
+    z-index: 1500;
+    pointer-events: none;
   }
 }
 
@@ -530,6 +571,22 @@ button.nav-x {
 
 .nav-action--submenu:active {
   color: var(--lilac) !important;
+}
+
+@media (max-width: 991.98px) {
+  .nav-x__lower {
+    text-shadow:
+      0 0 5px rgba(124, 108, 247, 0.45),
+      0 0 10px rgba(124, 108, 247, 0.25);
+  }
+
+  .nav-x:hover .nav-x__upper,
+  .nav-x:focus-visible .nav-x__upper,
+  .nav-x[aria-expanded="true"] .nav-x__upper {
+    text-shadow:
+      0 0 5px rgba(124, 108, 247, 0.45),
+      0 0 10px rgba(124, 108, 247, 0.25);
+  }
 }
 
 /* ------------------------------------

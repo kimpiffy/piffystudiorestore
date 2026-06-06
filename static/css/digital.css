@@ -124,16 +124,40 @@ body.digital-page{
   pointer-events:auto;
 }
 .nav-arrows button{
-  border-radius: 999px;
-  padding: 10px 12px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(20,20,20,0.65);
-  color: #f2f2f2;
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: 2.2rem;
+  line-height: 1;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: var(--orange);
+  -webkit-text-stroke: 0.9px #ff4fb3;
+  text-shadow:
+    0 0 6px rgba(123, 108, 246, 0.55),
+    0 0 14px rgba(123, 108, 246, 0.3);
   cursor:pointer;
+  transition: transform 150ms ease, color 150ms ease, -webkit-text-stroke-color 150ms ease, text-shadow 150ms ease;
 }
 .nav-arrows button:hover{
-  color: var(--orange);
-  border-color: rgba(177,255,43,0.35);
+  transform: scale(1.12);
+  color: #ff4fb3 !important;
+  -webkit-text-stroke-color: var(--orange);
+  text-shadow:
+    0 0 7px rgba(255, 79, 179, 0.5),
+    0 0 16px rgba(255, 169, 49, 0.35);
+}
+
+.nav-arrows button:focus,
+.nav-arrows button:active {
+  transform: scale(1.12);
+  color: #ff4fb3 !important;
+  -webkit-text-stroke-color: var(--orange);
+}
+
+#navArrows button:hover,
+#navArrows button:focus,
+#navArrows button:active {
+  color: #ff4fb3 !important;
 }
 
 /* Overlay */
@@ -187,14 +211,49 @@ body.digital-page{
 
 @media (max-width: 576px){
   .overlay-panel{
-    width: calc(100vw - 16px);
-    max-height: calc(100dvh - 16px);
-    border-radius: 18px;
-    padding: 12px 10px 10px;
+    width: calc(100vw - 28px);
+    max-height: calc(100dvh - 28px);
+    border-radius: 16px;
+    padding: 10px 8px 8px;
   }
 
   .overlay-panel .overlay-close{
     margin-right: 0;
+  }
+
+  .overlay-panel h2{
+    font-size: 2.4rem !important;
+    line-height: 0.92 !important;
+  }
+
+  .project-cta{
+    font-size: 1.6rem;
+    padding: 8px 14px;
+  }
+
+  #navArrows{
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: auto !important;
+    bottom: 12px !important;
+    z-index: 20 !important;
+    display: flex !important;
+    gap: 14px !important;
+    pointer-events: auto !important;
+  }
+
+  #navArrows button{
+    font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial !important;
+    font-size: 2.2rem;
+    line-height: 1;
+    padding: 0 2px;
+    border: 0;
+    background: transparent;
+    color: var(--orange);
+    border-radius: 0;
+    box-shadow: none;
+    text-shadow: none;
   }
 }
 .overlay-close{
@@ -292,7 +351,7 @@ body.digital-page{
 ======================================================= */
 @media (max-width: 767px){
 
-:root { --mobile-blob-top: 0px; } /* try 0, 8, 16, 24... */
+:root { --mobile-blob-top: 0px; }
 
 
   .wrap{ padding: 0 !important; }
@@ -302,7 +361,7 @@ body.digital-page{
     top: var(--site-header-h) !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: 0 !important;
+    bottom: calc(var(--footer-collapsed-h, 28px) + 12px) !important;
     height: auto !important;
     overflow: visible !important;
   }
@@ -310,7 +369,11 @@ body.digital-page{
   /* blob layer just fills the stage */
   #blobLayer{
     position: absolute !important;
-    inset: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: auto !important;
     overflow: visible !important;
     z-index: 3 !important;
   }
@@ -318,13 +381,17 @@ body.digital-page{
   /* NEW: top-aligned blob wrapper created by JS */
   #blobLayer .blob-outer{
     position: absolute !important;
-    inset: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: auto !important;
 
     display: flex !important;
-    justify-content: flex-start !important; /* TOP */
+    justify-content: center !important;
     align-items: center !important;         /* horizontal center */
 
-    padding-top: var(--mobile-blob-top, 16px) !important;
+    padding-top: 0 !important;
   }
 
   /* the actual button inside */
@@ -346,9 +413,9 @@ body.digital-page{
     position: absolute !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    top: calc(var(--mobile-blob-top, 16px) + 130vw + 12px) !important;
-    bottom: auto !important;
-    z-index: 10 !important;
+    top: auto !important;
+    bottom: calc(var(--footer-collapsed-h, 28px) + 10px) !important;
+    z-index: 20 !important;
     display: flex !important;
     gap: 14px !important;
     pointer-events: auto !important;

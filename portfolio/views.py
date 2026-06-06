@@ -28,6 +28,8 @@ def people(request):
         {
             "id": "elgar-at-the-asylum",
             "title": "Elgar at the Asylum",
+            "coming_soon": True,
+            "overlay_title": "Coming Soon",
             "blurb": (
                 "Visual Arts with The Monday Night Club, culminating in a "
                 "triptych of banners installed at Malvern Theatres."

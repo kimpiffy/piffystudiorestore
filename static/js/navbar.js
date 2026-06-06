@@ -125,6 +125,9 @@
     if (workDropdown) {
       workDropdown.setAttribute('aria-expanded', 'false');
     }
+
+    // On touch devices, blur the toggler so closed state always returns to lowercase.
+    navToggler?.blur();
   }
   
   // Open dropdown

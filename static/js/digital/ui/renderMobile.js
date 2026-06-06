@@ -5,7 +5,8 @@ import { createBlobModel, computePathFromModel } from "../blob/model.js";
 const MOBILE_TRANSITION = "transform 420ms cubic-bezier(.4,0,.2,1)";
 
 function coverUrl(p) {
-  return (p && p.cover ? String(p.cover) : "").trim();
+  const candidate = p && (p.cover || p.image || p.src || p.thumbnail || "");
+  return String(candidate).trim();
 }
 
 /**
@@ -22,8 +23,12 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
 
   // layer setup (same as your current logic)
   blobLayer.style.position = "absolute";
-  blobLayer.style.inset = "0";
-  blobLayer.style.overflow = "hidden";
+  blobLayer.style.left = "0";
+  blobLayer.style.right = "0";
+  blobLayer.style.top = "0";
+  blobLayer.style.bottom = "0";
+  blobLayer.style.height = "auto";
+  blobLayer.style.overflow = "visible";
 
   // OUTER = slide (transform)
   // INNER = drift (transform)
@@ -31,14 +36,17 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
 <div class="blob-outer"
   style="
     position:absolute;
-    inset:0;
+    left:0;
+    right:0;
+    top:0;
+    height:fit-content;
 
     display:flex;
     flex-direction:column;        /* important */
-    justify-content:flex-start;   /* THIS controls vertical */
+    justify-content:center;       /* vertical centering on mobile */
     align-items:center;           /* horizontal centering */
 
-    padding-top: var(--mobile-blob-top, 24px);  /* start small */
+    padding-top: var(--mobile-blob-top, 0px);
     will-change: transform;
   "
 >

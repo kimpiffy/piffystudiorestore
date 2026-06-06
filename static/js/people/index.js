@@ -15,7 +15,8 @@ function getProject(projects, index) {
 }
 
 function coverUrl(project) {
-  return (project && project.cover ? String(project.cover) : "").trim();
+  const candidate = project && (project.cover || project.image || project.src || project.thumbnail || "");
+  return String(candidate).trim();
 }
 
 document.addEventListener("DOMContentLoaded", () => {

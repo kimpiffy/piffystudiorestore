@@ -5,7 +5,8 @@ import { createBlobModel, computePathFromModel } from "../blob/model.js";
 import { hashToSeed, mulberry32 } from "../blob/rng.js";
 
 function coverUrl(p) {
-  return (p && p.cover ? String(p.cover) : "").trim();
+  const candidate = p && (p.cover || p.image || p.src || p.thumbnail || "");
+  return String(candidate).trim();
 }
 
 function getSet(projects, setIndex) {
