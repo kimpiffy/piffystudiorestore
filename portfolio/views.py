@@ -42,6 +42,23 @@ def people(request):
     return render(request, "portfolio/people.html", {"projects": projects})
 
 
+def industry(request):
+    projects = [
+        {
+            "id": "industry-coming-soon",
+            "title": "Industry",
+            "coming_soon": True,
+            "overlay_title": "Coming Soon",
+            "blurb": (
+                "Industrial systems, fabrication, and material studies."
+            ),
+            "stack": ["Systems", "Process"],
+        },
+    ]
+
+    return render(request, "portfolio/industry.html", {"projects": projects})
+
+
 def digital(request):
     projects = [
         {

@@ -43,6 +43,7 @@ export function createCarouselController({ overlay, routes, arcTextEl, prevBtn, 
       k === "art" ? routes?.art :
       k === "digital" ? routes?.digital :
       k === "people" ? routes?.people :
+      k === "industry" ? routes?.industry :
       null;
 
     if (href) window.location.assign(href);

@@ -1,9 +1,9 @@
 :root{
   --blob: #7B6CF6;
   --modal-pink: #f960d0;
-  --text: #141414;
-  --page: #141414;
-  --orange: #ffa931;  /* Your var orange */
+  --text: #031624;
+  --page: #031624;
+  --uranium: #e0ff9a;  /* Your var uranium */
   --charcoal: #2a2a2a;
 }
 
@@ -140,7 +140,7 @@ body.contact-body{
   font-size: clamp(2.4rem, 4.2vw, 3.6rem);
   letter-spacing: 3px;
   text-transform: lowercase;
-  color: var(--orange);
+    color: var(--uranium);
   -webkit-text-stroke: 1px var(--modal-pink);
   text-stroke: 1px var(--modal-pink);
   text-shadow:
@@ -182,7 +182,7 @@ body.contact-body{
 .contact-form textarea{
   font-family: "velvelyne-regular", monospace;
   letter-spacing: 2px;
-  color: #141414;
+  color: #031624;
   font-size: 13px;
 }
 
@@ -212,8 +212,8 @@ body.contact-body{
 .contact-form select,
 .contact-form textarea{
   width: 100%;
-  background: var(--orange) !important; /* force orange always */
-  color: #141414;
+    background: var(--uranium) !important; /* force uranium always */
+  color: #031624;
   border: 1px solid rgba(249, 96, 208, 0.9);
   border-radius: 12px;
   padding: 0.85rem 0.95rem;
@@ -225,9 +225,9 @@ body.contact-body{
 .contact-form input:-webkit-autofill,
 .contact-form textarea:-webkit-autofill,
 .contact-form select:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px var(--orange) inset !important;
-  box-shadow: 0 0 0px 1000px var(--orange) inset !important;
-  -webkit-text-fill-color: #141414 !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--uranium) inset !important;
+  box-shadow: 0 0 0px 1000px var(--uranium) inset !important;
+  -webkit-text-fill-color: #031624 !important;
 }
 
 .contact-form textarea{
@@ -239,7 +239,7 @@ body.contact-body{
 .contact-form select:focus,
 .contact-form textarea:focus{
   background: var(--modal-pink) !important;
-  border-color: var(--orange);
+    border-color: var(--uranium);
   box-shadow: 0 0 0 2px rgba(255, 169, 49, 0.34);
 }
 
@@ -280,7 +280,12 @@ body.contact-body{
   width: 20px;
   height: 20px;
   border-radius: 4px;
-  background: var(--orange);
+    background: var(--uranium);
+    color: var(--uranium);
+    background: var(--uranium);
+    background: var(--uranium);
+    color: var(--uranium);
+    color: var(--uranium);
   border: 1px solid rgba(0, 0, 0, 0.2);
   display: grid;
   place-items: center;
@@ -297,17 +302,17 @@ body.contact-body{
 }
 
 .checkbox-text{
-  color: #141414;
+  color: #031624;
 }
 
 .checkbox input:checked + .checkbox-box{
-  background: #141414;
-  border-color: #141414;
+  background: #031624;
+  border-color: #031624;
 }
 
 .checkbox input:checked + .checkbox-box::after{
   opacity: 1;
-  color: var(--orange);
+  color: var(--uranium);
 }
 
 /* Newsletter-specific checkbox visuals (unchanged logic, now clickable) */
@@ -317,7 +322,7 @@ body.contact-body{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--orange);
+  background: var(--uranium);
   border: 1px solid rgba(0,0,0,0.18);
   border-radius: 4px;
   transition: background 160ms ease, border-color 160ms ease, transform 140ms ease;
@@ -338,7 +343,7 @@ body.contact-body{
 
 /* When checked: reveal the heart */
 .checkbox.newsletter input:checked + .checkbox-box{
-  background: var(--orange);
+  background: var(--uranium);
   border-color: rgba(0,0,0,0.32);
 }
 
@@ -349,7 +354,7 @@ body.contact-body{
 
 /* keep the newsletter label text orange */
 .checkbox.newsletter .checkbox-text{
-  color: var(--orange);
+  color: var(--uranium);
 }
 
 /* ------------------------------------
@@ -366,7 +371,7 @@ body.contact-body{
   font-family: 'picnic', sans-serif;
   background: none;
   border: none;
-  color: var(--orange);
+  color: var(--uranium);
   -webkit-text-stroke: 0.8px var(--modal-pink);
   text-stroke: 0.8px var(--modal-pink);
   text-shadow:
@@ -494,14 +499,14 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-modal .thankyou {
   font-family: 'picnic', sans-serif;
   font-size: 3rem;
-  color: #141414;
+  color: #031624;
   margin: 0 0 0.6rem 0;
 }
 
 .contact-modal .contact-modal-title {
   font-family: "picnic", sans-serif;
   font-size: 2.5rem;
-  color: #141414;
+  color: #031624;
   margin: 0 0 0.6rem 0;
   text-transform: none;
 }
@@ -509,7 +514,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-modal .contact-modal-text,
 .contact-modal .contact-modal-subtext {
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
-  color: #141414;
+  color: #031624;
   margin: 0 0 0 0;
   font-size: 0.95rem;
 }
@@ -525,7 +530,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   font-family: 'picnic', sans-serif;
   font-size: 1.8rem;
   line-height: 1;
-  color: #141414 !important;
+  color: #031624 !important;
   text-transform: lowercase;
   transition: text-transform 120ms ease, transform 120ms ease;
   padding: 0;
@@ -535,7 +540,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-modal-x:focus,
 .contact-modal-x:active {
   text-transform: uppercase;
-  color: #141414 !important;
+  color: #031624 !important;
   outline: none;
 }
 
@@ -557,7 +562,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   padding: 6px;
   background: transparent;
   border: none;
-  color: #141414;
+  color: #031624;
   text-decoration: none;
   border-radius: 6px;
   transition: transform 140ms ease;
@@ -567,7 +572,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-social-btn i {
   font-size: 36px;
   line-height: 1;
-  color: #141414;
+  color: #031624;
   display: block;
 }
 
@@ -613,8 +618,8 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-form textarea,
 .contact-form select,
 .contact-form ::placeholder {
-  color: #141414 !important;
-  caret-color: #141414;
+  color: #031624 !important;
+  caret-color: #031624;
 }
 
 /* invalid styling */

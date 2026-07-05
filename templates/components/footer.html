@@ -1,86 +1,37 @@
 {% load static %}
 
 <footer class="site-footer" aria-label="Site footer">
-  <button
-    class="footer-peek-toggle"
-    type="button"
-    aria-label="Open footer"
-    aria-expanded="false"
-    aria-controls="site-footer-panel"
-  >
-    <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
-  </button>
-
-  <div class="footer-panel" id="site-footer-panel">
-    <div class="container-fluid px-2 px-lg-4 py-2 py-lg-3">
-      <div class="row g-4 align-items-center">
-        <div class="col-12 col-sm-5 order-3 order-sm-3">
-          <div class="footer-prompt text-center" data-prompt-widget data-prompt-endpoint="{% url 'interactions:creative_prompt' %}">
-            <h3 class="footer-section-title text-center mb-2">need inspiration?</h3>
-            <button class="footer-prompt-trigger" type="button" data-prompt-trigger aria-live="polite">Click here for a creative prompt...</button>
-          </div>
-        </div>
-
-        <div class="col-12 col-sm-2 order-1 order-sm-2 footer-badge-col">
-          <div class="footer-badge-row text-center">
-            <img
-              class="footer-badge-logo"
-              src="{% static 'img/badgelogo.png' %}"
-              alt="Piffy Studio badge logo"
-              loading="lazy"
-              decoding="async"
-            >
-          </div>
-        </div>
-
-        <div class="col-12 col-sm-5 order-2 order-sm-1">
-          <div class="footer-block footer-nav-block">
-            <h3 class="footer-section-title text-center mb-2">feeling lost?</h3>
-          </div>
-          <div class="footer-nav-pill">
-            <nav class="footer-nav" aria-label="Footer navigation">
-              <a class="footer-nav-link" href="{% url 'pages:about' %}"><span class="footer-nav-label">about</span></a>
-              <a class="footer-nav-link" href="{% url 'portfolio:art' %}"><span class="footer-nav-label">art</span></a>
-              <a class="footer-nav-link" href="{% url 'portfolio:digital' %}"><span class="footer-nav-label">digital</span></a>
-              <a class="footer-nav-link" href="{% url 'portfolio:people' %}"><span class="footer-nav-label">people</span></a>
-              <a class="footer-nav-link" href="{% url 'pages:contact' %}"><span class="footer-nav-label">contact</span></a>
-              <a class="footer-nav-link" href="{% url 'login' %}"><span class="footer-nav-label">login</span></a>
-            </nav>
-          </div>
-        </div>
+  <div class="footer-inner">
+    <div class="footer-main" aria-label="Footer sections">
+      <div class="footer-column footer-column-left">
+        <button class="footer-email-copy" type="button" data-copy-email="PIFFYINFO@GMAIL.COM" aria-label="Copy PIFFYINFO@GMAIL.COM">
+          <span class="footer-email-text">PIFFYINFO@GMAIL.COM</span>
+          <i class="fa-regular fa-copy footer-copy-icon" aria-hidden="true"></i>
+        </button>
       </div>
 
-      <div class="row mt-1 align-items-center">
-        <div class="d-none d-sm-block col-sm-5"></div>
-
-        <div class="col-12 col-sm-2 order-4 order-sm-0">
-          <div class="footer-block footer-social-block">
-            <div class="footer-social-links">
-              <a class="footer-icon-link" href="https://www.instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-              </a>
-              <a class="footer-icon-link" href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
-              </a>
-              <a class="footer-icon-link footer-mail-link" href="{% url 'pages:contact' %}" aria-label="Contact page">
-                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="d-none d-sm-block col-sm-5"></div>
+      <div class="footer-column footer-column-center">
+        <a class="footer-link footer-social-link" href="https://www.linkedin.com/in/kimpiffy" target="_blank" rel="noopener noreferrer">LINKEDIN</a>
+        <a class="footer-link footer-social-link" href="https://www.instagram.com/kimpiffy" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
       </div>
 
-      <div class="row">
-        <div class="col-12 text-center">
-          <p class="footer-signoff mb-0">
-            Made with
-            <i class="fa-solid fa-heart" aria-hidden="true"></i>
-            by Kim Piffy
-          </p>
-        </div>
+      <div class="footer-column footer-column-right">
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a class="footer-link" href="{% url 'pages:about' %}">ABOUT</a>
+          <a class="footer-link" href="{% url 'portfolio:art' %}">ART</a>
+          <a class="footer-link" href="{% url 'portfolio:digital' %}">DIGITAL</a>
+          <a class="footer-link" href="{% url 'portfolio:people' %}">PEOPLE</a>
+          <a class="footer-link" href="{% url 'portfolio:industry' %}">INDUSTRY</a>
+          <a class="footer-link" href="{% url 'pages:contact' %}">CONTACT</a>
+          <a class="footer-link" href="{% url 'login' %}">LOGIN</a>
+        </nav>
       </div>
     </div>
+
+    <p class="footer-signoff">
+      <a class="footer-credit-link" href="https://github.com/kimpiffy" target="_blank" rel="noopener noreferrer">
+        MADE WITH <i class="fa-solid fa-heart footer-heart" aria-hidden="true"></i> BY KIM PIFFY
+      </a>
+    </p>
   </div>
 </footer>

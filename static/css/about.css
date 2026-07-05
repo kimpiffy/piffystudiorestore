@@ -2,10 +2,11 @@
 
 :root{
   --cream: #f6f1e6;
-  --ink: #141414;
+  --ink: #031624;
 
   /* Define this because your previous CSS referenced it but never set it */
   --lilac: #7B6CF6;
+  --uranium: #e0ff9a;
 
   /* MUST match your navbar height */
   --site-header-h: 76px;
@@ -27,24 +28,24 @@
 body.about-page{
   margin:0;
   min-height:100vh;
-  background: var(--ink);
-  color: #ffa931;
-  overflow:hidden;
+  background: #ff4bb3;
+    color: var(--uranium);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 @media (min-width: 768px){
   html, body.about-page{
-    height: 100%;
-    overflow: hidden;
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   body.about-page .site-content{
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  body.about-page .site-footer{
-    position: fixed;
+    min-height: calc(100vh - 15px);
+    height: auto;
+    overflow: visible;
   }
 }
 
@@ -64,24 +65,27 @@ body.about-page #randomActsButton{
 
 /* Stage: sits below header so nav stays clickable */
 body.about-page .about-stage{
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: var(--site-header-h);
+  position: relative;
+  left: auto;
+  right: auto;
+  top: auto;
+  margin-top: 0;
 
-  /* Use dynamic viewport height */
-  height: calc(100dvh - var(--site-header-h));
+  /* Keep hero section viewport-sized but scroll in normal flow */
+  min-height: calc(100dvh - 24px);
+  height: auto;
+  background: var(--ink);
 
-  /* Prevent browser UI overlap */
-  padding-bottom: env(safe-area-inset-bottom);
+  /* Keep footer flush with page end */
+  padding-bottom: 0;
 
-  overflow: visible;
+  overflow: hidden;
   z-index: 1 !important;
 }
 
 @media (min-width: 768px){
   body.about-page .about-stage{
-    height: calc(100vh - var(--site-header-h));
+    min-height: calc(100vh - 15px);
   }
 }
 
@@ -149,31 +153,31 @@ body.about-page .portrait-blob .blob-svg{
 }
 
 body.about-page .about-blob-layers{
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 4;
 }
 
 body.about-page .blob-media{
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 100vw;
-  height: 100dvh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: block;
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
-  transform: translate(-50%, -50%) scale(1.06);
+  transform: scale(1.06);
   transform-origin: center center;
 }
 
 body.about-page .blob-mask{
-  position: fixed;
+  position: absolute;
   inset: 0;
-  width: 100vw;
-  height: 100dvh;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 2;
 }
@@ -186,7 +190,7 @@ body.about-page .blob-mask-svg{
 }
 
 body.about-page .blob-mask-fill{
-  fill: #141414;
+  fill: #031624;
 }
 
 body.about-page .blob-hole-edge{
@@ -248,7 +252,7 @@ body.about-page .about-word{
   line-height: 1;
   text-transform: lowercase;
 
-  color: #ffa931;
+  color: var(--uranium);
   -webkit-text-stroke: 1.2px #ff4fb3;
 
   background: transparent !important;
@@ -281,7 +285,7 @@ body.about-page .about-word:focus{
 
 /* default colour */
 body.about-page .about-word{
-  color: #ffa931;
+  color: var(--uranium);
   -webkit-text-stroke-color: #ff4fb3;
 }
 
@@ -289,25 +293,29 @@ body.about-page .about-word{
 body.about-page .about-word[data-key="bio"]:hover,
 body.about-page .about-word[data-key="bio"]:focus{
   color: #ff4fb3;
-  -webkit-text-stroke-color: #ffa931;
+  color: #ff4fb3;
+  -webkit-text-stroke-color: var(--uranium);
 }
 
 body.about-page .about-word[data-key="art"]:hover,
 body.about-page .about-word[data-key="art"]:focus{
   color: #ff4fb3;
-  -webkit-text-stroke-color: #ffa931;
+  color: #ff4fb3;
+  -webkit-text-stroke-color: var(--uranium);
 }
 
 body.about-page .about-word[data-key="digital"]:hover,
 body.about-page .about-word[data-key="digital"]:focus{
   color: #ff4fb3;
-  -webkit-text-stroke-color: #ffa931;
+  color: #ff4fb3;
+  -webkit-text-stroke-color: var(--uranium);
 }
 
 body.about-page .about-word[data-key="people"]:hover,
 body.about-page .about-word[data-key="people"]:focus{
   color: #ff4fb3;
-  -webkit-text-stroke-color: #ffa931;
+  color: #ff4fb3;
+  -webkit-text-stroke-color: var(--uranium);
 }
 
 /* =========================================
@@ -411,7 +419,7 @@ body.about-page .overlay-panel{
   border-radius: 34px;
   background: #f960d0;
   padding: clamp(0.5rem, 1vw, 1rem) clamp(2rem, 4vw, 3rem) clamp(1rem, 2.5vw, 1.75rem) clamp(2rem, 4vw, 3rem); /* Further reduced bottom padding */
-  color: #141414; /* charcoal text */
+  color: #031624; /* charcoal text */
 }
 
 body.about-page .overlay-panel,
@@ -424,7 +432,7 @@ body.about-page .overlay-panel h5,
 body.about-page .overlay-panel h6,
 body.about-page .overlay-panel a,
 body.about-page .overlay-panel button {
-  color: #141414;
+  color: #031624;
 }
 
 body.about-page .overlay-close{
@@ -452,7 +460,7 @@ body.about-page .overlay-panel .overlay-close{
   cursor: pointer;
 
   /* typography / default state */
-  color: #141414; /* charcoal */
+  color: #031624; /* charcoal */
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 2rem;
   line-height: 1;
@@ -465,7 +473,7 @@ body.about-page .overlay-panel .overlay-close{
 body.about-page .overlay-panel .overlay-close:hover,
 body.about-page .overlay-panel .overlay-close:focus,
 body.about-page .overlay-panel .overlay-close:active {
-  color: #141414;
+  color: #031624;
   text-transform: uppercase; /* become 'X' */
   outline: none;
 }
@@ -537,7 +545,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: var(--orange);
+    color: var(--uranium);
     font-family: 'picnic', sans-serif;
     font-size: 1.5rem;
     text-align: center;
@@ -598,7 +606,8 @@ body.about-page .about-word.is-wobbling .wobble-span{
   body.about-page .orbit .about-word[data-key="bio"],
   body.about-page .orbit .about-word[data-key="digital"],
   body.about-page .orbit .about-word[data-key="people"],
-  body.about-page .orbit .about-word[data-key="art"]{
+  body.about-page .orbit .about-word[data-key="art"],
+  body.about-page .orbit .about-word[data-key="industry"]{
     animation-delay: 0s;
   }
 
@@ -623,6 +632,11 @@ body.about-page .about-word.is-wobbling .wobble-span{
   body.about-page .orbit .about-word[data-key="art"]{
     top: 73%;
     left: 62.5%; /* Adjusted to position correctly without transform */
+  }
+
+  body.about-page .orbit .about-word[data-key="industry"]{
+    top: 42%;
+    left: 74%;
   }
 
 

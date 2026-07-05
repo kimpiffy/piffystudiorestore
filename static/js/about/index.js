@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     art: stage.dataset.urlArt,
     digital: stage.dataset.urlDigital,
     people: stage.dataset.urlPeople,
+    industry: stage.dataset.urlIndustry,
     contact: stage.dataset.urlContact,
     cv: stage.dataset.urlCv,
   };

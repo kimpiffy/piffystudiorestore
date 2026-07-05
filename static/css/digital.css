@@ -12,7 +12,7 @@ html,
 body.digital-page{
   height: 100%;
   margin: 0;
-  background: #141414;
+  background: #031624;
   overflow: hidden;
 }
 
@@ -26,9 +26,9 @@ body.digital-page video{
 
 /* theme vars (override main.css vars) */
 body.digital-page{
-  --background: #141414;
+  --background: #031624;
   --lilac: #7B6CF6;
-  --orange: #ffa931;
+  --uranium: #e0ff9a;
   background: var(--background);
 }
 
@@ -130,7 +130,8 @@ body.digital-page{
   padding: 0 2px;
   border: 0;
   background: transparent;
-  color: var(--orange);
+  color: var(--uranium);
+    color: var(--uranium);
   -webkit-text-stroke: 0.9px #ff4fb3;
   text-shadow:
     0 0 6px rgba(123, 108, 246, 0.55),
@@ -141,7 +142,10 @@ body.digital-page{
 .nav-arrows button:hover{
   transform: scale(1.12);
   color: #ff4fb3 !important;
-  -webkit-text-stroke-color: var(--orange);
+  -webkit-text-stroke-color: var(--uranium);
+    -webkit-text-stroke-color: var(--uranium);
+    -webkit-text-stroke-color: var(--uranium);
+    color: var(--uranium);
   text-shadow:
     0 0 7px rgba(255, 79, 179, 0.5),
     0 0 16px rgba(255, 169, 49, 0.35);
@@ -151,7 +155,7 @@ body.digital-page{
 .nav-arrows button:active {
   transform: scale(1.12);
   color: #ff4fb3 !important;
-  -webkit-text-stroke-color: var(--orange);
+  -webkit-text-stroke-color: var(--uranium);
 }
 
 #navArrows button:hover,
@@ -180,7 +184,7 @@ body.digital-page{
   border-radius: 34px;
   background: #f960d0;
   padding: 18px;
-  color: #141414;
+  color: #031624;
 }
 
 .overlay-panel,
@@ -193,7 +197,7 @@ body.digital-page{
 .overlay-panel h6,
 .overlay-panel a,
 .overlay-panel button {
-  color: #141414;
+  color: #031624;
 }
 
 
@@ -250,7 +254,7 @@ body.digital-page{
     padding: 0 2px;
     border: 0;
     background: transparent;
-    color: var(--orange);
+    color: var(--uranium);
     border-radius: 0;
     box-shadow: none;
     text-shadow: none;
@@ -285,7 +289,7 @@ body.digital-page{
   cursor: pointer;
 
   /* typography / default state */
-  color: #141414;                            /* inactive colour */
+  color: #031624;                            /* inactive colour */
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 2rem;
   line-height: 1;
@@ -299,7 +303,7 @@ body.digital-page{
 .overlay-panel .overlay-close:focus,
 .overlay-panel .overlay-close:active,
 .overlay-panel .overlay-close.orange {
-  color: #141414;
+  color: #031624;
   text-transform: uppercase;                    /* become 'X' */
   outline: none;
 }
@@ -328,15 +332,15 @@ body.digital-page{
 }
 
 /* color classes (use your CSS variables) */
-.project-cta.lilac{ color: #141414; }
-.project-cta.orange{ color: #141414; }
+.project-cta.lilac{ color: #031624; }
+.project-cta.orange{ color: #031624; }
 
 /* hover / focus / active: uppercase and stay charcoal */
 .project-cta:hover,
 .project-cta:focus,
 .project-cta:active{
   text-transform: uppercase;
-  color: #141414;
+  color: #031624;
   outline: none;
 }
 
@@ -361,7 +365,7 @@ body.digital-page{
     top: var(--site-header-h) !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: calc(var(--footer-collapsed-h, 28px) + 12px) !important;
+    bottom: calc(var(--footer-bar-h, 48px) + 12px) !important;
     height: auto !important;
     overflow: visible !important;
   }
@@ -414,7 +418,7 @@ body.digital-page{
     left: 50% !important;
     transform: translateX(-50%) !important;
     top: auto !important;
-    bottom: calc(var(--footer-collapsed-h, 28px) + 10px) !important;
+    bottom: calc(var(--footer-bar-h, 48px) + 10px) !important;
     z-index: 20 !important;
     display: flex !important;
     gap: 14px !important;

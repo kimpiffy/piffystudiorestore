@@ -22,6 +22,7 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
     art: 14,
     digital: -6,
     people: 8,
+    industry: -2,
   };
 
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -67,6 +68,8 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
         ? routes?.digital
         : key === "people"
         ? routes?.people
+        : key === "industry"
+        ? routes?.industry
         : null;
 
     if (href) window.location.assign(href);

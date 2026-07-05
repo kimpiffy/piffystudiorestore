@@ -38,9 +38,10 @@
 /* Normalize */
 html, body {
   height: 100%;
+  min-height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: visible;
+  overflow-x: hidden;
 }
 
 /* ------------------------------------
@@ -52,8 +53,8 @@ html, body {
 
   /* the ONLY colors you asked for */
   --lilac: #7B6CF6;
-  --orange: #ffa931;
-  --charcoal: #141414;
+  --uranium: #e0ff9a;
+  --charcoal: #031624;
 }
 
 /* Optional helpers */
@@ -74,7 +75,7 @@ html, body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: var(--orange);
+    color: var(--uranium);
     font-family: 'picnic', sans-serif;
     font-size: 1.5rem;
     text-align: center;
@@ -88,7 +89,8 @@ html, body {
   }
 }
 .lilac { color: var(--lilac); }
-.orange { color: var(--orange); }
+.orange { color: var(--uranium); }
+.orange { color: var(--uranium); }
 
 /* ------------------------------------
    GLOBAL BASE
@@ -133,6 +135,12 @@ img, svg, video {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+.site-content {
+  min-height: calc(100vh - 24px);
+  min-height: calc(100dvh - 24px);
+  flex: 0 0 auto;
 }
 
 /* ------------------------------------
@@ -223,9 +231,7 @@ button.nav-x {
   line-height: 0.7;
   letter-spacing: 0.02em;
 
-  color: var(--lilac);  /* uppercase/hover state */
-  -webkit-text-stroke-width: 0.7px;
-  -webkit-text-stroke-color: transparent;
+  color: var(--uranium);
   text-shadow: none;
 
   transition: opacity 140ms ease, transform 160ms ease, color 160ms ease, filter 160ms ease;
@@ -237,6 +243,15 @@ button.nav-x {
   letter-spacing: 0.05em;
   text-align: center;
   display: inline-block;
+  white-space: nowrap;
+  transform: translateX(6px);
+}
+
+.nav-x__m {
+  display: inline-block;
+  transform: translate(-3px, 4px) rotate(25deg);
+  transform-origin: center;
+  margin-left: 7px;
 }
 
 /* Piffy sizing adjustments */
@@ -253,16 +268,48 @@ button.nav-x {
   transform: translateY(-3px);
 }
 
+.nav-x__lower .nav-x__p {
+  display: inline-block;
+  position: relative;
+  top: -1px;
+}
+
+.nav-x__lower .nav-x__i {
+  display: inline-block;
+  position: relative;
+  top: -4px;
+}
+
 .nav-x__lower .nav-x__fy {
   display: inline-block;
   margin-left: -5px;
+}
+
+.nav-x__lower .nav-x__f {
+  display: inline-block;
+}
+
+.nav-x__lower .nav-x__y {
+  display: inline-block;
+  transform: translate(1px, -9px);
 }
 
 .nav-x__upper .nav-x__piffy {
   font-size: 0.96em;  /* 3px smaller for uppercase */
   text-align: center;
   display: inline-block;
-  transform: translate(0, 2px);
+  transform: translate(3px, 2px);
+}
+
+.nav-x__upper .nav-x__Y {
+  display: inline-block;
+  transform: translate(1px, -4px);
+}
+
+.nav-x__upper .nav-x__F {
+  display: inline-block;
+  position: relative;
+  top: -1px;
 }
 
 /* start state: show lowercase with old pink color */
@@ -275,14 +322,20 @@ button.nav-x {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
   color: #ff4fb3;
-  /* outline the text: use -webkit-text-stroke for broad browser support */
-  -webkit-text-stroke: 1px var(--lilac);
-  text-shadow:
-    0 0 10px rgba(124, 108, 247, 0.8),
-    0 0 20px rgba(124, 108, 247, 0.55),
-    0 0 30px rgba(124, 108, 247, 0.35);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  -webkit-text-stroke: 0.7px var(--uranium);
+  text-shadow: none;
+  filter:
+    drop-shadow(0 0 4px rgba(124, 108, 247, 0.8))
+    drop-shadow(0 0 10px rgba(124, 108, 247, 0.35));
   text-align: center;
   line-height: 0.8;
+}
+
+.nav-x__lower .nav-x__piffy {
+  margin-top: 0.04em;
 }
 
 .nav-x[aria-expanded="false"] .nav-x__upper {
@@ -308,7 +361,7 @@ button.nav-x {
 .nav-x[aria-expanded="true"] .nav-x__upper{
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.15);
-  color: var(--lilac);
+  color: var(--uranium);
   -webkit-text-stroke: 0.85px #ff4fb3;
   text-shadow:
     0 0 10px rgba(124, 108, 247, 0.8),
@@ -327,7 +380,7 @@ button.nav-x {
 .nav-x:focus-visible .nav-x__upper .nav-x__piffy,
 .nav-x[aria-expanded="true"] .nav-x__upper .nav-x__piffy {
   -webkit-text-stroke: 0.7px #ff4fb3;
-  transform: translate(-5px, 4px);
+  transform: translate(3px, 4px);
 }
 
 .nav-x:hover .nav-x__upper .nav-x__fy,
@@ -349,7 +402,7 @@ button.nav-x {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 .nav-x:active .nav-x__upper {
-  color: var(--orange);
+  color: var(--uranium);
   /* glow handled at .nav-x__stack level to avoid doubling */
 }
 
@@ -415,7 +468,9 @@ button.nav-x {
   font-size: 16px;
   letter-spacing: 0.01em;
   line-height: 1.0;
-  color: var(--orange) !important;
+  position: relative;
+  left: -2px;
+  color: var(--uranium) !important;
   background: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
@@ -432,7 +487,7 @@ button.nav-x {
   padding: 5px;
   margin-left: 5px;
   border-radius: 12px;
-  --bs-nav-link-color: var(--orange);
+  --bs-nav-link-color: var(--uranium);
   --bs-nav-link-hover-color: #ff4fb3;
 }
 
@@ -504,7 +559,7 @@ button.nav-x {
     content: "";
     position: fixed;
     inset: 0;
-    background: #141414;
+    background: #031624;
     z-index: 1500;
     pointer-events: none;
   }
@@ -638,7 +693,7 @@ button.nav-x {
 .cart-icon-fixed:focus-visible .cart-icon,
 .cart-icon-fixed:active .cart-icon {
   transform: scale(1.12);
-  background-color: var(--orange);
+  background-color: var(--uranium);
   outline: none;
 }
 
@@ -727,7 +782,7 @@ button.nav-x {
 
 .buy-btn:hover,
 .buy-btn:focus {
-  color: var(--orange) !important;
+  color: var(--uranium) !important;
   text-transform: uppercase;
 }
 

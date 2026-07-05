@@ -31,7 +31,8 @@ for root, dirs, files in os.walk('/workspaces/piffystudiorestore'):
 print(f"Found {len(css_files)} CSS files")
 
 # Replace var(--green) with var(--orange) in all CSS files
+# Replace var(--green) with var(--uranium) in all CSS files
 for css_file in css_files:
-    replace_in_file(css_file, 'var(--green)', 'var(--orange)')
+    replace_in_file(css_file, 'var(--green)', 'var(--uranium)')
 
 print("Finished updating CSS files")

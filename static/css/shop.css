@@ -32,7 +32,8 @@
   font-family: "velvelyne-regular", sans-serif;
   cursor: pointer;
 }
-.like.is-liked{ color: var(--orange); }
+.like.is-liked{ color: var(--uranium); }
+.like.is-liked{ color: var(--uranium); }
 .like-heart{ font-size: 14px; line-height: 1; }
 .like-count{ font-size: 13px; opacity: .9; }
 
@@ -86,7 +87,7 @@
 @media (hover: hover) and (pointer: fine){
   .product-card:hover .price,
   .product-card:focus-within .price{
-    color: var(--orange);
+    color: var(--uranium);
   }
 }
 

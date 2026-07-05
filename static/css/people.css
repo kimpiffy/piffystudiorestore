@@ -1,6 +1,6 @@
 :root {
-  --people-bg: #141414;
-  --people-orange: #ffa931;
+  --people-bg: #031624;
+  --people-uranium: #e0ff9a;
   --people-lilac: #7B6CF6;
   --people-pink: #ff4fb3;
   --people-overlay: rgba(0, 0, 0, 0.55);
@@ -18,7 +18,7 @@
     top: calc(var(--site-header-h) - 8px) !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: calc(var(--footer-collapsed-h, 28px) + 12px) !important;
+    bottom: calc(var(--footer-bar-h, 48px) + 12px) !important;
     height: auto !important;
     overflow: visible !important;
   }
@@ -61,7 +61,7 @@
     left: 50% !important;
     transform: translateX(-50%) !important;
     top: auto !important;
-    bottom: calc(var(--footer-collapsed-h, 28px) + 10px) !important;
+    bottom: calc(var(--footer-bar-h, 48px) + 10px) !important;
     z-index: 20 !important;
     display: flex !important;
     gap: 14px !important;
@@ -75,7 +75,8 @@
     padding: 0 2px !important;
     border: 0 !important;
     background: transparent !important;
-    color: var(--people-orange) !important;
+    color: var(--people-uranium) !important;
+      color: var(--people-uranium) !important;
     -webkit-text-stroke: 0.9px var(--people-pink) !important;
     text-shadow: 0 0 6px rgba(123, 108, 246, 0.55), 0 0 14px rgba(123, 108, 246, 0.3) !important;
     cursor: pointer !important;
@@ -234,7 +235,8 @@ body.people-page footer {
   padding: 0 2px;
   border: 0;
   background: transparent;
-  color: var(--people-orange);
+  color: var(--people-uranium);
+    color: var(--people-uranium);
   -webkit-text-stroke: 0.9px var(--people-pink);
   text-shadow:
     0 0 6px rgba(123, 108, 246, 0.55),
@@ -246,7 +248,9 @@ body.people-page footer {
 .nav-arrows button:hover {
   transform: scale(1.12);
   color: var(--people-pink) !important;
-  -webkit-text-stroke-color: var(--people-orange);
+  -webkit-text-stroke-color: var(--people-uranium);
+    -webkit-text-stroke-color: var(--people-uranium);
+    -webkit-text-stroke-color: var(--people-uranium);
   text-shadow:
     0 0 7px rgba(255, 79, 179, 0.5),
     0 0 16px rgba(255, 169, 49, 0.35);
@@ -256,7 +260,7 @@ body.people-page footer {
 .nav-arrows button:active {
   transform: scale(1.12);
   color: var(--people-pink) !important;
-  -webkit-text-stroke-color: var(--people-orange);
+  -webkit-text-stroke-color: var(--people-uranium);
 }
 
 #navArrows button:hover,
@@ -293,7 +297,7 @@ body.people-page footer {
   border-radius: 34px;
   background: #f960d0;
   padding: 18px;
-  color: #141414;
+  color: #031624;
 }
 
 .overlay-panel,
@@ -306,7 +310,7 @@ body.people-page footer {
 .overlay-panel h6,
 .overlay-panel a,
 .overlay-panel button {
-  color: #141414;
+  color: #031624;
 }
 
 .overlay-close {
@@ -335,7 +339,7 @@ body.people-page footer {
   width: 30px;
   height: 30px;
   cursor: pointer;
-  color: #141414;
+  color: #031624;
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 2rem;
   line-height: 1;
@@ -348,7 +352,7 @@ body.people-page footer {
 .overlay-panel .overlay-close:focus,
 .overlay-panel .overlay-close:active,
 .overlay-panel .overlay-close.orange {
-  color: #141414;
+  color: #031624;
   text-transform: uppercase;
   outline: none;
 }
@@ -379,14 +383,14 @@ body.people-page footer {
 
 .project-cta.lilac,
 .project-cta.orange {
-  color: #141414;
+  color: #031624;
 }
 
 .project-cta:hover,
 .project-cta:focus,
 .project-cta:active {
   text-transform: uppercase;
-  color: #141414;
+  color: #031624;
   outline: none;
 }
 
@@ -402,7 +406,7 @@ body.people-page footer {
     top: var(--site-header-h) !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: calc(var(--footer-collapsed-h, 28px) + 12px) !important;
+    bottom: calc(var(--footer-bar-h, 48px) + 12px) !important;
     height: auto !important;
     overflow: visible !important;
   }
@@ -448,7 +452,7 @@ body.people-page footer {
     left: 50% !important;
     transform: translateX(-50%) !important;
     top: auto !important;
-    bottom: calc(var(--footer-collapsed-h, 28px) + 10px) !important;
+    bottom: calc(var(--footer-bar-h, 48px) + 10px) !important;
     z-index: 20 !important;
     display: flex !important;
     gap: 14px !important;
@@ -481,7 +485,7 @@ body.people-page footer {
     top: var(--site-header-h) !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: calc(var(--footer-collapsed-h, 28px) + 12px) !important;
+    bottom: calc(var(--footer-bar-h, 48px) + 12px) !important;
     height: auto !important;
     overflow: visible !important;
   }
@@ -528,7 +532,7 @@ body.people-page footer {
     left: 50% !important;
     transform: translateX(-50%) !important;
     top: auto !important;
-    bottom: calc(var(--footer-collapsed-h, 28px) + 10px) !important;
+    bottom: calc(var(--footer-bar-h, 48px) + 10px) !important;
     z-index: 20 !important;
     display: flex !important;
     gap: 14px !important;
