@@ -37,6 +37,17 @@ def people(request):
             "stack": ["Visual Arts", "Public Installation"],
             "cover": "/static/img/home/connection.jpeg",
         },
+        {
+            "id": "digitalis-1-0",
+            "title": "Digitalis 1.0",
+            "coming_soon": True,
+            "overlay_title": "Coming Soon",
+            "blurb": (
+                "Interactive community-focused digital installation project."
+            ),
+            "stack": ["Digital", "Community"],
+            "cover": "/static/img/home/buildcode.jpeg",
+        },
     ]
 
     return render(request, "portfolio/people.html", {"projects": projects})

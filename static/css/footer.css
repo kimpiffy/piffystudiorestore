@@ -12,7 +12,7 @@
 }
 
 body {
-  padding-bottom: var(--footer-bar-h);
+  padding-bottom: 0;
 }
 
 .site-footer {
@@ -32,6 +32,7 @@ body {
 }
 
 .footer-inner {
+  position: relative;
   width: 100%;
   color: #031624;
   display: flex;
@@ -56,6 +57,10 @@ body {
   justify-content: space-between;
   gap: 1rem;
   white-space: nowrap;
+}
+
+.footer-main::-webkit-scrollbar {
+  display: none;
 }
 
 .footer-column {
@@ -157,11 +162,17 @@ body {
 
 .footer-signoff {
   margin: 0;
-  text-align: right;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
   white-space: nowrap;
   flex: 0 0 auto;
+  z-index: 1;
+  pointer-events: auto;
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   line-height: 1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -214,12 +225,47 @@ body {
 }
 
 @media (max-width: 767.98px) {
+  :root {
+    --footer-bar-h: 82px;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    padding: 6px 12px;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 0.35rem;
+    overflow: hidden;
+  }
+
   .footer-main {
+    width: 100%;
     gap: 0.7rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .footer-main::-webkit-scrollbar {
+    display: none;
   }
 
   .footer-email-copy {
     gap: 0.35rem;
+  }
+
+  .footer-signoff {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    text-align: center;
   }
 
   .footer-copy-icon {

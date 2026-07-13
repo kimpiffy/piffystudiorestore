@@ -18,4 +18,4 @@ export const HOVER_IMAGE = "/static/img/about/nice-to-meet-you.png";
 export const PORTRAIT_FIT = "xMidYMid slice";
 
 // Shared nav order (desktop orbit + mobile carousel)
-export const NAV_ORDER = ["bio", "industry", "art", "digital", "people"];
+export const NAV_ORDER = ["bio", "digital", "art", "community"];

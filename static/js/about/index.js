@@ -17,8 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const routes = {
     art: stage.dataset.urlArt,
     digital: stage.dataset.urlDigital,
-    people: stage.dataset.urlPeople,
-    industry: stage.dataset.urlIndustry,
+    community: stage.dataset.urlCommunity,
     contact: stage.dataset.urlContact,
     cv: stage.dataset.urlCv,
   };

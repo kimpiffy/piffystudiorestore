@@ -66,10 +66,8 @@ export function createMobileStaticController({ overlay, routes, wordsLayer }) {
         ? routes?.art
         : key === "digital"
         ? routes?.digital
-        : key === "people"
-        ? routes?.people
-        : key === "industry"
-        ? routes?.industry
+        : key === "community"
+        ? routes?.community
         : null;
 
     if (href) window.location.assign(href);

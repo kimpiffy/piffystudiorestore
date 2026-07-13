@@ -19,7 +19,7 @@
   --bio-hot:     #ff4fb3;
   --art-hot:     #ff4fb3;
   --digital-hot: #ff4fb3;
-  --people-hot:  #ff4fb3;
+  --community-hot:  #ff4fb3;
 
   /* Orbit tuning (CSS only — JS will do the motion) */
   --orbit-pad: 12px;
@@ -27,25 +27,32 @@
 
 body.about-page{
   margin:0;
-  min-height:100vh;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
   background: #ff4bb3;
-    color: var(--uranium);
-  overflow-x: hidden;
-  overflow-y: auto;
+  color: var(--uranium);
+  overflow: hidden;
+  padding-bottom: 0 !important;
+}
+
+html:has(body.about-page){
+  height: 100%;
+  overflow: hidden;
 }
 
 @media (min-width: 768px){
-  html, body.about-page{
-    height: auto;
+  html:has(body.about-page),
+  body.about-page{
+    height: 100%;
     min-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
   }
 
   body.about-page .site-content{
-    min-height: calc(100vh - 15px);
-    height: auto;
-    overflow: visible;
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
   }
 }
 
@@ -71,9 +78,9 @@ body.about-page .about-stage{
   top: auto;
   margin-top: 0;
 
-  /* Keep hero section viewport-sized but scroll in normal flow */
-  min-height: calc(100dvh - 24px);
-  height: auto;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
   background: var(--ink);
 
   /* Keep footer flush with page end */
@@ -85,7 +92,8 @@ body.about-page .about-stage{
 
 @media (min-width: 768px){
   body.about-page .about-stage{
-    min-height: calc(100vh - 15px);
+    min-height: 100dvh;
+    height: 100dvh;
   }
 }
 
@@ -311,8 +319,8 @@ body.about-page .about-word[data-key="digital"]:focus{
   -webkit-text-stroke-color: var(--uranium);
 }
 
-body.about-page .about-word[data-key="people"]:hover,
-body.about-page .about-word[data-key="people"]:focus{
+body.about-page .about-word[data-key="community"]:hover,
+body.about-page .about-word[data-key="community"]:focus{
   color: #ff4fb3;
   color: #ff4fb3;
   -webkit-text-stroke-color: var(--uranium);
@@ -559,19 +567,16 @@ body.about-page .about-word.is-wobbling .wobble-span{
 
 @media (max-width: 767px){
 
-  /* Allow scrolling on mobile - removed overflow restrictions */
-  html, body{
-    height: auto;
-    min-height: 100vh;
-    overflow: auto;
-  }
-
+  /* Lock About page to viewport on mobile */
+  html:has(body.about-page),
   body.about-page{
-    overflow: auto;
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
   }
 
   body.about-page .about-stage{
-    overflow: visible !important;
+    overflow: hidden !important;
   }
 
   /* carousel off */
@@ -605,9 +610,8 @@ body.about-page .about-word.is-wobbling .wobble-span{
   /* All words animate together - no staggered timing */
   body.about-page .orbit .about-word[data-key="bio"],
   body.about-page .orbit .about-word[data-key="digital"],
-  body.about-page .orbit .about-word[data-key="people"],
-  body.about-page .orbit .about-word[data-key="art"],
-  body.about-page .orbit .about-word[data-key="industry"]{
+  body.about-page .orbit .about-word[data-key="community"],
+  body.about-page .orbit .about-word[data-key="art"]{
     animation-delay: 0s;
   }
 
@@ -617,7 +621,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
     left: 35%;
   }
 
-  body.about-page .orbit .about-word[data-key="people"]{
+  body.about-page .orbit .about-word[data-key="community"]{
     top: 63%;
     left: 15%;
   }
@@ -633,12 +637,6 @@ body.about-page .about-word.is-wobbling .wobble-span{
     top: 73%;
     left: 62.5%; /* Adjusted to position correctly without transform */
   }
-
-  body.about-page .orbit .about-word[data-key="industry"]{
-    top: 42%;
-    left: 74%;
-  }
-
 
   /* Keep mobile blob visible but not oversized */
   body.about-page .portrait-blob{

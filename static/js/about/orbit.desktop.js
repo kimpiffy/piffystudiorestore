@@ -21,8 +21,7 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
     bio: -12,
     art: 14,
     digital: -6,
-    people: 8,
-    industry: -2,
+    community: 8,
   };
 
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -66,10 +65,8 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
         ? routes?.art
         : key === "digital"
         ? routes?.digital
-        : key === "people"
-        ? routes?.people
-        : key === "industry"
-        ? routes?.industry
+        : key === "community"
+        ? routes?.community
         : null;
 
     if (href) window.location.assign(href);
@@ -164,7 +161,7 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
         Math.cos(phase * (8.1 + i * 0.8)) * 12 +
         Math.cos(phase * (11.2 + i * 0.6)) * 6;
 
-      const bias = key === "bio" ? 1.08 : key === "people" ? 1.06 : 1;
+      const bias = key === "bio" ? 1.08 : key === "community" ? 1.06 : 1;
 
       // Use real on-screen size (includes font rendering + rotation effects)
       const rEl = el.getBoundingClientRect();

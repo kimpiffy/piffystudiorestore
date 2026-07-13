@@ -13,8 +13,7 @@
   id="aboutStage"
  data-url-art="{% url 'portfolio:art' %}"
 data-url-digital="{% url 'portfolio:digital' %}"
-data-url-people="{% url 'portfolio:people' %}"
-data-url-industry="{% url 'portfolio:industry' %}"
+data-url-community="{% url 'portfolio:people' %}"
 data-url-contact="{% url 'pages:contact' %}"
 data-url-cv="{% static 'kimpiffycv.pdf' %}"
 >
@@ -30,10 +29,9 @@ data-url-cv="{% static 'kimpiffycv.pdf' %}"
   <nav class="orbit" id="aboutWords" aria-label="About navigation">
     <!-- JS can replace/confirm these, but having them in HTML helps SEO + no-JS fallback -->
     <div class="about-word" data-key="bio"><span class="wobble-inner">bio</span></div>
-    <div class="about-word" data-key="industry"><span class="wobble-inner">industry</span></div>
-    <div class="about-word" data-key="people"><span class="wobble-inner">people</span></div>
-    <div class="about-word" data-key="art"><span class="wobble-inner">art</span></div>
     <div class="about-word" data-key="digital"><span class="wobble-inner">digital</span></div>
+    <div class="about-word" data-key="art"><span class="wobble-inner">art</span></div>
+    <div class="about-word" data-key="community"><span class="wobble-inner">community</span></div>
   </nav>
 
   <!-- Mobile carousel (one word at a time on curved arc) -->
