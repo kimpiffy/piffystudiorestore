@@ -1,7 +1,14 @@
 from django.shortcuts import render
 
+from pages.seo import build_seo
+
 
 def people(request):
+    title = "Creative Health, SEND & Community Arts Practice | Kim Piffy"
+    description = (
+        "Explore Kim Piffy's sensory-aware creative-health projects, participatory "
+        "workshops and community arts practice with SEND, disabled and autistic participants."
+    )
     projects = [
         {
             "id": "wishing-tree",
@@ -50,10 +57,30 @@ def people(request):
         },
     ]
 
-    return render(request, "portfolio/people.html", {"projects": projects})
+    return render(
+        request,
+        "portfolio/people.html",
+        {
+            "projects": projects,
+            "seo": build_seo(
+                request,
+                title=title,
+                description=description,
+                og_title=title,
+                og_description=description,
+                twitter_title=title,
+                twitter_description=description,
+            ),
+            "section_h1": "Creative Health and Participatory Practice",
+        },
+    )
 
 
 def industry(request):
+    title = "Industry Projects | Kim Piffy"
+    description = (
+        "Preview upcoming industry-focused projects and commissions by Kim Piffy."
+    )
     projects = [
         {
             "id": "industry-coming-soon",
@@ -67,10 +94,32 @@ def industry(request):
         },
     ]
 
-    return render(request, "portfolio/industry.html", {"projects": projects})
+    return render(
+        request,
+        "portfolio/industry.html",
+        {
+            "projects": projects,
+            "seo": build_seo(
+                request,
+                title=title,
+                description=description,
+                og_title=title,
+                og_description=description,
+                twitter_title=title,
+                twitter_description=description,
+                robots="noindex, follow",
+            ),
+            "section_h1": "Industry",
+        },
+    )
 
 
 def digital(request):
+    title = "Experimental Web Design & Immersive Digital Spaces | Kim Piffy"
+    description = (
+        "Kim Piffy creates distinctive websites, immersive online spaces and "
+        "artist-led digital experiences shaped around each client's visual identity and purpose."
+    )
     projects = [
         {
             "id": "piffy-studio",
@@ -172,10 +221,31 @@ def digital(request):
         },
     ]
 
-    return render(request, "portfolio/digital.html", {"projects": projects})
+    return render(
+        request,
+        "portfolio/digital.html",
+        {
+            "projects": projects,
+            "seo": build_seo(
+                request,
+                title=title,
+                description=description,
+                og_title=title,
+                og_description=description,
+                twitter_title=title,
+                twitter_description=description,
+            ),
+            "section_h1": "Web Design and Immersive Digital Work",
+        },
+    )
 
 
 def art(request):
+    title = "Immersive Installation, Light Art & Conceptual Work | Kim Piffy"
+    description = (
+        "Explore immersive installations, UV-responsive artwork, sensory environments, "
+        "conceptual art and technology-led commissions by UK multidisciplinary artist Kim Piffy."
+    )
     projects = [
         {
             "id": "piece-one",
@@ -225,4 +295,20 @@ def art(request):
         },
     ]
 
-    return render(request, "portfolio/art.html", {"projects": projects})
+    return render(
+        request,
+        "portfolio/art.html",
+        {
+            "projects": projects,
+            "seo": build_seo(
+                request,
+                title=title,
+                description=description,
+                og_title=title,
+                og_description=description,
+                twitter_title=title,
+                twitter_description=description,
+            ),
+            "section_h1": "Art, Installations and Sensory Environments",
+        },
+    )

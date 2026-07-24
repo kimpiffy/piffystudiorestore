@@ -3,6 +3,9 @@
 :root{
   --cream: #f6f1e6;
   --ink: #031624;
+  --brand-pink: var(--pink, #ff4bb3);
+  --brand-pink-soft: var(--pink-soft, #ff4bb3);
+  --brand-modal-pink: var(--modal-pink, #ff4bb3);
 
   /* Define this because your previous CSS referenced it but never set it */
   --lilac: #7B6CF6;
@@ -16,10 +19,10 @@
 
 
   /* Section colours */
-  --bio-hot:     #ff4fb3;
-  --art-hot:     #ff4fb3;
-  --digital-hot: #ff4fb3;
-  --community-hot:  #ff4fb3;
+  --bio-hot: var(--brand-pink);
+  --art-hot: var(--brand-pink);
+  --digital-hot: var(--brand-pink);
+  --community-hot: var(--brand-pink);
 
   /* Orbit tuning (CSS only — JS will do the motion) */
   --orbit-pad: 12px;
@@ -30,7 +33,7 @@ body.about-page{
   min-height: 100dvh;
   height: 100dvh;
   max-height: 100dvh;
-  background: #ff4bb3;
+  background: var(--brand-pink-soft);
   color: var(--uranium);
   overflow: hidden;
   padding-bottom: 0 !important;
@@ -261,7 +264,7 @@ body.about-page .about-word{
   text-transform: lowercase;
 
   color: var(--uranium);
-  -webkit-text-stroke: 1.2px #ff4fb3;
+  -webkit-text-stroke: 1.2px #ff4bb3;
 
   background: transparent !important;
   border: 0 !important;
@@ -294,35 +297,35 @@ body.about-page .about-word:focus{
 /* default colour */
 body.about-page .about-word{
   color: var(--uranium);
-  -webkit-text-stroke-color: #ff4fb3;
+  -webkit-text-stroke-color: #ff4bb3;
 }
 
 /* section hover colours */
 body.about-page .about-word[data-key="bio"]:hover,
 body.about-page .about-word[data-key="bio"]:focus{
-  color: #ff4fb3;
-  color: #ff4fb3;
+  color: #ff4bb3;
+  color: #ff4bb3;
   -webkit-text-stroke-color: var(--uranium);
 }
 
 body.about-page .about-word[data-key="art"]:hover,
 body.about-page .about-word[data-key="art"]:focus{
-  color: #ff4fb3;
-  color: #ff4fb3;
+  color: #ff4bb3;
+  color: #ff4bb3;
   -webkit-text-stroke-color: var(--uranium);
 }
 
 body.about-page .about-word[data-key="digital"]:hover,
 body.about-page .about-word[data-key="digital"]:focus{
-  color: #ff4fb3;
-  color: #ff4fb3;
+  color: #ff4bb3;
+  color: #ff4bb3;
   -webkit-text-stroke-color: var(--uranium);
 }
 
 body.about-page .about-word[data-key="community"]:hover,
 body.about-page .about-word[data-key="community"]:focus{
-  color: #ff4fb3;
-  color: #ff4fb3;
+  color: #ff4bb3;
+  color: #ff4bb3;
   -webkit-text-stroke-color: var(--uranium);
 }
 
@@ -425,7 +428,7 @@ body.about-page .overlay-panel{
   overflow: auto;
 
   border-radius: 34px;
-  background: #f960d0;
+  background: var(--brand-modal-pink);
   padding: clamp(0.5rem, 1vw, 1rem) clamp(2rem, 4vw, 3rem) clamp(1rem, 2.5vw, 1.75rem) clamp(2rem, 4vw, 3rem); /* Further reduced bottom padding */
   color: #031624; /* charcoal text */
 }
@@ -598,6 +601,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
     pointer-events: auto;
     filter: none !important;
     opacity: 1 !important;
+      -webkit-text-stroke: 0.7px #ff4bb3;
 
     font-size: 2.5rem !important;   /* phones */
     line-height: 1;
@@ -617,8 +621,8 @@ body.about-page .about-word.is-wobbling .wobble-span{
 
   /* Slightly higher */
   body.about-page .orbit .about-word[data-key="bio"]{
-    top: 4.5%;
-    left: 35%;
+    top: 10%;
+    left: 37%;
   }
 
   body.about-page .orbit .about-word[data-key="community"]{

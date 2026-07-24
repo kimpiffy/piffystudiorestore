@@ -7,9 +7,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 import stripe
 
 from config import settings
+from pages.seo import build_seo, build_project_seo_title
 from shop.forms import CategoryForm, ProductForm, VariantForm
 
 from django.views.decorators.http import require_POST
@@ -46,7 +48,26 @@ def get_session_cart(request):
 
 def product_list(request):
     products = Product.objects.all().order_by('-created_at')
-    return render(request, "shop/product_list.html", {"products": products})
+    title = "Shop Artwork and Editions | Kim Piffy"
+    description = (
+        "Browse artworks, editions and available pieces by Kim Piffy."
+    )
+    return render(
+        request,
+        "shop/product_list.html",
+        {
+            "products": products,
+            "seo": build_seo(
+                request,
+                title=title,
+                description=description,
+                og_title=title,
+                og_description=description,
+                twitter_title=title,
+                twitter_description=description,
+            ),
+        },
+    )
 
 
 def product_detail(request, slug):
@@ -54,10 +75,26 @@ def product_detail(request, slug):
     images = product.images.all()
     variants = product.variants.all()
 
+    description = strip_tags(product.description or "Artwork by Kim Piffy")
+    description = " ".join(description.split())[:240]
+    title = build_project_seo_title(product.title, "Artwork")
+    primary_image = images[0].image.url if images else None
+
     return render(request, "shop/product_detail.html", {
         "product": product,
         "images": images,
         "variants": variants,
+        "seo": build_seo(
+            request,
+            title=title,
+            description=description,
+            og_title=title,
+            og_description=description,
+            twitter_title=title,
+            twitter_description=description,
+            og_image=primary_image,
+            twitter_image=primary_image,
+        ),
     })
 
 
@@ -112,11 +149,44 @@ def success(request):
     if session_id:
         order = Order.objects.filter(stripe_session_id=session_id).first()
 
-    return render(request, "shop/success.html", {"order": order})
+    title = "Order Confirmation | Kim Piffy"
+    return render(
+        request,
+        "shop/success.html",
+        {
+            "order": order,
+            "seo": build_seo(
+                request,
+                title=title,
+                description="Order confirmation page.",
+                robots="noindex, nofollow",
+                og_title=title,
+                og_description="Order confirmation page.",
+                twitter_title=title,
+                twitter_description="Order confirmation page.",
+            ),
+        },
+    )
 
 
 def cancel(request):
-    return render(request, "shop/cancel.html")
+    title = "Payment Cancelled | Kim Piffy"
+    return render(
+        request,
+        "shop/cancel.html",
+        {
+            "seo": build_seo(
+                request,
+                title=title,
+                description="Payment cancellation page.",
+                robots="noindex, nofollow",
+                og_title=title,
+                og_description="Payment cancellation page.",
+                twitter_title=title,
+                twitter_description="Payment cancellation page.",
+            )
+        },
+    )
 
 
 # ===========================================================
@@ -134,6 +204,12 @@ def cart_view(request):
             "cart": cart,
             "items": items,
             "total": total,
+            "seo": build_seo(
+                request,
+                title="Cart | Kim Piffy",
+                description="Shopping cart",
+                robots="noindex, nofollow",
+            ),
         })
 
     # GUEST
@@ -154,6 +230,12 @@ def cart_view(request):
         "cart": cart,
         "items": items,
         "total": total,
+        "seo": build_seo(
+            request,
+            title="Cart | Kim Piffy",
+            description="Shopping cart",
+            robots="noindex, nofollow",
+        ),
     })
 
 

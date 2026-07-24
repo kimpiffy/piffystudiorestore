@@ -30,6 +30,19 @@ raw_allowed = os.getenv(
 )
 ALLOWED_HOSTS = [h.strip() for h in raw_allowed.split(",") if h.strip()]
 
+SEO_CANONICAL_BASE_URL = os.getenv(
+    "SEO_CANONICAL_BASE_URL",
+    "https://piffystudio.onrender.com",
+).strip().rstrip("/")
+
+raw_production_hosts = os.getenv(
+    "SEO_PRODUCTION_HOSTS",
+    "piffystudio.onrender.com",
+)
+SEO_PRODUCTION_HOSTS = [
+    h.strip().lower() for h in raw_production_hosts.split(",") if h.strip()
+]
+
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 CSRF_TRUSTED_ORIGINS = [
@@ -48,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
 
     "crispy_forms",
     "crispy_bootstrap5",
@@ -66,6 +80,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "pages.middleware.RobotsTagMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -91,6 +106,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "pages.context_processors.seo_defaults",
             ],
         },
     },

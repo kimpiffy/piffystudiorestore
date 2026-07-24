@@ -4,7 +4,7 @@
 
 :root {
     --background: #def9d2;
-    --accent: #f960d0;
+  --accent: var(--modal-pink, #ff4bb3);
     --danger: #e0ff9a;
     --text-dark: #222;
     --text-light: #555;
@@ -280,7 +280,7 @@ overflow: visible !important;
 .nav-x__lower{ 
   opacity: 1; 
   transform: translate(-50%, -50%) translateY(-5px) scale(1);  /* move up 5px when lowercase */
-  color: #ff4fb3;  /* pink fill for lowercase */
+  color: #ff4bb3;  /* pink fill for lowercase */
   display: inline-flex;
   flex-direction: column;
   align-items: center;

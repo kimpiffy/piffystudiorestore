@@ -54,6 +54,9 @@ html, body {
 
   /* the ONLY colors you asked for */
   --lilac: #7B6CF6;
+  --pink: #ff4bb3;
+  --pink-soft: #ff4bb3;
+  --modal-pink: #ff4bb3;
   --uranium: #e0ff9a;
   --charcoal: #031624;
 }
@@ -162,6 +165,9 @@ img, svg, video {
 #navbar {
   --nav-anchor-left: 60px;
   --nav-panel-left-base: -52px;
+  --nav-panel-align-shift: -7px;
+  --nav-icon-font-size: 34px;
+  --nav-icon-box-size: 50px;
   position: fixed;
   top: 30px;
   left: var(--nav-anchor-left);
@@ -215,8 +221,8 @@ button.nav-x {
 /* stacked glyph container so x/X share the same centre */
 .nav-x__stack{
   position: relative;
-  width: 50px;     /* controls alignment + tap target */
-  height: 50px;
+  width: var(--nav-icon-box-size);     /* controls alignment + tap target */
+  height: var(--nav-icon-box-size);
   display: inline-block;
   overflow: visible;
 }
@@ -231,7 +237,7 @@ button.nav-x {
   transform-origin: 50% 50%;
 
   font-family: "picnic", system-ui;
-  font-size: 34px;
+  font-size: var(--nav-icon-font-size);
   line-height: 0.7;
   letter-spacing: 0.02em;
 
@@ -325,11 +331,11 @@ button.nav-x {
 .nav-x__lower{
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
-  color: #ff4fb3;
+  color: var(--uranium);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  -webkit-text-stroke: 0.7px var(--uranium);
+  -webkit-text-stroke: 0.7px #ff4bb3;
   text-shadow: none;
   filter:
     drop-shadow(0 0 4px rgba(124, 108, 247, 0.8))
@@ -365,8 +371,8 @@ button.nav-x {
 .nav-x[aria-expanded="true"] .nav-x__upper{
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.15);
-  color: var(--uranium);
-  -webkit-text-stroke: 0.85px #ff4fb3;
+  color: #ff4bb3;
+  -webkit-text-stroke: 0.85px var(--uranium);
   text-shadow:
     0 0 10px rgba(124, 108, 247, 0.8),
     0 0 20px rgba(124, 108, 247, 0.55),
@@ -377,13 +383,13 @@ button.nav-x {
 .nav-x:hover .nav-x__upper .nav-x__kim,
 .nav-x:focus-visible .nav-x__upper .nav-x__kim,
 .nav-x[aria-expanded="true"] .nav-x__upper .nav-x__kim {
-  -webkit-text-stroke: 0.85px #ff4fb3;
+  -webkit-text-stroke: 0.85px var(--uranium);
 }
 
 .nav-x:hover .nav-x__upper .nav-x__piffy,
 .nav-x:focus-visible .nav-x__upper .nav-x__piffy,
 .nav-x[aria-expanded="true"] .nav-x__upper .nav-x__piffy {
-  -webkit-text-stroke: 0.7px #ff4fb3;
+  -webkit-text-stroke: 0.7px var(--uranium);
   transform: translate(3px, 4px);
 }
 
@@ -406,7 +412,7 @@ button.nav-x {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 .nav-x:active .nav-x__upper {
-  color: var(--uranium);
+  color: #ff4bb3;
   /* glow handled at .nav-x__stack level to avoid doubling */
 }
 
@@ -414,7 +420,7 @@ button.nav-x {
 .nav-panel{
   position: absolute;        /* anchor to #navbar */
   top: calc(100% + 20px);    /* shifted down additional 5px */
-  left: calc(var(--nav-panel-left-base) - (var(--nav-anchor-left) - 60px));
+  left: calc(var(--nav-panel-left-base) - (var(--nav-anchor-left) - 60px) + var(--nav-panel-align-shift));
   margin-top: 0 !important;
   display: none;             /* hidden by default */
   width: fit-content;
@@ -422,7 +428,7 @@ button.nav-x {
   max-width: 100px;          /* limit width to about 2/3 of original */
   background: transparent !important;
   border-radius: 18px;
-  padding: 8px 10px 0px 10px; /* restore comfortable top/bottom padding */
+  padding: 4px 10px 0px 14px; /* restore comfortable top/bottom padding */
   opacity: 0;
   transform: translateY(-15px) scale(0.95);
   transition: opacity 250ms ease, transform 250ms ease;
@@ -492,7 +498,7 @@ button.nav-x {
   margin-left: 5px;
   border-radius: 12px;
   --bs-nav-link-color: var(--uranium);
-  --bs-nav-link-hover-color: #ff4fb3;
+  --bs-nav-link-hover-color: #ff4bb3;
 }
 
 .nav-action--submenu{
@@ -502,7 +508,7 @@ button.nav-x {
   --bs-dropdown-bg: transparent;
   --bs-dropdown-link-hover-bg: transparent;
   --bs-dropdown-link-active-bg: transparent;
-  --bs-dropdown-link-hover-color: #ff4fb3;
+  --bs-dropdown-link-hover-color: #ff4bb3;
 }
 
 .nav-action--work{
@@ -511,7 +517,7 @@ button.nav-x {
 }
 
 .nav-action:is(:hover, :focus-visible, :focus, :active, .active, .show){
-  color: #ff4fb3 !important;
+  color: #ff4bb3 !important;
   background: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
@@ -524,6 +530,9 @@ button.nav-x {
 @media (max-width: 576px){
   #navbar{
     --nav-anchor-left: 46px;
+    --nav-panel-align-shift: 12px;
+    --nav-icon-font-size: 28px;
+    --nav-icon-box-size: 42px;
     top: 34px;
     right: 15px;
   }
@@ -534,7 +543,7 @@ button.nav-x {
   }
 
   .nav-links {
-    padding-left: 4px;
+    padding-left: 15px;
   }
 
   .nav-x:hover .nav-x__upper,
@@ -542,12 +551,42 @@ button.nav-x {
   .nav-x[aria-expanded="true"] .nav-x__upper {
     transform: translate(-44%, -50%) scale(1.15);
   }
+
+  .nav-x[aria-expanded="true"] .nav-x__upper {
+    text-shadow:
+      0 0 8px rgba(124, 108, 247, 0.7),
+      0 0 16px rgba(124, 108, 247, 0.45),
+      0 0 24px rgba(124, 108, 247, 0.3) !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .nav-x:not([aria-expanded="true"]):hover .nav-x__upper,
+  .nav-x:not([aria-expanded="true"]):focus-visible .nav-x__upper {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.88);
+  }
+
+  .nav-x:not([aria-expanded="true"]):hover .nav-x__lower,
+  .nav-x:not([aria-expanded="true"]):focus-visible .nav-x__lower {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 @media (min-width: 992px) {
   #navbar {
     --nav-anchor-left: 52px;
+    --nav-icon-font-size: 40px;
+    --nav-icon-box-size: 58px;
     top: 52px;
+  }
+}
+
+@media (min-width: 1600px) {
+  #navbar {
+    --nav-icon-font-size: 44px;
+    --nav-icon-box-size: 62px;
   }
 }
 
@@ -729,7 +768,7 @@ button.nav-x {
 
 .product-description {
   font-size: 1.05rem;
-  background: linear-gradient(180deg, var(--lilac) 0%, #ff4fb3 100%);
+  background: linear-gradient(180deg, var(--lilac) 0%, #ff4bb3 100%);
   color: var(--charcoal);
   margin-top: 2rem;
   -webkit-text-fill-color: transparent;

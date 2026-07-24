@@ -17,6 +17,21 @@ data-url-community="{% url 'portfolio:people' %}"
 data-url-contact="{% url 'pages:contact' %}"
 data-url-cv="{% static 'kimpiffycv.pdf' %}"
 >
+  {% if show_home_intro %}
+  <section class="about-intro" aria-label="Practice introduction">
+    <h1 class="about-intro-title">{{ intro_title }}</h1>
+    <p class="about-intro-text">{{ intro_text }}</p>
+    <p class="about-intro-links">
+      Explore
+      <a href="{% url 'portfolio:art' %}">immersive art and installation projects</a>,
+      <a href="{% url 'portfolio:digital' %}">experimental web design and digital work</a>,
+      and
+      <a href="{% url 'portfolio:people' %}">creative-health and community practice</a>.
+      For commissions and collaborations, <a href="{% url 'pages:contact' %}">contact Kim Piffy</a>.
+    </p>
+  </section>
+  {% endif %}
+
   <!-- Center blob (stays fixed in middle of viewport) -->
   <button
     class="portrait-blob"

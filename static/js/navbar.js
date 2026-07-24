@@ -126,8 +126,14 @@
       workDropdown.setAttribute('aria-expanded', 'false');
     }
 
-    // On touch devices, blur the toggler so closed state always returns to lowercase.
-    navToggler?.blur();
+    // Force-close UI state for touch so sticky :hover/:focus does not keep uppercase text.
+    if (navToggler) {
+      navToggler.setAttribute('aria-expanded', 'false');
+      navToggler.blur();
+      requestAnimationFrame(() => {
+        navToggler.blur();
+      });
+    }
   }
   
   // Open dropdown

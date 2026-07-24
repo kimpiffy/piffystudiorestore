@@ -2,7 +2,8 @@
   --people-bg: #031624;
   --people-uranium: #e0ff9a;
   --people-lilac: #7B6CF6;
-  --people-pink: #ff4fb3;
+  --people-pink: var(--pink, #ff4bb3);
+  --people-modal-pink: var(--modal-pink, #ff4bb3);
   --people-overlay: rgba(0, 0, 0, 0.55);
   --site-header-h: 92px;
 }
@@ -252,7 +253,7 @@ body.people-page footer {
     -webkit-text-stroke-color: var(--people-uranium);
     -webkit-text-stroke-color: var(--people-uranium);
   text-shadow:
-    0 0 7px rgba(255, 79, 179, 0.5),
+    0 0 7px rgba(255, 75, 179, 0.5),
     0 0 16px rgba(255, 169, 49, 0.35);
 }
 
@@ -295,7 +296,7 @@ body.people-page footer {
   max-height: calc(100vh - 24px);
   overflow: auto;
   border-radius: 34px;
-  background: #f960d0;
+  background: var(--people-modal-pink);
   padding: 18px;
   color: #031624;
 }
@@ -358,7 +359,7 @@ body.people-page footer {
 }
 
 .overlay-panel .overlay-close:focus-visible {
-  box-shadow: 0 0 0 4px rgba(255, 79, 179, 0.12);
+  box-shadow: 0 0 0 4px rgba(255, 75, 179, 0.12);
 }
 
 .cta-row {

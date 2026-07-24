@@ -1,11 +1,23 @@
 # config/urls.py
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from pages.sitemaps import StaticViewSitemap, ProductSitemap
+from pages.views import robots_txt
+
+
+sitemaps = {
+    "static": StaticViewSitemap,
+    "products": ProductSitemap,
+}
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("robots.txt", robots_txt, name="robots_txt"),
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
 
     # Include pages.urls for all pages (like about, contact, etc.)
     path('', include('pages.urls')),  # For homepage and other page views like about

@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<main class="shop-stage">
+<div class="shop-stage">
   <div class="shop-grid" id="shopGrid">
     {% for product in products %}
       {% with imgs=product.images.all|slice:"0:2" %}
@@ -62,7 +62,7 @@
       {% endwith %}
     {% endfor %}
   </div>
-</main>
+</div>
 {% endblock %}
 
 {% block extra_scripts %}

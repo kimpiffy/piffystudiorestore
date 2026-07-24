@@ -1,6 +1,6 @@
 :root{
   --blob: #7B6CF6;
-  --modal-pink: #f960d0;
+  --modal-pink: #ff4bb3;
   --text: #031624;
   --page: #031624;
   --uranium: #e0ff9a;  /* Your var uranium */
@@ -214,7 +214,7 @@ body.contact-body{
   width: 100%;
     background: var(--uranium) !important; /* force uranium always */
   color: #031624;
-  border: 1px solid rgba(249, 96, 208, 0.9);
+  border: 1px solid rgba(255, 75, 179, 0.9);
   border-radius: 12px;
   padding: 0.85rem 0.95rem;
   outline: none;
@@ -628,14 +628,14 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-form select.is-invalid,
 .contact-form .field-error,
 .contact-form .error {
-  color: #f960d0 !important;
-  border-color: #f960d0 !important;
+  color: #ff4bb3 !important;
+  border-color: #ff4bb3 !important;
 }
 
 .contact-form .field-error,
 .contact-form .invalid-feedback,
 .contact-form .errorlist {
-  color: #f960d0 !important;
+  color: #ff4bb3 !important;
 }
 
 .contact-form .errorlist li { list-style: none; }

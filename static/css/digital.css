@@ -28,6 +28,7 @@ body.digital-page video{
 body.digital-page{
   --background: #031624;
   --lilac: #7B6CF6;
+  --brand-modal-pink: var(--modal-pink, #ff4bb3);
   --uranium: #e0ff9a;
   background: var(--background);
 }
@@ -132,7 +133,7 @@ body.digital-page{
   background: transparent;
   color: var(--uranium);
     color: var(--uranium);
-  -webkit-text-stroke: 0.9px #ff4fb3;
+  -webkit-text-stroke: 0.9px #ff4bb3;
   text-shadow:
     0 0 6px rgba(123, 108, 246, 0.55),
     0 0 14px rgba(123, 108, 246, 0.3);
@@ -141,27 +142,27 @@ body.digital-page{
 }
 .nav-arrows button:hover{
   transform: scale(1.12);
-  color: #ff4fb3 !important;
+  color: #ff4bb3 !important;
   -webkit-text-stroke-color: var(--uranium);
     -webkit-text-stroke-color: var(--uranium);
     -webkit-text-stroke-color: var(--uranium);
     color: var(--uranium);
   text-shadow:
-    0 0 7px rgba(255, 79, 179, 0.5),
+    0 0 7px rgba(255, 75, 179, 0.5),
     0 0 16px rgba(255, 169, 49, 0.35);
 }
 
 .nav-arrows button:focus,
 .nav-arrows button:active {
   transform: scale(1.12);
-  color: #ff4fb3 !important;
+  color: #ff4bb3 !important;
   -webkit-text-stroke-color: var(--uranium);
 }
 
 #navArrows button:hover,
 #navArrows button:focus,
 #navArrows button:active {
-  color: #ff4fb3 !important;
+  color: #ff4bb3 !important;
 }
 
 /* Overlay */
@@ -182,7 +183,7 @@ body.digital-page{
   max-height: calc(100vh - 24px);
   overflow:auto;
   border-radius: 34px;
-  background: #f960d0;
+  background: var(--brand-modal-pink);
   padding: 18px;
   color: #031624;
 }
