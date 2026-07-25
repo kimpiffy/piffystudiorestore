@@ -101,7 +101,7 @@ body {
 
 .footer-email-text {
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.72rem;
+  font-size: var(--menu-item-font-size, 16px);
   letter-spacing: 0.1em;
   line-height: 1;
   text-transform: uppercase;
@@ -138,7 +138,7 @@ body {
 }
 
 .footer-social-link {
-  font-size: 0.72rem;
+  font-size: var(--menu-item-font-size, 16px);
   text-transform: uppercase;
 }
 
@@ -151,7 +151,7 @@ body {
 }
 
 .footer-nav .footer-link {
-  font-size: 0.72rem;
+  font-size: var(--menu-item-font-size, 16px);
   letter-spacing: 0.09em;
 }
 
@@ -174,7 +174,7 @@ body {
   z-index: 1;
   pointer-events: auto;
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.72rem;
+  font-size: var(--menu-item-font-size, 16px);
   line-height: 1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -221,12 +221,11 @@ body {
   .footer-nav .footer-link,
   .footer-social-link,
   .footer-signoff {
-    font-size: 0.62rem;
     letter-spacing: 0.08em;
   }
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 991.98px) {
   :root {
     --footer-bar-h: 92px;
   }

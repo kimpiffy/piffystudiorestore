@@ -50,7 +50,13 @@ html, body {
 ------------------------------------ */
 
 :root {
-  --background: #fffeec;
+  --background: #031624;
+  --nav-icon-responsive-size: 34px;
+  --menu-item-font-size: clamp(0.82rem, 1.8vw, 1rem);
+  --modal-body-text-size: var(--menu-item-font-size);
+  --about-link-size-ref: clamp(5rem, 5vw, 10rem);
+  --modal-button-size: calc(var(--about-link-size-ref) * 0.5);
+  --modal-header-size: calc(var(--modal-button-size) * 1.16);
 
   /* the ONLY colors you asked for */
   --lilac: #7B6CF6;
@@ -105,8 +111,22 @@ body {
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
   letter-spacing: 2px;
+  text-transform: uppercase;
   overscroll-behavior-y: none;
   overflow: hidden;
+}
+
+html,
+body,
+main,
+.site-content,
+.page-content {
+  background-color: var(--charcoal) !important;
+}
+
+.btn {
+  --bs-btn-padding-y: 0.28rem;
+  --bs-btn-padding-x: 0.62rem;
 }
 
 button,
@@ -114,12 +134,48 @@ input,
 textarea,
 select {
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-transform: uppercase;
+}
+
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  text-transform: uppercase;
 }
 
 img, svg, video {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+/* Modal body copy stays on body size; headers are larger than CTA/link text. */
+.overlay-panel #overlayContent :is(p, li, span, small),
+.contact-modal :is(p, li, span, small) {
+  font-size: var(--modal-body-text-size) !important;
+}
+
+.overlay-panel #overlayContent :is(h1, h2, h3, h4),
+.contact-modal :is(h1, h2, h3, h4) {
+  font-size: var(--modal-header-size) !important;
+}
+
+.overlay-panel #overlayContent a,
+.contact-modal a {
+  font-size: var(--modal-button-size) !important;
+}
+
+.overlay-panel #overlayContent button:not(.overlay-close),
+.contact-modal button:not(.contact-modal-x) {
+  font-size: var(--modal-button-size) !important;
+}
+
+.overlay.is-open .overlay-backdrop {
+  background: rgba(3, 22, 36, 0.94) !important;
+}
+
+.contact-modal-overlay.is-active {
+  background: rgba(3, 22, 36, 0.94) !important;
 }
 
 /* remove stray borders/shadows on main layout containers */
@@ -166,7 +222,7 @@ img, svg, video {
   --nav-anchor-left: 60px;
   --nav-panel-left-base: -52px;
   --nav-panel-align-shift: -7px;
-  --nav-icon-font-size: 34px;
+  --nav-icon-font-size: var(--nav-icon-responsive-size);
   --nav-icon-box-size: 50px;
   position: fixed;
   top: 30px;
@@ -322,6 +378,31 @@ button.nav-x {
   top: -1px;
 }
 
+@keyframes navWobbleTouch {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.04, 0.97) rotate(-1.5deg);
+  }
+  50% {
+    transform: scale(0.98, 1.03) rotate(1.2deg);
+  }
+  75% {
+    transform: scale(1.02, 0.99) rotate(-0.6deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.nav-x:hover .nav-x__stack,
+.nav-x:focus-visible .nav-x__stack,
+.nav-x[aria-expanded="true"] .nav-x__stack {
+  animation: navWobbleTouch 420ms ease;
+  transform-origin: center;
+}
+
 /* start state: show lowercase with old pink color */
 .nav-x__upper{
   opacity: 0;
@@ -332,6 +413,7 @@ button.nav-x {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
   color: var(--uranium);
+  text-transform: lowercase;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -428,7 +510,7 @@ button.nav-x {
   max-width: 100px;          /* limit width to about 2/3 of original */
   background: transparent !important;
   border-radius: 18px;
-  padding: 4px 10px 0px 14px; /* restore comfortable top/bottom padding */
+  padding: 10px 10px 0px 10px; /* restore comfortable top/bottom padding */
   opacity: 0;
   transform: translateY(-15px) scale(0.95);
   transition: opacity 250ms ease, transform 250ms ease;
@@ -475,7 +557,7 @@ button.nav-x {
 /* shared nav text styling */
 .nav-action{
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 16px;
+  font-size: var(--menu-item-font-size);
   letter-spacing: 0.01em;
   line-height: 1.0;
   position: relative;
@@ -485,7 +567,7 @@ button.nav-x {
   background-color: transparent !important;
   background-image: none !important;
   text-decoration: none;
-  text-transform: lowercase;
+  text-transform: uppercase;
   width: fit-content;
   display: inline-block;
   white-space: nowrap;
@@ -528,10 +610,15 @@ button.nav-x {
 
 /* keep dropdown from going offscreen on small devices */
 @media (max-width: 576px){
+  :root {
+    --nav-icon-responsive-size: 28px;
+    --about-link-size-ref: 2.5rem;
+    --modal-button-size: 1.6rem;
+  }
+
   #navbar{
     --nav-anchor-left: 46px;
     --nav-panel-align-shift: 12px;
-    --nav-icon-font-size: 28px;
     --nav-icon-box-size: 42px;
     top: 34px;
     right: 15px;
@@ -575,18 +662,54 @@ button.nav-x {
 }
 
 @media (min-width: 992px) {
+  :root {
+    --nav-icon-responsive-size: 40px;
+  }
+
   #navbar {
-    --nav-anchor-left: 52px;
-    --nav-icon-font-size: 40px;
     --nav-icon-box-size: 58px;
     top: 52px;
   }
 }
 
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  :root {
+    /* Keep text compact on medium-desktop without dropping below readable size. */
+    --menu-item-font-size: 0.875rem;
+    --about-link-size-ref: 3rem;
+    --modal-button-size: 2rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  :root {
+    /* Compact tablet sizing while staying readable. */
+    --menu-item-font-size: 0.8125rem;
+    --about-link-size-ref: 2.6rem;
+    --modal-button-size: 1.8rem;
+  }
+}
+
 @media (min-width: 1600px) {
+  :root {
+    --nav-icon-responsive-size: 44px;
+  }
+
   #navbar {
-    --nav-icon-font-size: 44px;
     --nav-icon-box-size: 62px;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 767px) {
+  :root {
+    --about-link-size-ref: 2.35rem;
+    --modal-button-size: 1.7rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    --about-link-size-ref: clamp(4.2rem, 3.2vw, 10.5rem);
   }
 }
 
@@ -594,6 +717,21 @@ button.nav-x {
   #navbar {
     --nav-anchor-left: 40px;
     top: 40px;
+  }
+
+  .nav-x__lower {
+    filter:
+      drop-shadow(0 0 5px rgba(124, 108, 247, 0.85))
+      drop-shadow(0 0 12px rgba(124, 108, 247, 0.45));
+  }
+
+  .nav-x:hover .nav-x__upper,
+  .nav-x:focus-visible .nav-x__upper,
+  .nav-x[aria-expanded="true"] .nav-x__upper {
+    text-shadow:
+      0 0 10px rgba(124, 108, 247, 0.85),
+      0 0 20px rgba(124, 108, 247, 0.6),
+      0 0 30px rgba(124, 108, 247, 0.4) !important;
   }
 }
 
@@ -665,6 +803,15 @@ button.nav-x {
 
 .dropdown-item {
   margin: 0;
+  text-transform: uppercase;
+}
+
+.contact-modal .contact-modal-text,
+.contact-modal .contact-modal-subtext,
+.overlay-panel p,
+.overlay-panel li,
+.overlay-desc {
+  text-transform: uppercase;
 }
 
 .nav-action--submenu:active {

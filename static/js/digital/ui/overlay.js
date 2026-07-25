@@ -1,6 +1,6 @@
 import { escapeHtml } from "../utils.js";
 
-export function createOverlay(nodes, { onOpen, onClose }) {
+export function createOverlay(nodes, { onOpen, onClose, ctaLabel = "", ctaHref = "" } = {}) {
   const { overlay, overlayBackdrop, overlayClose, overlayContent } = nodes;
   const hasOverlay = !!(overlay && overlayBackdrop && overlayClose && overlayContent);
 
@@ -16,11 +16,18 @@ export function createOverlay(nodes, { onOpen, onClose }) {
     const blurb = escapeHtml(project.blurb || project.tagline || "");
     const url = project.url || "";
     const stack = Array.isArray(project.stack) ? project.stack : [];
+    const learnMoreLabel = project.learn_more_label || ctaLabel;
+    const learnMoreHref = project.learn_more_url || ctaHref;
+    const learnMoreCta =
+      learnMoreLabel && learnMoreHref
+        ? `<a class="btn project-cta lilac" href="${escapeHtml(learnMoreHref)}">${escapeHtml(learnMoreLabel)}</a>`
+        : "";
 
     if (project.coming_soon) {
       overlayContent.innerHTML = `
         <div style="min-height: 220px; display: grid; place-items: center; text-align: center; padding: 32px 12px 40px;">
           <h2 style="margin: 0; font-size: clamp(2.5rem, 7vw, 5rem); line-height: 0.95; font-family: picnic, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; text-transform: lowercase;">${title}</h2>
+          <div class="cta-row" style="margin-top: 12px; width: 100%; display: flex; justify-content: center;">${learnMoreCta}</div>
         </div>
       `;
     } else {
@@ -36,6 +43,7 @@ export function createOverlay(nodes, { onOpen, onClose }) {
 
         <div class="cta-row">
           ${url ? `<a class="btn project-cta lilac" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View project</a>` : ""}
+          ${learnMoreCta}
         </div>
       `;
     }

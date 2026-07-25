@@ -1,6 +1,228 @@
+from django.http import Http404
 from django.shortcuts import render
+from django.urls import reverse
 
 from pages.seo import build_seo
+
+
+COMMUNITY_PROJECT_DETAILS = {
+    "wishing-tree": {
+        "template": "portfolio/community_wishing_tree.html",
+        "slug": "wishing-tree",
+        "title": "The Wishing Tree",
+        "subtitle": "Participatory Sensory Installation",
+        "hero_image": "/static/img/home/createeye.jpeg",
+        "description": (
+            "The Wishing Tree is a large-scale immersive installation centred around "
+            "a 3m fluorescent sculptural tree, designed to create a calming, "
+            "sensory-led environment within a public library setting. Activated "
+            "through UV light and soft material contrasts, the work invited visitors "
+            "to pause, reflect, and contribute their own written wishes, which were "
+            "physically integrated into the structure over time. This simple but "
+            "effective interaction transformed the piece into an evolving archive of "
+            "collective thought, capturing hope, uncertainty, and imagination from a "
+            "broad cross-section of the community. Co-created with SEND school groups "
+            "and accessible to a wide public audience, the installation prioritised "
+            "inclusivity through tactile engagement, low-pressure participation, and "
+            "a non-verbal entry point into expression. The result is both a visually "
+            "striking environment and a socially embedded artwork, where authorship "
+            "is distributed and the meaning is continuously reshaped by those who "
+            "encounter it."
+        ),
+        "metadata": [
+            ["Year", "2026"],
+            ["Location", "The Hive Library, Worcester"],
+            ["Format", "Sensory calming UV installation"],
+            ["Focus", "Community co-creation"],
+            [
+                "Participants",
+                "Regent Centre, Fort Royal School, and the wider local community",
+            ],
+            ["Commissioner", "Scala Worcester"],
+        ],
+        "gallery": [
+            "/static/img/home/createeye.jpeg",
+            "/static/img/home/buildcode.jpeg",
+            "/static/img/home/connection.jpeg",
+            "/static/img/digital/findmyself.jpeg",
+        ],
+        "process": [
+            "Early process work explored how lighting, texture and sound could create a welcoming sensory rhythm for different access needs.",
+            "Community responses were gathered through facilitated sessions and translated into hanging elements and projected fragments.",
+        ],
+        "credits": [
+            "Artist and Lead Designer: Kim Piffy",
+            "Community Partners: Placeholder Organisation",
+            "Production Support: Placeholder Team",
+        ],
+        "blurb": (
+            "An immersive, sensory calming space with public participation inside The Hive "
+            "Library for The Festival of Play hosted by Scala, Worcester."
+        ),
+        "stack": ["Installation", "Community"],
+    },
+    "imagining-a-bright-future": {
+        "template": "portfolio/community_imagining_a_bright_future.html",
+        "slug": "imagining-a-bright-future",
+        "title": "Imagining a Bright Future",
+        "subtitle": "Light-Based Community Collaboration",
+        "hero_image": "/static/img/home/buildcode.jpeg",
+        "description": (
+            "Imagining a Bright Future is an immersive UV installation "
+            "developed through a series of workshops, culminating in a "
+            "vibrant, large-scale environment built from collectively "
+            "produced materials and ideas. Using fluorescent paint, "
+            "symbolic forms, and layered visual elements, the installation "
+            "created an engaging and accessible space that encouraged "
+            "audiences to actively participate rather than passively "
+            "observe. Visitors contributed drawings, messages, and "
+            "responses reflecting their hopes and visions for the future, "
+            "embedding personal narratives directly into the fabric of the "
+            "work. This ongoing accumulation of contributions formed a "
+            "dynamic, evolving output, part artwork, part archive, "
+            "capturing a wide range of voices and perspectives. Balancing "
+            "bold visual impact with meaningful social engagement, the "
+            "project demonstrates a strong commitment to co-creation, "
+            "accessibility, and the use of art as a tool for collective "
+            "reflection and imaginative possibility."
+        ),
+        "metadata": [
+            ["Year", "2025"],
+            [
+                "Location",
+                "Henry Sandon Hall, Worcester Porcelain during the Bridges of Light Festival",
+            ],
+            ["Format", "Immersive participatory UV installation"],
+            [
+                "Focus",
+                "Community-led future thinking and creative expression",
+            ],
+            [
+                "Participants",
+                "Dines Green Youth Club, The Monday Night Club and the wider local community.",
+            ],
+            ["Commissioner", "Severn Arts, Worcester"],
+        ],
+        "gallery": [
+            "/static/img/home/buildcode.jpeg",
+            "/static/img/home/createeye.jpeg",
+            "/static/img/home/connection.jpeg",
+            "/static/img/digital/wd.png",
+        ],
+        "process": [
+            "Workshops focused on colour and story prompts, generating source visuals and words used throughout the projection system.",
+            "Prototype tests were staged in low-light settings to tune scale, pacing and legibility for mixed-age audiences.",
+        ],
+        "credits": [
+            "Artist and Facilitation: Kim Piffy",
+            "Community Co-creators: Placeholder Group",
+            "Technical Support: Placeholder Partner",
+        ],
+        "blurb": (
+            "An immersive light installation created with local community groups, "
+            "for Severn Arts in Worcester."
+        ),
+        "stack": ["Light", "Community"],
+    },
+    "elgar-at-the-asylum": {
+        "template": "portfolio/community_elgar_at_the_asylum.html",
+        "slug": "elgar-at-the-asylum",
+        "title": "Elgar at the Asylum",
+        "subtitle": "Monday Night Club / Shadowlight",
+        "hero_image": "/static/img/home/connection.jpeg",
+        "description": (
+            "As Visual Arts Lead on Elgar at the Asylum, I designed and delivered "
+            "a structured programme of accessible workshops for members of Monday "
+            "Night Club, supporting learning disabled adults to create high-quality "
+            "visual work within a collaborative, interdisciplinary production. The "
+            "workshops were carefully developed to balance openness with clear "
+            "visual outcomes using repeatable processes that enabled participants "
+            "to build confidence while producing cohesive, professional material "
+            "suitable for integration into film and performance. Through methods "
+            "including layered printmaking, stencil work, and shadow-based image-"
+            "making, participants generated a body of visual content that directly "
+            "informed the film created by Shadowlight (Film Oxford) and the wider "
+            "live performance. These artworks were embedded within the scenography "
+            "and visual language of the production, ensuring that participant "
+            "contributions were central rather than supplementary. The project "
+            "culminated in a public presentation at Malvern Theatres, bringing "
+            "together visual art, film, and live performance in a unified outcome. "
+            "The project demonstrates a strong commitment to accessibility without "
+            "reducing artistic ambition developing systems that support meaningful "
+            "participation while maintaining a clear aesthetic direction. By "
+            "structuring the process around collective authorship and translation "
+            "across mediums, the work foregrounds the creative agency of "
+            "participants within a complex, professional production context."
+        ),
+        "metadata": [
+            ["Year", "2026"],
+            ["Location", "Malvern Theatres, Worcestershire"],
+            ["Format", "Workshops, Artworks, Film, Live Performances"],
+            ["Focus", "Accessible co-creation and interdisciplinary practice"],
+            ["Participants", "Monday Night Club"],
+            [
+                "Collaborators",
+                "Shadowlight (Film Oxford), C&T, Worcester, Vamos Theatre, DanceFest",
+            ],
+            ["Role", "Visual Arts Lead"],
+        ],
+        "gallery": [
+            "/static/img/home/connection.jpeg",
+            "/static/img/home/createeye.jpeg",
+            "/static/img/home/buildcode.jpeg",
+            "/static/img/digital/tes.png",
+        ],
+        "process": [
+            "Image development sessions combined archival prompts with contemporary drawing and collage experiments.",
+            "Final banner compositions were scaled through iterative mockups to balance visibility in the theatre approach.",
+        ],
+        "credits": [
+            "Lead Artist: Kim Piffy",
+            "Collaborators: The Monday Night Club",
+            "Venue Partner: Placeholder Venue Team",
+        ],
+        "blurb": (
+            "Accessible co-created visual arts, film, and live performance project with "
+            "Monday Night Club and Shadowlight."
+        ),
+        "stack": ["Visual Arts", "Interdisciplinary"],
+    },
+    "digitalis-1-0": {
+        "template": "portfolio/community_digitalis_1_0.html",
+        "slug": "digitalis-1-0",
+        "title": "Digitalis 1.0",
+        "subtitle": "Interactive Community Digital Installation",
+        "hero_image": "/static/img/home/buildcode.jpeg",
+        "description": (
+            "An interactive installation that merges community-authored content with a live "
+            "digital environment. Participants can trigger visual responses and contribute "
+            "to an evolving shared composition."
+        ),
+        "metadata": [
+            ["Year", "2026"],
+            ["Format", "Interactive Installation"],
+            ["Tools", "Projection, Sensors, Web Components"],
+            ["Audience", "Intergenerational"],
+        ],
+        "gallery": [
+            "/static/img/home/buildcode.jpeg",
+            "/static/img/home/connection.jpeg",
+            "/static/img/home/createeye.jpeg",
+            "/static/img/digital/piffy.png",
+        ],
+        "process": [
+            "Prototypes tested responsive triggers and accessibility-friendly interaction patterns in low-pressure settings.",
+            "Content pipelines were structured for easy swap-in of participant visuals and text for future versions.",
+        ],
+        "credits": [
+            "Creative Direction: Kim Piffy",
+            "Interaction Prototyping: Placeholder Developer",
+            "Community Input: Placeholder Collective",
+        ],
+        "blurb": "Interactive community-focused digital installation project.",
+        "stack": ["Digital", "Community"],
+    },
+}
 
 
 def people(request):
@@ -9,53 +231,29 @@ def people(request):
         "Explore Kim Piffy's sensory-aware creative-health projects, participatory "
         "workshops and community arts practice with SEND, disabled and autistic participants."
     )
-    projects = [
-        {
-            "id": "wishing-tree",
-            "title": "The Wishing Tree",
-            "blurb": (
-                "An immersive, sensory calming space with public participation"
-                " "
-                "inside The Hive Library for The Festival of Play hosted by "
-                "Scala, Worcester."
-            ),
-            "stack": ["Installation", "Community"],
-            "cover": "/static/img/home/createeye.jpeg",
-        },
-        {
-            "id": "imagining-bright-future",
-            "title": "Imagining a Bright Future",
-            "blurb": (
-                "An immersive light installation created with local community "
-                "groups, for Severn Arts in Worcester."
-            ),
-            "stack": ["Light", "Community"],
-            "cover": "/static/img/home/buildcode.jpeg",
-        },
-        {
-            "id": "elgar-at-the-asylum",
-            "title": "Elgar at the Asylum",
-            "coming_soon": True,
-            "overlay_title": "Coming Soon",
-            "blurb": (
-                "Visual Arts with The Monday Night Club, culminating in a "
-                "triptych of banners installed at Malvern Theatres."
-            ),
-            "stack": ["Visual Arts", "Public Installation"],
-            "cover": "/static/img/home/connection.jpeg",
-        },
-        {
-            "id": "digitalis-1-0",
-            "title": "Digitalis 1.0",
-            "coming_soon": True,
-            "overlay_title": "Coming Soon",
-            "blurb": (
-                "Interactive community-focused digital installation project."
-            ),
-            "stack": ["Digital", "Community"],
-            "cover": "/static/img/home/buildcode.jpeg",
-        },
+    projects = []
+    community_order = [
+        "wishing-tree",
+        "imagining-a-bright-future",
+        "elgar-at-the-asylum",
+        "digitalis-1-0",
     ]
+
+    for slug in community_order:
+        item = COMMUNITY_PROJECT_DETAILS[slug]
+        projects.append(
+            {
+                "id": item["slug"],
+                "title": item["title"],
+                "subtitle": item["subtitle"],
+                "blurb": item["blurb"],
+                "stack": item["stack"],
+                "cover": item["hero_image"],
+                "learn_more_url": reverse(
+                    "community_project_detail", kwargs={"slug": slug}
+                ),
+            }
+        )
 
     return render(
         request,
@@ -110,6 +308,36 @@ def industry(request):
                 robots="noindex, follow",
             ),
             "section_h1": "Industry",
+        },
+    )
+
+
+def community_project_detail(request, slug):
+    project = COMMUNITY_PROJECT_DETAILS.get(slug)
+    if not project:
+        raise Http404("Community project not found")
+
+    title = f"{project['title']} | Community Project | Kim Piffy"
+    description = (
+        f"Explore {project['title']}: {project['subtitle']}. "
+        "Project details, process notes, gallery and credits."
+    )
+
+    return render(
+        request,
+        project["template"],
+        {
+            "project": project,
+            "seo": build_seo(
+                request,
+                title=title,
+                description=description,
+                og_title=title,
+                og_description=description,
+                twitter_title=title,
+                twitter_description=description,
+            ),
+            "section_h1": project["title"],
         },
     )
 

@@ -140,14 +140,13 @@ body.contact-body{
   font-size: clamp(2.4rem, 4.2vw, 3.6rem);
   letter-spacing: 3px;
   text-transform: lowercase;
-    color: var(--uranium);
-  -webkit-text-stroke: 1px var(--modal-pink);
-  text-stroke: 1px var(--modal-pink);
+  color: var(--uranium);
+  -webkit-text-stroke: 0.7px #ff4bb3;
+  text-stroke: 0.7px #ff4bb3;
   text-shadow:
-    0 0 6px rgba(124, 108, 247, 0.5),
-    0 0 12px rgba(124, 108, 247, 0.32),
-    0 0 18px rgba(124, 108, 247, 0.18),
-    1px 1px 2px rgba(0, 0, 0, 0.55);
+    0 0 10px rgba(124, 108, 247, 0.8),
+    0 0 20px rgba(124, 108, 247, 0.55),
+    0 0 30px rgba(124, 108, 247, 0.35);
   transition: color 180ms ease, text-transform 180ms ease, -webkit-text-stroke-color 180ms ease;
 }
 
@@ -184,6 +183,7 @@ body.contact-body{
   letter-spacing: 2px;
   color: #031624;
   font-size: 13px;
+  text-transform: uppercase;
 }
 
 .field-grid{
@@ -219,6 +219,12 @@ body.contact-body{
   padding: 0.85rem 0.95rem;
   outline: none;
   transition: all 200ms ease;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder,
+.contact-form select::placeholder {
+  text-transform: uppercase;
 }
 
 /* Fix browser autofill (Chrome) so background and text remain consistent */
@@ -355,6 +361,7 @@ body.contact-body{
 /* keep the newsletter label text orange */
 .checkbox.newsletter .checkbox-text{
   color: var(--uranium);
+  text-transform: uppercase;
 }
 
 /* ------------------------------------
@@ -372,19 +379,25 @@ body.contact-body{
   background: none;
   border: none;
   color: var(--uranium);
-  -webkit-text-stroke: 0.8px var(--modal-pink);
-  text-stroke: 0.8px var(--modal-pink);
+  -webkit-text-stroke: 0.7px #ff4bb3;
+  text-stroke: 0.7px #ff4bb3;
   text-shadow:
-    0 0 6px rgba(124, 108, 247, 0.5),
-    0 0 12px rgba(124, 108, 247, 0.32),
-    0 0 18px rgba(124, 108, 247, 0.18),
-    1px 1px 2px rgba(0, 0, 0, 0.55);
+    0 0 10px rgba(124, 108, 247, 0.8),
+    0 0 20px rgba(124, 108, 247, 0.55),
+    0 0 30px rgba(124, 108, 247, 0.35);
   letter-spacing: 3px;
-  font-size: clamp(1.6rem, 2.5vw, 2rem);
+  font-size: clamp(2rem, 2.9vw, 2.8rem);
   text-transform: lowercase;
-  padding: 0.5rem 1rem;
+  padding: 0.65rem 1.25rem;
   cursor: pointer;
   transition: color 180ms ease, text-transform 200ms ease, -webkit-text-stroke-color 180ms ease;
+}
+
+@media (min-width: 1100px){
+  .contact-btn{
+    font-size: 3rem;
+    letter-spacing: 4px;
+  }
 }
 
 .contact-btn:hover,
@@ -408,10 +421,12 @@ body.contact-body{
 
   .contact-form-wrap {
     width: min(900px, 92vw);
+    transform: scale(0.8);
+    transform-origin: top center;
   }
 
   .contact-title {
-    display: none;
+    display: block;
   }
 
   .contact-inner{
@@ -517,6 +532,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   color: #031624;
   margin: 0 0 0 0;
   font-size: 0.95rem;
+  text-transform: uppercase;
 }
 
 /* Close 'x' */
@@ -595,7 +611,7 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   }
 
   .contact-modal{
-    width: calc(100vw - 28px);
+    width: 90vw;
     max-height: calc(100dvh - 28px);
     border-radius: 14px;
     padding: 0.95rem 0.75rem 0.8rem;
@@ -610,6 +626,13 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
   .contact-modal .thankyou {
     font-size: 2.4rem;
     line-height: 0.95;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 991.98px){
+  .contact-modal{
+    width: 88vw;
+    max-height: calc(100dvh - 24px);
   }
 }
 

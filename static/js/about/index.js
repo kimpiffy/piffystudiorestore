@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     community: stage.dataset.urlCommunity,
     contact: stage.dataset.urlContact,
     cv: stage.dataset.urlCv,
+    style: stage.dataset.urlStyle,
   };
 
   injectWobbleFilter();

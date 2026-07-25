@@ -188,6 +188,14 @@ body.digital-page{
   color: #031624;
 }
 
+.overlay-desc {
+  margin: 0;
+  color: rgba(244, 241, 230, 0.92);
+  font-size: clamp(1rem, 1.7vw, 1.15rem);
+  line-height: 1.55;
+  text-transform: uppercase;
+}
+
 .overlay-panel,
 .overlay-panel p,
 .overlay-panel h1,
@@ -216,7 +224,7 @@ body.digital-page{
 
 @media (max-width: 576px){
   .overlay-panel{
-    width: calc(100vw - 28px);
+    width: 90vw;
     max-height: calc(100dvh - 28px);
     border-radius: 16px;
     padding: 10px 8px 8px;
@@ -259,6 +267,13 @@ body.digital-page{
     border-radius: 0;
     box-shadow: none;
     text-shadow: none;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 991.98px){
+  .overlay-panel{
+    width: 88vw;
+    max-height: calc(100dvh - 24px);
   }
 }
 .overlay-close{
@@ -314,12 +329,12 @@ body.digital-page{
 }
 
 /* cta row inside overlay */
-.cta-row{ display:flex; gap:10px; flex-wrap:wrap; }
+.cta-row{ display:flex; gap:6px; flex-wrap:wrap; }
 
 /* Project CTA used in overlay */
 .project-cta{
   display: block;                 /* center via auto margins */
-  margin: 0 auto 10px;
+  margin: 0 auto 6px;
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 2rem;            /* larger text */
   padding: 10px 18px;

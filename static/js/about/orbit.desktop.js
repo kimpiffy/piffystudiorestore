@@ -29,30 +29,41 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
   function openBio() {
     const contactHref = routes?.contact || "/contact/";
     const cvHref = routes?.cv || "#";
-
-    overlay.open(
-      `
-      <h2 style="font-family: picnic; font-size: 3rem; margin:0 0 6px 0; text-align:center;">artist, web designer & mother...</h2>
-      <p class="bio-modal-copy" style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
-        ${escapeHtml(BIO_TEXT)}
-      </p>
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top: 18px;">
-        <a class="btn project-cta lilac"
-           href="${escapeHtml(contactHref)}"
-           style="font-family: picnic; font-size: 2rem; text-decoration:none;">
-          contact
-        </a>
-        ${
-          cvHref && cvHref !== "#"
-            ? `
+    const styleHref = routes?.style || "/work/industry/";
+    const styleLink =
+      styleHref && styleHref !== "#"
+        ? `
+          <a class="btn project-cta lilac"
+             href="${escapeHtml(styleHref)}"
+             style="font-family: picnic; font-size: 2rem; text-decoration:none;">
+            styles
+          </a>`
+        : "";
+    const cvLink =
+      cvHref && cvHref !== "#"
+        ? `
           <a class="btn project-cta lilac"
              href="${escapeHtml(cvHref)}"
              target="_blank" rel="noopener noreferrer"
              style="font-family: picnic; font-size: 2rem; text-decoration:none;">
             c.v
           </a>`
-            : ""
-        }
+        : "";
+
+    overlay.open(
+      `
+      <h2 class="bio-modal-title" style="font-family: picnic; font-size: 3rem; margin:0 0 6px 0; text-align:center;">i'm kim</h2>
+      <p class="bio-modal-copy" style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
+        ${escapeHtml(BIO_TEXT)}
+      </p>
+      <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top: 12px;">
+        ${styleLink}
+        ${cvLink}
+        <a class="btn project-cta lilac"
+           href="${escapeHtml(contactHref)}"
+           style="font-family: picnic; font-size: 2rem; text-decoration:none;">
+          contact
+        </a>
       </div>
     `,
       { reason: "bio" }

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_class %}community-project-page{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/community-project.css' %}">
+{% endblock %}
+
+{% block content %}
+<article class="community-project-shell" aria-label="Community project detail page">
+  <section class="project-intro-grid" aria-label="Project intro">
+    <div class="project-intro-left">
+      <h1 class="project-title">{{ project.title }}</h1>
+
+      <div class="project-description">
+        <p>{{ project.description }}</p>
+      </div>
+
+      <aside class="project-metadata" aria-label="Project metadata">
+        <dl>
+          {% for item in project.metadata %}
+            <div class="meta-row">
+              <dt>{{ item.0 }}</dt>
+              <dd>{{ item.1 }}</dd>
+            </div>
+          {% endfor %}
+        </dl>
+      </aside>
+    </div>
+
+    <div class="hero-media blob-frame blob-frame--hero">
+      <img src="{{ project.hero_image }}" alt="{{ project.title }} hero image placeholder">
+    </div>
+  </section>
+
+  <section class="project-gallery" aria-label="Responsive project gallery">
+    <div class="gallery-grid">
+      {% for image in project.gallery %}
+        <figure class="gallery-item gallery-item--{{ forloop.counter }} blob-frame">
+          <img src="{{ image }}" alt="{{ project.title }} gallery image placeholder {{ forloop.counter }}">
+        </figure>
+      {% endfor %}
+    </div>
+  </section>
+
+  <p class="project-back-row">
+    <a class="project-back" href="{% url 'portfolio:people' %}">return to community projects</a>
+  </p>
+</article>
+{% endblock %}

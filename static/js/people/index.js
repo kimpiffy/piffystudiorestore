@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let mobileIndex = 0;
   let carouselSlots = [];
   let carouselReady = false;
+  let carouselSlotCount = 0;
 
   function stopAll() {
     mobileDrift.stop();
@@ -63,26 +64,56 @@ document.addEventListener("DOMContentLoaded", () => {
     overlayContent: $("overlayContent")
   }, {
     onOpen: () => stopAll(),
-    onClose: () => render(0)
+    onClose: () => render(0),
+    ctaLabel: "Learn More"
   });
 
   function openProject(project) {
     if (project) overlay.open(project);
   }
 
+  function getDesktopLayout() {
+    return {
+      classes: ["people-carousel__slot--left", "people-carousel__slot--center", "people-carousel__slot--right"],
+      offsets: [-1, 0, 1]
+    };
+  }
+
+  function slotSizeForRole(roleClass) {
+    if (roleClass.includes("--center")) return "min(87vw, 1188px)";
+    return "min(53.125vw, 688px)";
+  }
+
+  function ariaLabelForRole(roleClass, project) {
+    if (roleClass.includes("--center")) return `Open ${project.title}`;
+    if (roleClass.includes("--left")) return `Previous project ${project.title}`;
+    return `Next project ${project.title}`;
+  }
+
   function ensureCarouselShell() {
-    if (carouselReady && blobLayer.querySelector(".people-carousel__slot")) return;
+    const { classes } = getDesktopLayout();
+    const desiredSlotCount = classes.length;
+
+    if (
+      carouselReady &&
+      carouselSlotCount === desiredSlotCount &&
+      blobLayer.querySelector(".people-carousel__slot")
+    ) {
+      return;
+    }
 
     blobLayer.classList.remove("mobile-stack");
     blobLayer.classList.add("people-carousel");
-    blobLayer.innerHTML = `
-      <button class="blob people-carousel__slot people-carousel__slot--left" type="button" aria-label="Previous project"></button>
-      <button class="blob people-carousel__slot people-carousel__slot--center" type="button" aria-label="Current project"></button>
-      <button class="blob people-carousel__slot people-carousel__slot--right" type="button" aria-label="Next project"></button>
-    `;
+    blobLayer.innerHTML = classes
+      .map(
+        (roleClass) =>
+          `<button class="blob people-carousel__slot ${roleClass}" type="button" aria-label="Project"></button>`
+      )
+      .join("");
 
     carouselSlots = Array.from(blobLayer.querySelectorAll(".people-carousel__slot"));
     carouselReady = true;
+    carouselSlotCount = desiredSlotCount;
   }
 
   function rotateLeft() {
@@ -94,14 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderDesktop() {
+    const { classes: positionClasses, offsets: slotOffsets } = getDesktopLayout();
     ensureCarouselShell();
-
-    const positionClasses = ["people-carousel__slot--left", "people-carousel__slot--center", "people-carousel__slot--right"];
-    const slotOffsets = [-1, 0, 1];
 
     carouselSlots.forEach((slot, positionIndex) => {
       const roleClass = positionClasses[positionIndex];
-      const slotSize = positionIndex === 1 ? "min(70vw, 950px)" : "min(42.5vw, 550px)";
+      const slotSize = slotSizeForRole(roleClass);
       const project = getProject(projects, activeIndex + slotOffsets[positionIndex]);
       const uid = `b_${String(project.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random() * 1e9)}`;
       const model = createBlobModel(project.id);
@@ -112,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
       slot.style.height = slotSize;
       slot.setAttribute("data-id", String(project.id));
       slot.setAttribute("data-role", roleClass);
-      slot.setAttribute("aria-label", positionIndex === 1 ? `Open ${project.title}` : positionIndex === 0 ? `Previous project ${project.title}` : `Next project ${project.title}`);
+      slot.setAttribute("aria-label", ariaLabelForRole(roleClass, project));
       slot.innerHTML = makeWarpSVG({ uid, cover: coverUrl(project), title: project.title, initialD });
 
       if (!slot.dataset.bound) {
