@@ -11,7 +11,7 @@ COMMUNITY_PROJECT_DETAILS = {
         "slug": "wishing-tree",
         "title": "The Wishing Tree",
         "subtitle": "Participatory Sensory Installation",
-        "hero_image": "/static/img/home/createeye.jpeg",
+        "hero_image": "/static/img/community/wishingtreehero.png",
         "description": (
             "The Wishing Tree is a large-scale immersive installation centred around "
             "a 3m fluorescent sculptural tree, designed to create a calming, "
@@ -41,10 +41,10 @@ COMMUNITY_PROJECT_DETAILS = {
             ["Commissioner", "Scala Worcester"],
         ],
         "gallery": [
-            "/static/img/home/createeye.jpeg",
-            "/static/img/home/buildcode.jpeg",
-            "/static/img/home/connection.jpeg",
-            "/static/img/digital/findmyself.jpeg",
+            "/static/img/community/wishingtree1.png",
+            "/static/img/community/wishingtree2.jpg",
+            "/static/img/community/wishingtree3.jpg",
+            "/static/img/community/wishingtree4.jpg",
         ],
         "process": [
             "Early process work explored how lighting, texture and sound could create a welcoming sensory rhythm for different access needs.",
