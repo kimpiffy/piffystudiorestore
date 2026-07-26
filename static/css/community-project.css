@@ -55,24 +55,48 @@ body.community-project-page .site-content {
   margin: 0 0 1rem;
   font-size: clamp(2.4rem, 6.8vw, 6.4rem);
   line-height: 0.95;
+  transition: color 180ms ease, -webkit-text-stroke-color 180ms ease, text-shadow 180ms ease;
+}
+
+.project-title:hover,
+.project-title:focus-visible {
+  color: var(--community-pink);
+  -webkit-text-stroke-color: var(--community-uranium);
+  text-shadow:
+    0 0 10px rgba(124, 108, 247, 0.85),
+    0 0 20px rgba(124, 108, 247, 0.6),
+    0 0 30px rgba(124, 108, 247, 0.4);
+  text-transform: uppercase;
+  outline: none;
 }
 
 .project-intro-grid {
   display: grid;
   grid-template-columns: 1.03fr 0.97fr;
+  grid-template-areas:
+    "title hero"
+    "metadata hero"
+    "description hero";
   column-gap: clamp(1.2rem, 4vw, 3rem);
   row-gap: 1.1rem;
   align-items: start;
 }
 
-.project-intro-left {
-  display: grid;
-  gap: 0.9rem;
+.project-title {
+  grid-area: title;
 }
 
 .hero-media {
-  grid-column: 2;
+  grid-area: hero;
   align-self: stretch;
+}
+
+.project-description {
+  grid-area: description;
+}
+
+.project-metadata {
+  grid-area: metadata;
 }
 
 .blob-frame {
@@ -114,6 +138,11 @@ body.community-project-page .site-content {
 .project-description p + p,
 .project-process p + p {
   margin-top: 0.8rem;
+}
+
+.project-description p {
+  text-align: justify;
+  hyphens: none;
 }
 
 .project-metadata dl {
@@ -204,12 +233,11 @@ body.community-project-page .site-content {
 
   .project-intro-grid {
     grid-template-columns: 1fr;
-  }
-
-  .project-intro-left,
-  .hero-media {
-    grid-column: 1;
-    grid-row: auto;
+    grid-template-areas:
+      "title"
+      "hero"
+      "metadata"
+      "description";
   }
 
   .blob-frame--hero {

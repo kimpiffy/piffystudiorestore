@@ -51,6 +51,9 @@ html, body {
 
 :root {
   --background: #031624;
+  --site-ink: #031624;
+  --site-glow-lilac: rgba(123, 108, 246, 0.2);
+  --site-glow-pink: rgba(255, 75, 179, 0.14);
   --nav-icon-responsive-size: 34px;
   --menu-item-font-size: clamp(0.82rem, 1.8vw, 1rem);
   --modal-body-text-size: var(--menu-item-font-size);
@@ -107,7 +110,7 @@ html, body {
 ------------------------------------ */
 
 body {
-  background-color: var(--background);
+  background-color: var(--site-ink);
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
   letter-spacing: 2px;
@@ -121,7 +124,27 @@ body,
 main,
 .site-content,
 .page-content {
-  background-color: var(--charcoal) !important;
+  background-color: var(--site-ink) !important;
+}
+
+/* Contact page keeps its own dedicated background treatment. */
+body.contact-body,
+body.contact-body main,
+body.contact-body .site-content,
+body.contact-body .page-content {
+  background-image: none !important;
+}
+
+/* Universal background treatment: community-style ink + soft glow gradients. */
+body,
+main,
+.site-content,
+.page-content {
+  background-image:
+    radial-gradient(1200px 600px at 85% 12%, var(--site-glow-lilac), transparent 60%),
+    radial-gradient(900px 600px at 20% 75%, var(--site-glow-pink), transparent 60%) !important;
+  background-repeat: no-repeat !important;
+  background-color: var(--site-ink) !important;
 }
 
 .btn {
@@ -250,7 +273,7 @@ img, svg, video {
 /* Bootstrap toggler reset */
 button.nav-x {
   border: 0 !important;
-  padding: 0 !important;
+  padding: 0 0 0 7px !important;
   background: transparent !important;
   box-shadow: none !important;
   outline: none !important;
@@ -502,7 +525,8 @@ button.nav-x {
 .nav-panel{
   position: absolute;        /* anchor to #navbar */
   top: calc(100% + 20px);    /* shifted down additional 5px */
-  left: calc(var(--nav-panel-left-base) - (var(--nav-anchor-left) - 60px) + var(--nav-panel-align-shift));
+  left: auto;
+  right: 0;
   margin-top: 0 !important;
   display: none;             /* hidden by default */
   width: fit-content;
@@ -546,6 +570,23 @@ button.nav-x {
 .nav-panel.show .nav-links .nav-item:nth-child(2) { transition-delay: 100ms; }
 .nav-panel.show .nav-links .nav-item:nth-child(3) { transition-delay: 150ms; }
 .nav-panel.show .nav-links .nav-item:nth-child(4) { transition-delay: 200ms; }
+
+/* When nav is open, cover site content with ink + glow overlay on all viewport sizes. */
+body.nav-expanded::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1800;
+  background:
+    radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+    radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+    rgba(3, 22, 36, 0.94);
+  pointer-events: auto;
+}
+
+body.nav-expanded #navbar {
+  z-index: 2001;
+}
 
 /* prevent ul stretching */
 .nav-links{
@@ -617,20 +658,26 @@ button.nav-x {
   }
 
   #navbar{
-    --nav-anchor-left: 46px;
+    --nav-anchor-left: 26px;
     --nav-panel-align-shift: 12px;
     --nav-icon-box-size: 42px;
-    top: 34px;
-    right: 15px;
+    top: 25px;
+    right: auto;
   }
 
   /* Keep open-state menu aligned with the adjusted mobile nav anchor. */
   .nav-panel {
-    left: var(--nav-panel-left-base);
+    top: calc(100% + 11px);
+    left: -30px;
+    right: auto;
+  }
+
+  .nav-action {
+    left: 0;
   }
 
   .nav-links {
-    padding-left: 15px;
+    padding-left: 0;
   }
 
   .nav-x:hover .nav-x__upper,
@@ -644,6 +691,49 @@ button.nav-x {
       0 0 8px rgba(124, 108, 247, 0.7),
       0 0 16px rgba(124, 108, 247, 0.45),
       0 0 24px rgba(124, 108, 247, 0.3) !important;
+  }
+}
+
+/* Small breakpoint through tablet: current alignment retained. */
+@media (min-width: 577px) and (max-width: 991.98px) {
+  .nav-panel {
+    top: calc(100% + 10px);
+    right: 8px;
+  }
+
+  .nav-action {
+    left: 0;
+  }
+}
+
+/* Stagger nav-panel position in 200px bands for smoother transitions. */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .nav-panel {
+    right: 16px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .nav-panel {
+    right: 11px;
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1599.98px) {
+  .nav-panel {
+    right: 10px;
+  }
+}
+
+@media (min-width: 1600px) and (max-width: 1799.98px) {
+  .nav-panel {
+    right: 18px;
+  }
+}
+
+@media (min-width: 1800px) {
+  .nav-panel {
+    right: 14px;
   }
 }
 
@@ -705,6 +795,17 @@ button.nav-x {
     --about-link-size-ref: 2.35rem;
     --modal-button-size: 1.7rem;
   }
+
+  .nav-panel {
+    right: 6px;
+    top: calc(100% + 17px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .nav-panel {
+    right: 8px;
+  }
 }
 
 @media (min-width: 2560px) {
@@ -715,8 +816,8 @@ button.nav-x {
 
 @media (min-width: 577px) and (max-width: 991.98px) {
   #navbar {
-    --nav-anchor-left: 40px;
-    top: 40px;
+    --nav-anchor-left: 35px;
+    top: 30px;
   }
 
   .nav-x__lower {
@@ -740,7 +841,10 @@ button.nav-x {
     content: "";
     position: fixed;
     inset: 0;
-    background: #031624;
+    background:
+      radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+      radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+      rgba(3, 22, 36, 0.94);
     z-index: 1500;
     pointer-events: none;
   }

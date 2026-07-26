@@ -10,27 +10,25 @@
 {% block content %}
 <article class="community-project-shell" aria-label="Community project detail page">
   <section class="project-intro-grid" aria-label="Project intro">
-    <div class="project-intro-left">
-      <h1 class="project-title">{{ project.title }}</h1>
-
-      <div class="project-description">
-        <p>{{ project.description }}</p>
-      </div>
-
-      <aside class="project-metadata" aria-label="Project metadata">
-        <dl>
-          {% for item in project.metadata %}
-            <div class="meta-row">
-              <dt>{{ item.0 }}</dt>
-              <dd>{{ item.1 }}</dd>
-            </div>
-          {% endfor %}
-        </dl>
-      </aside>
-    </div>
+    <h1 class="project-title">{{ project.title }}</h1>
 
     <div class="hero-media blob-frame blob-frame--hero">
       <img src="{{ project.hero_image }}" alt="{{ project.title }} hero image placeholder">
+    </div>
+
+    <aside class="project-metadata" aria-label="Project metadata">
+      <dl>
+        {% for item in project.metadata %}
+          <div class="meta-row">
+            <dt>{{ item.0 }}</dt>
+            <dd>{{ item.1 }}</dd>
+          </div>
+        {% endfor %}
+      </dl>
+    </aside>
+
+    <div class="project-description">
+      <p>{{ project.description }}</p>
     </div>
   </section>
 

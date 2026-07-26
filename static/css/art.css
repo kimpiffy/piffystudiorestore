@@ -1,17 +1,18 @@
 :root {
   --art-charcoal: #111111;
-  --art-ink: #000000;
+  --art-ink: #031624;
   --art-uranium: #e0ff9a;
   --art-pink: #ff4bb3;
   --art-purple: #7b6cf6;
   --art-overlay: rgba(17, 17, 17, 0.78);
+  --site-header-h: 92px;
 }
 
 html,
 body.art-page {
   min-height: 100%;
   margin: 0;
-  background: var(--art-charcoal);
+  background: var(--art-ink);
 }
 
 body.art-page {
@@ -32,7 +33,10 @@ body.art-page .wrap {
   inset: 0;
   min-height: 100vh;
   padding: 0;
-  background: var(--art-charcoal);
+  background:
+    radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+    radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+    var(--art-ink);
   overflow: hidden;
 }
 
@@ -67,6 +71,11 @@ body.art-page footer {
   overflow: hidden;
 }
 
+/* Remove the SVG outline stroke around blob edges. */
+body.art-page .blob-svg path[id$="_outline"] {
+  stroke: transparent !important;
+}
+
 .portfolio-mosaic-host {
   position: absolute;
   inset: 0;
@@ -81,7 +90,10 @@ body.art-page footer {
   width: 100vw;
   height: 100vh;
   display: block;
-  background: var(--art-charcoal);
+  background:
+    radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+    radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+    var(--art-ink);
 }
 
 .portfolio-cell {
@@ -99,7 +111,7 @@ body.art-page footer {
 }
 
 .portfolio-void {
-  fill: var(--art-charcoal);
+  fill: var(--art-ink);
   pointer-events: none;
 }
 
@@ -400,7 +412,7 @@ body.art-page footer {
 
 /* Force parity with digital mobile layout for blobs/arrows */
 @media (max-width: 767px){
-  :root { --mobile-blob-top: 0px; }
+  :root { --mobile-blob-top: 20px; }
 
   .wrap{ padding: 0 !important; }
 
@@ -435,7 +447,7 @@ body.art-page footer {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    padding-top: 0 !important;
+    padding-top: var(--mobile-blob-top, 0px) !important;
   }
 
   #blobLayer .blob-inner{ position: relative !important; display:flex !important; }
@@ -448,7 +460,7 @@ body.art-page footer {
   }
 
   #navArrows{
-    position: absolute !important;
+    position: fixed !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     top: auto !important;
@@ -457,5 +469,91 @@ body.art-page footer {
     display: flex !important;
     gap: 14px !important;
     pointer-events: auto !important;
+  }
+
+  /* Mobile carousel uses shared blob SVG with a shade layer; keep images fully visible. */
+  #blobLayer .blob-shade { display: none !important; }
+}
+
+/* Mobile tight stack: header -> blob -> arrows -> footer (no vertical centering gaps). */
+@media (max-width: 767px){
+  body.art-page .showcase{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    top: calc(var(--site-header-h, 92px) - 4px) !important;
+    padding-top: 14px !important;
+  }
+
+  body.art-page #blobLayer{
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    height: auto !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  body.art-page #blobLayer .blob-outer{
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    height: auto !important;
+    align-items: flex-start !important;
+    padding-top: var(--mobile-blob-top, 0px) !important;
+  }
+
+  body.art-page #navArrows{
+    position: relative !important;
+    left: auto !important;
+    transform: none !important;
+    top: auto !important;
+    bottom: auto !important;
+    margin-top: -4px !important;
+  }
+}
+
+/* iPhone SE-sized viewports: nudge arrows up so footer never obscures them. */
+@media (max-width: 430px) and (max-height: 700px){
+  body.art-page #navArrows{
+    margin-top: -30px !important;
+  }
+}
+
+/* iPhone XR and larger phones: enlarge blob to reduce arrow/footer gap. */
+@media (max-width: 767px) and (min-height: 760px){
+  body.art-page #blobLayer .blob-inner{
+    width: 166vw !important;
+    height: 166vw !important;
+  }
+}
+
+/* Final calibration: lift mobile composition and align art baseline with other pages. */
+@media (max-width: 767px){
+  body.art-page {
+    --mobile-blob-top: 0px;
+  }
+
+  body.art-page .showcase{
+    top: var(--site-header-h, 92px) !important;
+    padding-top: 6px !important;
+    transform: translateY(-30px) !important;
+  }
+
+  body.art-page #navArrows{
+    margin-top: -6px !important;
+  }
+}
+
+/* Final SE override: keep arrows visibly higher than footer. */
+@media (max-width: 430px) and (max-height: 700px){
+  body.art-page #navArrows{
+    margin-top: -30px !important;
+    transform: translateY(-20px) !important;
   }
 }

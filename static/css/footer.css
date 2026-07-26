@@ -363,6 +363,13 @@ body {
   .footer-copy-icon {
     font-size: 0.72rem;
   }
+
+  /* Credit sits slightly smaller than nav links on phones only. */
+  .footer-credit-link {
+    font-size: 0.68rem;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

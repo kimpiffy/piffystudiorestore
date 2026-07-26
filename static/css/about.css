@@ -33,7 +33,10 @@ body.about-page{
   min-height: 100dvh;
   height: 100dvh;
   max-height: 100dvh;
-  background: var(--brand-pink-soft);
+  background:
+    radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+    radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+    var(--ink);
   color: var(--uranium);
   overflow: hidden;
   padding-bottom: 0 !important;
@@ -84,7 +87,10 @@ body.about-page .about-stage{
   min-height: 100dvh;
   height: 100dvh;
   max-height: 100dvh;
-  background: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+    radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+    var(--ink);
 
   /* Keep footer flush with page end */
   padding-bottom: 0;
@@ -201,7 +207,7 @@ body.about-page .blob-mask-svg{
 }
 
 body.about-page .blob-mask-fill{
-  fill: #031624;
+  fill: rgba(3, 22, 36, 0.9);
 }
 
 body.about-page .blob-hole-edge{
