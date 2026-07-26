@@ -698,7 +698,8 @@ body.nav-expanded #navbar {
 @media (min-width: 577px) and (max-width: 991.98px) {
   .nav-panel {
     top: calc(100% + 10px);
-    right: 8px;
+    left: -35px;
+    right: auto;
   }
 
   .nav-action {
@@ -709,31 +710,36 @@ body.nav-expanded #navbar {
 /* Stagger nav-panel position in 200px bands for smoother transitions. */
 @media (min-width: 992px) and (max-width: 1199.98px) {
   .nav-panel {
-    right: 16px;
+    left: -41px;
+    right: auto;
   }
 }
 
 @media (min-width: 1200px) and (max-width: 1399.98px) {
   .nav-panel {
-    right: 11px;
+    left: -43px;
+    right: auto;
   }
 }
 
 @media (min-width: 1400px) and (max-width: 1599.98px) {
   .nav-panel {
-    right: 10px;
+    left: -43px;
+    right: auto;
   }
 }
 
 @media (min-width: 1600px) and (max-width: 1799.98px) {
   .nav-panel {
-    right: 18px;
+    left: -45px;
+    right: auto;
   }
 }
 
 @media (min-width: 1800px) {
   .nav-panel {
-    right: 18px;
+    left: -47px;
+    right: auto;
   }
 }
 
@@ -797,14 +803,42 @@ body.nav-expanded #navbar {
   }
 
   .nav-panel {
-    right: 6px;
+    left: -37px;
+    right: auto;
     top: calc(100% + 17px);
   }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
   .nav-panel {
-    right: 8px;
+    min-width: 170px !important;
+    max-width: none;
+    left: -39px;
+    right: auto;
+  }
+
+  .nav-panel .dropdown-menu {
+    min-width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  .nav-panel {
+    min-width: 180px !important;
+    max-width: none;
+  }
+
+  .nav-panel .dropdown-menu {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    min-width: 100%;
+  }
+}
+
+@media (min-width: 821px) and (max-width: 991.98px) {
+  .nav-panel {
+    min-width: 180px !important;
   }
 }
 
@@ -923,6 +957,25 @@ body.nav-expanded #navbar {
 }
 
 @media (max-width: 991.98px) {
+  .nav-panel .dropdown-menu {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    min-width: 100%;
+    transform-origin: left top;
+    transform: translateY(0) !important;
+  }
+
+  .nav-panel .dropdown-menu.show {
+    transform: translateY(0) !important;
+  }
+
+  .nav-panel .dropdown-menu:not(.show) .dropdown-item,
+  .nav-panel .dropdown-menu.show .dropdown-item {
+    transform: none !important;
+  }
+
   .nav-x__lower {
     text-shadow:
       0 0 5px rgba(124, 108, 247, 0.45),

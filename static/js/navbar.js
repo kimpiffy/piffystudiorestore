@@ -35,15 +35,15 @@
     // Check if device supports hover properly (like iPad with mouse)
     const hasHover = window.matchMedia('(hover: hover)').matches;
     const hasPointer = window.matchMedia('(pointer: fine)').matches;
-    
+
     // If device has proper hover and fine pointer, treat as non-touch
     if (hasHover && hasPointer) {
       return false;
     }
-    
+
     // Otherwise check for touch capability
-    return 'ontouchstart' in window || 
-           navigator.maxTouchPoints > 0 || 
+    return 'ontouchstart' in window ||
+           navigator.maxTouchPoints > 0 ||
            navigator.msMaxTouchPoints > 0;
   }
   
@@ -58,6 +58,10 @@
   
   // Check if we should use touch behavior
   function shouldUseTouchBehavior() {
+    // Match phone behavior for all mobile/tablet widths.
+    if (window.matchMedia('(max-width: 991.98px)').matches) {
+      return true;
+    }
     return isTouch && lastInteractionWasTouch;
   }
   

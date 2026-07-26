@@ -19,7 +19,9 @@ export function createPortraitController(portraitBtn) {
 
     const isLandscape = w > h;
 
-    const isPhone = Math.min(w, h) < 700;
+    const shortSide = Math.min(w, h);
+    const isPhone = shortSide < 700;
+    const isSmallPhone = shortSide <= 380;
 
     // Tablet-like: coarse pointer OR no hover, plus a decent minimum size
     const isTabletLike =
@@ -44,12 +46,13 @@ export function createPortraitController(portraitBtn) {
       if (base >= 2200) scale = 1.1;
     }
 
+    const phoneLift = isSmallPhone ? 30 : 20;
     const top =
-      isPhone && isLandscape ? "40%" :
-      isPhone ? "35%" :
-      isLargeDesktop ? "45.5%" :
-      isLaptopUp ? "47%" :
-      "49%";
+      isPhone && isLandscape ? `calc(38% - ${phoneLift}px)` :
+      isPhone ? `calc(33% - ${phoneLift}px)` :
+      isLargeDesktop ? "42.5%" :
+      isLaptopUp ? "44%" :
+      "46%";
 
     portraitBtn.style.left = "50%";
     portraitBtn.style.top = top;

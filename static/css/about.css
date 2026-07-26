@@ -686,6 +686,31 @@ body.about-page .about-word.is-wobbling .wobble-span{
   }
 }
 
+/* Force phone-specific vertical lift for the bio blob hole. */
+@media (max-width: 380px) and (orientation: portrait) {
+  body.about-page .blob-mask {
+    transform: translateY(-30px);
+  }
+}
+
+@media (max-width: 380px) and (orientation: landscape) {
+  body.about-page .blob-mask {
+    transform: translateY(-30px);
+  }
+}
+
+@media (min-width: 381px) and (max-width: 699px) and (orientation: portrait) {
+  body.about-page .blob-mask {
+    transform: translateY(-20px);
+  }
+}
+
+@media (min-width: 381px) and (max-width: 699px) and (orientation: landscape) {
+  body.about-page .blob-mask {
+    transform: translateY(-20px);
+  }
+}
+
 @media (min-width: 577px) and (max-width: 991.98px){
   body.about-page .overlay-panel{
     width: 88vw;
