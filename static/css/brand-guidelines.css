@@ -1,0 +1,175 @@
+html,
+body.brand-guidelines-page {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+body.brand-guidelines-page .site-content {
+  height: calc(100dvh - var(--site-header-h, 0px));
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: var(--footer-bar-h, 52px);
+}
+
+body.brand-guidelines-page header {
+  position: relative;
+  z-index: 2100;
+}
+
+.guidelines-page {
+  min-height: calc(100dvh - var(--footer-bar-h, 52px));
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 4px;
+  padding: 10px 0 0;
+}
+
+.guidelines-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  margin: 0;
+  padding: 0 clamp(10px, 2vw, 20px) 8px;
+}
+
+.guidelines-page-meta {
+  margin: 0;
+  color: #f4f1e6;
+  font-family: "velvelyne-regular", system-ui, sans-serif;
+  font-size: clamp(0.74rem, 1.1vw, 0.86rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.guidelines-page-meta.is-hidden {
+  visibility: hidden;
+}
+
+.pdf-stage {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+}
+
+.pdf-pages {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guidelines-open {
+  color: var(--uranium, #e0ff9a);
+  text-decoration: none;
+  border: 1px solid rgba(224, 255, 154, 0.36);
+  border-radius: 999px;
+  padding: 6px 12px;
+  line-height: 1;
+  white-space: nowrap;
+  font-family: "velvelyne-regular", system-ui, sans-serif;
+  font-size: clamp(0.72rem, 1.2vw, 0.85rem);
+}
+
+.guidelines-open:hover,
+.guidelines-open:focus-visible {
+  color: #031624;
+  background: var(--uranium, #e0ff9a);
+  border-color: var(--uranium, #e0ff9a);
+}
+
+.pdf-loading,
+.pdf-error {
+  margin: 12px 0;
+  padding: 0 16px;
+  color: #f4f1e6;
+  font-family: "velvelyne-regular", system-ui, sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.pdf-page {
+  width: min(100%, 1480px);
+  max-height: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.pdf-canvas {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - var(--site-header-h, 0px) - var(--footer-bar-h, 52px) - 68px);
+  height: auto;
+  border: 0;
+  background: transparent;
+}
+
+.pdf-iframe {
+  width: min(100%, 1480px);
+  height: calc(100dvh - var(--site-header-h, 0px) - var(--footer-bar-h, 52px) - 72px);
+  border: 0;
+  background: #fff;
+}
+
+body.brand-guidelines-page #navArrows {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 clamp(8px, 2vw, 28px);
+  pointer-events: none;
+  z-index: 120;
+}
+
+body.brand-guidelines-page #navArrows button {
+  pointer-events: auto;
+  min-width: 1.2em;
+  border: 0;
+  background: transparent;
+  color: var(--uranium, #e0ff9a);
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: clamp(2rem, 3.2vw, 3.1rem);
+  line-height: 1;
+  padding: 0 2px;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none;
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+
+body.brand-guidelines-page #navArrows button[disabled] {
+  opacity: 0.34;
+  cursor: default;
+}
+
+@media (max-width: 767px) {
+  body.brand-guidelines-page .site-content {
+    padding-bottom: var(--footer-bar-h, 92px);
+  }
+
+  .guidelines-page {
+    padding-top: 6px;
+  }
+
+  body.brand-guidelines-page #navArrows {
+    padding: 0 8px;
+  }
+
+  .guidelines-open {
+    padding: 5px 9px;
+  }
+}

@@ -2,41 +2,46 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/people.css' %}">
+<link rel="stylesheet" href="{% static 'css/brand-guidelines.css' %}">
 {% endblock %}
 
-{% block body_class %}people-page industry-page{% endblock %}
+{% block body_class %}brand-guidelines-page{% endblock %}
 
 {% block content %}
-<div class="wrap">
-  <div class="people-header">
-    <h1 class="visually-hidden">Industry</h1>
+<section class="guidelines-page" aria-label="Brand guidelines document viewer">
+  <div class="guidelines-topbar" aria-label="Brand guidelines actions">
+    <p class="guidelines-page-meta" id="pdfPageMeta" aria-live="polite">Loading…</p>
+    <a class="guidelines-open" href="{{ pdf_url }}" target="_blank" rel="noopener noreferrer">
+      Open in new tab
+    </a>
   </div>
 
-  <section id="modeA" class="mode is-active">
-    <div class="showcase" id="showcase">
-      <div class="blob-layer" id="blobLayer"></div>
-
-      <div class="nav-arrows" id="navArrows">
-        <button id="prevSet" type="button" aria-label="Previous projects">&lt;</button>
-        <button id="nextSet" type="button" aria-label="Next projects">&gt;</button>
-      </div>
+  <div class="pdf-stage" aria-label="Brand guidelines page stage">
+    <div class="pdf-pages" id="pdfPages" data-pdf-url="{{ pdf_url }}" aria-label="Brand guidelines pages">
+      <section class="pdf-page" aria-label="Brand guidelines page">
+        <iframe
+          class="pdf-iframe"
+          title="Brand guidelines PDF"
+          src="{{ pdf_url }}#page=1&view=FitH"
+        ></iframe>
+      </section>
     </div>
-  </section>
-</div>
 
-<section id="overlay" class="overlay" aria-hidden="true">
-  <div class="overlay-backdrop" id="overlayBackdrop"></div>
-  <article class="overlay-panel" id="overlayPanel" role="dialog" aria-modal="true">
-    <button id="overlayClose" class="overlay-close" type="button" aria-label="Close">x</button>
-    <div id="overlayContent"></div>
-  </article>
+    <div class="nav-arrows" id="navArrows" aria-label="Document navigation">
+      <button id="prevPage" type="button" aria-label="Previous page">&lt;</button>
+      <button id="nextPage" type="button" aria-label="Next page">&gt;</button>
+    </div>
+  </div>
+
+  <noscript>
+    <p>
+      JavaScript is required to render this document inline.
+      <a href="{{ pdf_url }}" target="_blank" rel="noopener noreferrer">Open the guidelines</a>.
+    </p>
+  </noscript>
 </section>
-
-{{ projects|json_script:"projects-data" }}
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="https://cdn.jsdelivr.net/npm/flubber@0.4.2/build/flubber.min.js"></script>
-<script type="module" src="{% static 'js/people/index.js' %}"></script>
+<script type="module" src="{% static 'js/brand-guidelines.js' %}"></script>
 {% endblock %}

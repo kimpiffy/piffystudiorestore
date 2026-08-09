@@ -1,6 +1,10 @@
-from django.http import Http404
+from pathlib import Path
+
+from django.http import FileResponse, Http404
 from django.shortcuts import render
+from django.templatetags.static import static
 from django.urls import reverse
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from pages.seo import build_seo
 
@@ -275,28 +279,17 @@ def people(request):
 
 
 def industry(request):
-    title = "Industry Projects | Kim Piffy"
+    title = "Kim Piffy Website Brand Guidelines"
     description = (
-        "Preview upcoming industry-focused projects and commissions by Kim Piffy."
+        "Browse the Kim Piffy website brand guidelines document in a full-page, "
+        "scrollable viewer."
     )
-    projects = [
-        {
-            "id": "industry-coming-soon",
-            "title": "Industry",
-            "coming_soon": True,
-            "overlay_title": "Coming Soon",
-            "blurb": (
-                "Industrial systems, fabrication, and material studies."
-            ),
-            "stack": ["Systems", "Process"],
-        },
-    ]
 
     return render(
         request,
         "portfolio/industry.html",
         {
-            "projects": projects,
+            "pdf_url": static("docs/brand-guidelines.pdf"),
             "seo": build_seo(
                 request,
                 title=title,
@@ -305,11 +298,29 @@ def industry(request):
                 og_description=description,
                 twitter_title=title,
                 twitter_description=description,
-                robots="noindex, follow",
             ),
-            "section_h1": "Industry",
+            "section_h1": "Brand Guidelines",
         },
     )
+
+
+@xframe_options_sameorigin
+def industry_brand_guidelines_pdf(request):
+    project_root = Path(__file__).resolve().parent.parent
+    candidates = [
+        project_root / "KIM PIFFY WEBSITE - BRAND GUIDLINES.pdf",
+        project_root / "KIM PIFFY WEBSITE - BRAND GUIDELINES.pdf",
+        project_root / "kim piffy website guidlines pdf",
+        project_root / "kim piffy website guidelines pdf",
+    ]
+
+    pdf_path = next((path for path in candidates if path.exists()), None)
+    if pdf_path is None:
+        raise Http404("Brand guidelines PDF not found")
+
+    response = FileResponse(pdf_path.open("rb"), content_type="application/pdf")
+    response["Content-Disposition"] = 'inline; filename="kim-piffy-website-brand-guidelines.pdf"'
+    return response
 
 
 def community_project_detail(request, slug):
