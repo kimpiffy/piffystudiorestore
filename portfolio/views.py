@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from django.http import FileResponse, Http404
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
@@ -278,18 +279,31 @@ def people(request):
     )
 
 
-def industry(request):
-    title = "Kim Piffy Website Brand Guidelines"
+def styles(request):
+    title = "Styles | Kim Piffy"
     description = (
-        "Browse the Kim Piffy website brand guidelines document in a full-page, "
-        "scrollable viewer."
+        "Browse Kim Piffy's styles publication in an embedded interactive viewer."
     )
+
+    styles_html_dir = (
+        Path(__file__).resolve().parent.parent
+        / "static" / "styles" / "publication-web-resources" / "html"
+    )
+    page_count = len(list(styles_html_dir.glob("publication*.html"))) if styles_html_dir.exists() else 0
+    styles_page_urls = [
+        static(
+            "styles/publication-web-resources/html/"
+            + ("publication.html" if i == 0 else f"publication-{i}.html")
+        )
+        for i in range(page_count)
+    ]
 
     return render(
         request,
-        "portfolio/industry.html",
+        "portfolio/styles.html",
         {
-            "pdf_url": static("docs/brand-guidelines.pdf"),
+            "styles_package_url": static("styles/index.html"),
+            "styles_page_urls": styles_page_urls,
             "seo": build_seo(
                 request,
                 title=title,
@@ -299,22 +313,43 @@ def industry(request):
                 twitter_title=title,
                 twitter_description=description,
             ),
-            "section_h1": "Brand Guidelines",
+            "section_h1": "Styles",
         },
     )
+
+
+def industry(request):
+    return redirect("portfolio:styles", permanent=True)
 
 
 @xframe_options_sameorigin
 def industry_brand_guidelines_pdf(request):
     project_root = Path(__file__).resolve().parent.parent
-    candidates = [
+
+    preferred_candidates = [
         project_root / "KIM PIFFY WEBSITE - BRAND GUIDLINES.pdf",
         project_root / "KIM PIFFY WEBSITE - BRAND GUIDELINES.pdf",
+        project_root / "static" / "docs" / "brand-guidelines.pdf",
         project_root / "kim piffy website guidlines pdf",
         project_root / "kim piffy website guidelines pdf",
     ]
 
-    pdf_path = next((path for path in candidates if path.exists()), None)
+    pdf_path = next((path for path in preferred_candidates if path.exists()), None)
+
+    if pdf_path is None:
+        # Last-resort fallback: pick the most recently modified PDF in project root/static/docs.
+        fallback_pdfs = []
+        for folder in (project_root, project_root / "static" / "docs"):
+            if not folder.exists():
+                continue
+            fallback_pdfs.extend(
+                p for p in folder.glob("*.pdf")
+                if p.is_file() and "cv" not in p.name.lower()
+            )
+
+        if fallback_pdfs:
+            pdf_path = max(fallback_pdfs, key=lambda p: p.stat().st_mtime)
+
     if pdf_path is None:
         raise Http404("Brand guidelines PDF not found")
 

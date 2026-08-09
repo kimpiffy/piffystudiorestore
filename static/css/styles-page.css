@@ -1,0 +1,127 @@
+html,
+body.styles-page {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+body.styles-page .site-content {
+  height: calc(100dvh - var(--site-header-h, 0px));
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: var(--footer-bar-h, 52px);
+}
+
+.styles-shell {
+  width: 100%;
+  min-height: calc(100dvh - var(--footer-bar-h, 52px));
+  height: calc(100dvh - var(--footer-bar-h, 52px));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(4px, 0.8vw, 10px) clamp(4px, 0.9vw, 12px);
+  box-sizing: border-box;
+}
+
+.styles-frame {
+  position: relative;
+  flex: 0 0 auto;
+  background: var(--uranium, #e0ff9a);
+}
+
+.styles-viewport {
+  position: absolute;
+  overflow: hidden;
+  background: transparent;
+}
+
+.styles-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: transparent;
+}
+
+.scallop-stroke {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.scallop-stroke path {
+  stroke: #ff4bb3;
+  stroke-width: 1.5px;
+  filter:
+    drop-shadow(0 0 6px rgba(123, 108, 246, 0.55))
+    drop-shadow(0 0 14px rgba(123, 108, 246, 0.3));
+}
+
+.styles-scroll-stack {
+  display: none;
+}
+
+.styles-scroll-page {
+  width: 100%;
+}
+
+.styles-scroll-frame {
+  position: relative;
+  margin: 0 auto;
+  background: var(--uranium, #e0ff9a);
+}
+
+.styles-scroll-viewport {
+  position: absolute;
+  overflow: hidden;
+  background: transparent;
+}
+
+.styles-scroll-iframe {
+  display: block;
+  width: 1920px;
+  height: 1080px;
+  border: 0;
+  transform-origin: top left;
+}
+
+/* Scroll mode: phones (any orientation) and short landscape viewports
+   (small tablets/phones rotated) - keep this query in sync with the JS
+   matchMedia string in portfolio/templates/portfolio/styles.html.
+   .styles-shell scrolls internally (not the document/body) so the
+   site-wide nav-in-flow scroll detection never triggers on this page. */
+@media (max-width: 767px), (orientation: landscape) and (max-height: 600px) {
+  .styles-shell {
+    height: 100%;
+    min-height: 0;
+    display: block;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px;
+  }
+
+  .styles-frame,
+  .styles-viewport {
+    display: none !important;
+  }
+
+  .styles-scroll-stack {
+    display: block;
+    width: 100%;
+  }
+
+  .styles-scroll-page {
+    margin: 0 0 10px;
+  }
+
+  .styles-scroll-page:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .styles-shell {
+    padding: 6px;
+  }
+}

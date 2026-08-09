@@ -30,7 +30,7 @@ export function createMobileStaticController({ overlay, routes, wordsLayer }) {
   function openBio() {
     const contactHref = routes?.contact || "/contact/";
     const cvHref = routes?.cv || "#";
-    const styleHref = routes?.style || "/work/industry/";
+    const styleHref = routes?.style || "/work/styles/";
     const styleLink =
       styleHref && styleHref !== "#"
         ? `

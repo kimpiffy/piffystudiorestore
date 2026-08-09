@@ -258,6 +258,26 @@ img, svg, video {
   overflow-y: visible !important;
 }
 
+body.nav-in-flow #navbar {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin: 30px 0 0 60px;
+}
+
+/* Smart/revealing nav (opt-in via JS on pages with internally-scrolling
+   content, e.g. the Styles page mobile stack): hides on scroll-down,
+   reappears on scroll-up. Does not affect the nav-in-flow behavior above. */
+@media (max-width: 767px) {
+  #navbar {
+    transition: transform 200ms ease;
+  }
+
+  #navbar.nav-hidden {
+    transform: translateY(calc(-100% - 80px));
+  }
+}
+
 #navbar,
 #navbar * {
   overflow: visible !important;

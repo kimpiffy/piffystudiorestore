@@ -312,3 +312,36 @@
   }
   
 })();
+
+(function() {
+  'use strict';
+
+  const body = document.body;
+  if (!body) return;
+
+  function shouldUseInFlowNav() {
+    const root = document.scrollingElement || document.documentElement;
+    return root.scrollHeight - window.innerHeight > 32;
+  }
+
+  function applyNavLayoutMode() {
+    if (shouldUseInFlowNav()) {
+      body.classList.add('nav-in-flow');
+    } else {
+      body.classList.remove('nav-in-flow');
+    }
+  }
+
+  window.addEventListener('resize', applyNavLayoutMode, { passive: true });
+  window.addEventListener('load', applyNavLayoutMode);
+
+  const main = document.getElementById('main-content');
+  if (main && 'MutationObserver' in window) {
+    const observer = new MutationObserver(() => {
+      applyNavLayoutMode();
+    });
+    observer.observe(main, { childList: true, subtree: true });
+  }
+
+  applyNavLayoutMode();
+})();

@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/styles-page.css' %}">
+{% endblock %}
+
+{% block body_class %}styles-page{% endblock %}
+
+{% block content %}
+<section class="styles-shell" aria-label="Styles publication viewer">
+  <div class="styles-frame" id="stylesFrame">
+    <div class="styles-viewport" id="stylesViewport">
+      <iframe
+        class="styles-iframe"
+        title="Styles publication"
+        src="{{ styles_package_url }}"
+        loading="eager"
+      ></iframe>
+    </div>
+    <svg class="scallop-stroke" id="scallopStroke" aria-hidden="true">
+      <path id="scallopPath" fill="none"></path>
+    </svg>
+  </div>
+
+  <div class="styles-scroll-stack" id="stylesScrollStack">
+    {% for page_url in styles_page_urls %}
+    <div class="styles-scroll-page">
+      <div class="styles-scroll-frame">
+        <div class="styles-scroll-viewport">
+          <iframe
+            class="styles-scroll-iframe"
+            src="{{ page_url }}"
+            width="1920"
+            height="1080"
+            scrolling="no"
+            title="Styles page {{ forloop.counter }}"
+          ></iframe>
+        </div>
+        <svg class="scallop-stroke" aria-hidden="true">
+          <path fill="none"></path>
+        </svg>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function () {
+    var frame = document.getElementById("stylesFrame");
+    var viewport = document.getElementById("stylesViewport");
+    var shell = document.querySelector(".styles-shell");
+    var svg = document.getElementById("scallopStroke");
+    var path = document.getElementById("scallopPath");
+    var stack = document.getElementById("stylesScrollStack");
+    if (!frame || !viewport || !shell || !svg || !path || !stack) return;
+
+    var PAGE_W = 1920;
+    var PAGE_H = 1080;
+    var MAX_W = 1560;
+    var SCALLOP_MARGIN = 3;
+    // Keep this query in sync with the scroll-mode breakpoint in styles-page.css.
+    var scrollModeQuery = window.matchMedia(
+      "(max-width: 767px), (orientation: landscape) and (max-height: 600px)"
+    );
+
+    function buildScallopPathData(width, height, radius) {
+      var stepsX = Math.max(2, Math.round(width / (radius * 2)));
+      var stepsY = Math.max(2, Math.round(height / (radius * 2)));
+      var stepX = width / stepsX;
+      var stepY = height / stepsY;
+      var rX = stepX / 2;
+      var rY = stepY / 2;
+      var x = 0;
+      var y = 0;
+      var d = "M 0 0";
+      var i;
+
+      for (i = 0; i < stepsX; i++) {
+        x += stepX;
+        d += " A " + rX + " " + rX + " 0 0 1 " + x + " " + y;
+      }
+      for (i = 0; i < stepsY; i++) {
+        y += stepY;
+        d += " A " + rY + " " + rY + " 0 0 1 " + x + " " + y;
+      }
+      for (i = 0; i < stepsX; i++) {
+        x -= stepX;
+        d += " A " + rX + " " + rX + " 0 0 1 " + x + " " + y;
+      }
+      for (i = 0; i < stepsY; i++) {
+        y -= stepY;
+        d += " A " + rY + " " + rY + " 0 0 1 " + x + " " + y;
+      }
+      d += " Z";
+      return d;
+    }
+
+    // Sizes/clips one frame+viewport+svg trio to a scalloped, uranium-matted box.
+    function applyScallop(frameEl, viewportEl, svgEl, pathEl, width, height) {
+      var margin = SCALLOP_MARGIN;
+      var radius = Math.max(10, Math.min(22, width * 0.018));
+
+      frameEl.style.width = (width + margin * 2) + "px";
+      frameEl.style.height = (height + margin * 2) + "px";
+      viewportEl.style.width = width + "px";
+      viewportEl.style.height = height + "px";
+      viewportEl.style.left = margin + "px";
+      viewportEl.style.top = margin + "px";
+
+      var d = buildScallopPathData(width, height, radius);
+
+      viewportEl.style.clipPath = "path('" + d + "')";
+      viewportEl.style.webkitClipPath = "path('" + d + "')";
+
+      svgEl.setAttribute("width", width);
+      svgEl.setAttribute("height", height);
+      svgEl.setAttribute("viewBox", "0 0 " + width + " " + height);
+      svgEl.style.left = margin + "px";
+      svgEl.style.top = margin + "px";
+      svgEl.style.width = width + "px";
+      svgEl.style.height = height + "px";
+      pathEl.setAttribute("d", d);
+    }
+
+    function sizeAndClipViewport() {
+      var availW = Math.min(shell.clientWidth, MAX_W);
+      var availH = shell.clientHeight;
+      if (!availW || !availH) return;
+
+      var aspect = PAGE_W / PAGE_H;
+      var width = availW;
+      var height = width / aspect;
+      if (height > availH) {
+        height = availH;
+        width = height * aspect;
+      }
+
+      width = Math.floor(width);
+      height = Math.floor(height);
+
+      applyScallop(frame, viewport, svg, path, width, height);
+    }
+
+    function sizeScrollStack() {
+      var pages = stack.querySelectorAll(".styles-scroll-page");
+      pages.forEach(function (pageEl) {
+        var frameEl = pageEl.querySelector(".styles-scroll-frame");
+        var viewportEl = pageEl.querySelector(".styles-scroll-viewport");
+        var iframe = pageEl.querySelector(".styles-scroll-iframe");
+        var svgEl = pageEl.querySelector(".scallop-stroke");
+        var pathEl = svgEl ? svgEl.querySelector("path") : null;
+        if (!frameEl || !viewportEl || !iframe || !svgEl || !pathEl) return;
+
+        var totalWidth = pageEl.clientWidth;
+        if (!totalWidth) return;
+
+        var innerWidth = totalWidth - SCALLOP_MARGIN * 2;
+        var scale = innerWidth / PAGE_W;
+        var innerHeight = Math.round(PAGE_H * scale);
+
+        iframe.style.transform = "scale(" + scale + ")";
+
+        applyScallop(frameEl, viewportEl, svgEl, pathEl, innerWidth, innerHeight);
+      });
+    }
+
+    function refresh() {
+      if (scrollModeQuery.matches) {
+        sizeScrollStack();
+      } else {
+        sizeAndClipViewport();
+        var navbar = document.getElementById("navbar");
+        if (navbar) navbar.classList.remove("nav-hidden");
+      }
+    }
+
+    refresh();
+    window.addEventListener("resize", refresh);
+    scrollModeQuery.addEventListener("change", refresh);
+
+    // Smart/revealing nav: hides on scroll-down, reappears instantly on
+    // scroll-up, only while this page's internal stack is scrolling on
+    // mobile / short-landscape. Desktop/flipbook mode is untouched.
+    var lastScrollTop = 0;
+    shell.addEventListener(
+      "scroll",
+      function () {
+        if (!scrollModeQuery.matches) return;
+
+        var navbar = document.getElementById("navbar");
+        if (!navbar) return;
+
+        var scrollTop = shell.scrollTop;
+        var delta = scrollTop - lastScrollTop;
+
+        if (delta > 4 && scrollTop > 24) {
+          navbar.classList.add("nav-hidden");
+        } else if (delta < -4 || scrollTop <= 24) {
+          navbar.classList.remove("nav-hidden");
+        }
+
+        lastScrollTop = scrollTop;
+      },
+      { passive: true }
+    );
+  })();
+</script>
+{% endblock %}
