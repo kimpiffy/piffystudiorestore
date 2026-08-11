@@ -1,6 +1,6 @@
 import { escapeHtml } from "../utils.js";
 
-export function makeWarpSVG({ uid, cover, title, initialD }) {
+export function makeWarpSVG({ uid, cover, title, initialD, focusY = "Mid" }) {
   const hasCover = !!(cover && String(cover).trim().length);
 
   return `
@@ -13,7 +13,7 @@ export function makeWarpSVG({ uid, cover, title, initialD }) {
 
       <g clip-path="url(#${uid}_clip)">
         ${hasCover
-          ? `<image href="${escapeHtml(cover)}" xlink:href="${escapeHtml(cover)}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" class="blob-img"></image>`
+          ? `<image href="${escapeHtml(cover)}" xlink:href="${escapeHtml(cover)}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMid${escapeHtml(focusY)} slice" class="blob-img"></image>`
           : `<rect x="0" y="0" width="100" height="100" fill="rgba(255,255,255,0.12)"></rect>`
         }
         <!-- Purple overlay that hides on hover -->

@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
       slot.setAttribute("data-id", String(project.id));
       slot.setAttribute("data-role", roleClass);
       slot.setAttribute("aria-label", ariaLabelForRole(roleClass, project));
-      slot.innerHTML = makeWarpSVG({ uid, cover: coverUrl(project), title: project.title, initialD });
+      slot.innerHTML = makeWarpSVG({ uid, cover: coverUrl(project), title: project.title, initialD, focusY: project.cover_focus_y });
 
       if (!slot.dataset.bound) {
         slot.addEventListener("click", () => {

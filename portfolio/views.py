@@ -48,7 +48,7 @@ COMMUNITY_PROJECT_DETAILS = {
         "gallery": [
             "/static/img/community/wishingtree1.png",
             "/static/img/community/wishingtree2.jpg",
-            "/static/img/community/wishingtree3.jpg",
+            "/static/img/community/wishingtree3.webp",
             "/static/img/community/wishingtree4.jpg",
         ],
         "process": [
@@ -71,7 +71,8 @@ COMMUNITY_PROJECT_DETAILS = {
         "slug": "imagining-a-bright-future",
         "title": "Imagining a Bright Future",
         "subtitle": "Light-Based Community Collaboration",
-        "hero_image": "/static/img/home/buildcode.jpeg",
+        "hero_image": "/static/img/community/bridgesoflighthero.jpg",
+        "cover_focus_y": "Max",
         "description": (
             "Imagining a Bright Future is an immersive UV installation "
             "developed through a series of workshops, culminating in a "
@@ -109,10 +110,10 @@ COMMUNITY_PROJECT_DETAILS = {
             ["Commissioner", "Severn Arts, Worcester"],
         ],
         "gallery": [
-            "/static/img/home/buildcode.jpeg",
-            "/static/img/home/createeye.jpeg",
-            "/static/img/home/connection.jpeg",
-            "/static/img/digital/wd.png",
+            "/static/img/community/bridgesoflight1.jpg",
+            "/static/img/community/bridgesoflight2.jpg",
+            "/static/img/community/bridgesoflight3.jpg",
+            "/static/img/community/bridgesoflight4.jpg",
         ],
         "process": [
             "Workshops focused on colour and story prompts, generating source visuals and words used throughout the projection system.",
@@ -134,7 +135,7 @@ COMMUNITY_PROJECT_DETAILS = {
         "slug": "elgar-at-the-asylum",
         "title": "Elgar at the Asylum",
         "subtitle": "Monday Night Club / Shadowlight",
-        "hero_image": "/static/img/home/connection.jpeg",
+        "hero_image": "/static/img/community/elgar1.jpg",
         "description": (
             "As Visual Arts Lead on Elgar at the Asylum, I designed and delivered "
             "a structured programme of accessible workshops for members of Monday "
@@ -172,10 +173,10 @@ COMMUNITY_PROJECT_DETAILS = {
             ["Role", "Visual Arts Lead"],
         ],
         "gallery": [
-            "/static/img/home/connection.jpeg",
-            "/static/img/home/createeye.jpeg",
-            "/static/img/home/buildcode.jpeg",
-            "/static/img/digital/tes.png",
+            "/static/img/community/elgar4.jpg",
+            "/static/img/community/elgar2.jpg",
+            "/static/img/community/elgar3.jpg",
+            "/static/img/community/elgarhero.jpg",
         ],
         "process": [
             "Image development sessions combined archival prompts with contemporary drawing and collage experiments.",
@@ -254,6 +255,7 @@ def people(request):
                 "blurb": item["blurb"],
                 "stack": item["stack"],
                 "cover": item["hero_image"],
+                "cover_focus_y": item.get("cover_focus_y", "Mid"),
                 "learn_more_url": reverse(
                     "community_project_detail", kwargs={"slug": slug}
                 ),

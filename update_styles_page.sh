@@ -38,9 +38,6 @@ echo ""
 echo "Next: ask the assistant to reapply the site's custom patches on top of"
 echo "the new files (transparent stage/scaling in index.html, picnic font-face"
 echo "+ arrow styling in main.css, cover-page KIM/PIFFY centering if present)."
-
-
-echo "Done. Page count set to ${PAGE_COUNT} in publication-web-resources/script/main.js."
 echo ""
 echo "NOT touched (our custom site fixes live here):"
 echo "  $DEST/index.html"

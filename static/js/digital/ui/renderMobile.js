@@ -20,6 +20,7 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
   const uid = `b_${String(p.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random()*1e9)}`;
   const model = createBlobModel(p.id);
   const initialD = computePathFromModel(model, performance.now() * 0.001);
+  const focusY = p.cover_focus_y;
 
   // layer setup (same as your current logic)
   blobLayer.style.position = "absolute";
@@ -68,7 +69,7 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
         "
         aria-label="${escapeHtml(p.title)}"
       >
-        ${makeWarpSVG({ uid, cover, title: p.title, initialD })}
+        ${makeWarpSVG({ uid, cover, title: p.title, initialD, focusY })}
       </button>
     </div>
   `;
