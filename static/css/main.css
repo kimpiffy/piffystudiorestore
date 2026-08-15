@@ -45,6 +45,81 @@ html, body {
   overflow: hidden;
 }
 
+.site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, rgba(123, 108, 246, 0.18), transparent 24%),
+    radial-gradient(circle at 25% 75%, rgba(255, 75, 179, 0.18), transparent 28%),
+    rgba(3, 22, 36, 0.97);
+  backdrop-filter: blur(8px);
+  transition: opacity 0.7s ease, visibility 0.7s ease, transform 0.7s ease;
+}
+
+.site-preloader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(1.03);
+}
+
+.site-preloader__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 0.75rem 1rem;
+}
+
+.site-preloader__dot {
+  display: block;
+  opacity: 0.82;
+  animation: preloaderDot 1.2s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.06);
+  border-radius: 58% 42% 52% 48% / 46% 54% 46% 54%;
+}
+
+.site-preloader__dot--lilac {
+  width: 1rem;
+  height: 1.1rem;
+  background: var(--lilac);
+  border-radius: 54% 46% 57% 43% / 50% 44% 56% 50%;
+  transform: rotate(-12deg);
+  animation-delay: 0s;
+}
+
+.site-preloader__dot--pink {
+  width: 1.05rem;
+  height: 1.05rem;
+  background: var(--pink);
+  border-radius: 42% 58% 46% 54% / 54% 40% 60% 46%;
+  transform: rotate(10deg);
+  animation-delay: 0.16s;
+}
+
+.site-preloader__dot--uranium {
+  width: 1.05rem;
+  height: 1.1rem;
+  background: var(--uranium);
+  border-radius: 48% 52% 60% 40% / 58% 46% 54% 42%;
+  transform: rotate(-10deg);
+  animation-delay: 0.32s;
+}
+
+@keyframes preloaderDot {
+  0%, 80%, 100% {
+    transform: translateY(0) scale(0.72);
+    opacity: 0.45;
+  }
+  40% {
+    transform: translateY(-10px) scale(1.08);
+    opacity: 1;
+  }
+}
+
 /* ------------------------------------
    THEME VARIABLES (TIDY)
 ------------------------------------ */
@@ -78,27 +153,41 @@ html, body {
 
 /* Force portrait orientation on mobile across entire site */
 @media screen and (max-width: 767px) and (orientation: landscape) {
-  body {
+  html, body {
+    background: #031624 !important;
+  }
+
+  body > * {
     display: none !important;
   }
 
-  html::before {
-    content: "Please rotate your device to portrait mode";
+  body::before {
+    content: "";
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--uranium);
-    font-family: 'picnic', sans-serif;
-    font-size: 1.5rem;
-    text-align: center;
-    z-index: 99999;
-    background: var(--charcoal);
-    padding: 2rem;
-    border-radius: 10px;
+    inset: 0;
     display: block;
-    width: 80vw;
-    max-width: 300px;
+    z-index: 99999;
+    background: rgba(3, 22, 36, 0.98);
+  }
+
+  body::after {
+    content: "Rotate your phone to view this website. Thankyou";
+    position: fixed;
+    inset: 1.5rem;
+    display: grid;
+    place-items: center;
+    padding: 2.5rem 2rem;
+    margin: auto;
+    text-align: center;
+    z-index: 100000;
+    color: var(--uranium);
+    font-family: 'velvelyne-regular', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: clamp(1.1rem, 3vw, 1.8rem);
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    max-width: min(80vw, 420px);
+    max-height: min(40vh, 220px);
   }
 }
 .lilac { color: var(--lilac); }
@@ -186,11 +275,31 @@ img, svg, video {
 .overlay-panel #overlayContent a,
 .contact-modal a {
   font-size: var(--modal-button-size) !important;
+  text-decoration: none !important;
 }
 
 .overlay-panel #overlayContent button:not(.overlay-close),
 .contact-modal button:not(.contact-modal-x) {
   font-size: var(--modal-button-size) !important;
+  text-decoration: none !important;
+}
+
+.overlay-panel #overlayContent a:focus,
+.overlay-panel #overlayContent a:focus-visible,
+.overlay-panel #overlayContent a:active,
+.contact-modal a:focus,
+.contact-modal a:focus-visible,
+.contact-modal a:active,
+.overlay-panel #overlayContent button:focus,
+.overlay-panel #overlayContent button:focus-visible,
+.overlay-panel #overlayContent button:active,
+.contact-modal button:focus,
+.contact-modal button:focus-visible,
+.contact-modal button:active {
+  text-decoration: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .overlay.is-open .overlay-backdrop {
@@ -206,6 +315,10 @@ img, svg, video {
   border: none !important;
   box-shadow: none !important;
   background-clip: padding-box;
+}
+
+header {
+  display: contents;
 }
 
 /* ------------------------------------

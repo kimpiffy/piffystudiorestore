@@ -365,11 +365,14 @@ body.digital-page{
   text-transform: uppercase;
   color: #031624;
   outline: none;
+  text-decoration: none;
 }
 
 /* optional focus-visible ring for keyboard users */
 .project-cta:focus-visible{
   box-shadow: 0 0 0 4px rgba(255,165,0,0.12);
+  text-decoration: none;
+  outline: none;
 }
 
 /* =======================================================

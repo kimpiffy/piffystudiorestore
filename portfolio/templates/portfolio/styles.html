@@ -131,8 +131,14 @@
       var availH = shell.clientHeight;
       if (!availW || !availH) return;
 
+      var landscapeTablet = window.matchMedia(
+        "(orientation: landscape) and (min-width: 768px) and (max-width: 1199.98px)"
+      );
+      var desktopLarge = window.innerWidth >= 1280;
+      var scale = landscapeTablet.matches ? 0.75 : desktopLarge ? 1.02 : 1;
+
       var aspect = PAGE_W / PAGE_H;
-      var width = availW;
+      var width = availW * scale;
       var height = width / aspect;
       if (height > availH) {
         height = availH;

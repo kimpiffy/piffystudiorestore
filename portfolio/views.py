@@ -198,23 +198,32 @@ COMMUNITY_PROJECT_DETAILS = {
         "slug": "digitalis-1-0",
         "title": "Digitalis 1.0",
         "subtitle": "Interactive Community Digital Installation",
-        "hero_image": "/static/img/home/buildcode.jpeg",
+        "hero_image": "/static/img/community/digitaliscover.png",
         "description": (
-            "An interactive installation that merges community-authored content with a live "
-            "digital environment. Participants can trigger visual responses and contribute "
-            "to an evolving shared composition."
+            "Digitalis 1.0 responds to the RSA Apply AI brief by exploring how AI could become "
+            "accessible, community-owned infrastructure for local climate action. Inspired by "
+            "mycelial networks, a reclaimed cyberdeck and redundant telephone box become a "
+            "physical community node for connecting, sensing, exchanging and transforming local "
+            "knowledge; asking how technology might reconnect people with place, nature and one "
+            "another.\n\nChallenging the position that AI is a bureaucratic, centralised system, "
+            "Digitalis 1.0 imagines it as something that can instead be localised: situated, "
+            "tangible and collectively encountered. By repurposing obsolete technology and "
+            "equally obsolete pre-existing public infrastructure, the concept explores how "
+            "technology could support community-led responses to local climate challenges by "
+            "encouraging holistic thinking, participation, exchange and a renewed awareness of "
+            "the environments we inhabit."
         ),
         "metadata": [
             ["Year", "2026"],
-            ["Format", "Interactive Installation"],
-            ["Tools", "Projection, Sensors, Web Components"],
-            ["Audience", "Intergenerational"],
+            ["Format", "Interactive, Interruptive, Installation Concept"],
+            ["Tools", "Raspberry Pi, Reclaimed Electronics, AI"],
+            ["Audience", "Local Communities / Intergenerational"],
         ],
         "gallery": [
-            "/static/img/home/buildcode.jpeg",
-            "/static/img/home/connection.jpeg",
-            "/static/img/home/createeye.jpeg",
-            "/static/img/digital/piffy.png",
+            "/static/img/community/digitalis1.png",
+            "/static/img/community/digitalis2.JPG",
+            "/static/img/community/digitalis3.JPG",
+            "/static/img/community/digitalis4.png",
         ],
         "process": [
             "Prototypes tested responsive triggers and accessibility-friendly interaction patterns in low-pressure settings.",

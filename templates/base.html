@@ -39,6 +39,14 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100 {% block body_class %}{% endblock %}">
+  <div id="site-preloader" class="site-preloader" aria-live="polite" aria-busy="true" role="status" aria-hidden="true">
+    <div class="site-preloader__dots" aria-hidden="true">
+      <span class="site-preloader__dot site-preloader__dot--lilac"></span>
+      <span class="site-preloader__dot site-preloader__dot--pink"></span>
+      <span class="site-preloader__dot site-preloader__dot--uranium"></span>
+    </div>
+  </div>
+
   <header>
     {% include "components/navbar.html" %}
   </header>
@@ -53,6 +61,28 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{% static 'js/footer-prompt.js' %}"></script>
   <script src="{% static 'js/navbar.js' %}"></script>
+  <script>
+    (function () {
+      const preloader = document.getElementById('site-preloader');
+      if (!preloader) return;
+
+      const startHide = () => {
+        preloader.classList.add('is-hidden');
+        document.body.classList.add('preloader-complete');
+        window.setTimeout(() => {
+          preloader.remove();
+        }, 650);
+      };
+
+      if (document.readyState === 'complete') {
+        window.setTimeout(startHide, 350);
+      } else {
+        window.addEventListener('load', () => {
+          window.setTimeout(startHide, 350);
+        }, { once: true });
+      }
+    })();
+  </script>
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

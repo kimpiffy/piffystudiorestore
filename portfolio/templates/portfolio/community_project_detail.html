@@ -12,7 +12,7 @@
   <section class="project-intro-grid" aria-label="Project intro">
     <h1 class="project-title">{{ project.title }}</h1>
 
-    <div class="hero-media blob-frame blob-frame--hero">
+    <div class="hero-media blob-frame blob-frame--hero" data-image="{{ project.hero_image }}" tabindex="0" role="button" aria-label="Open {{ project.title }} cover image">
       <img src="{{ project.hero_image }}" alt="{{ project.title }} hero image placeholder">
     </div>
 
@@ -28,14 +28,14 @@
     </aside>
 
     <div class="project-description">
-      <p>{{ project.description }}</p>
+      {{ project.description|linebreaks }}
     </div>
   </section>
 
   <section class="project-gallery" aria-label="Responsive project gallery">
     <div class="gallery-grid">
       {% for image in project.gallery %}
-        <figure class="gallery-item gallery-item--{{ forloop.counter }} blob-frame">
+        <figure class="gallery-item gallery-item--{{ forloop.counter }} blob-frame" data-image="{{ image }}" tabindex="0" aria-label="Open {{ project.title }} image {{ forloop.counter }}">
           <img src="{{ image }}" alt="{{ project.title }} gallery image placeholder {{ forloop.counter }}">
         </figure>
       {% endfor %}
@@ -46,4 +46,69 @@
     <a class="project-back" href="{% url 'portfolio:people' %}">return to community projects</a>
   </p>
 </article>
+
+<div class="community-image-overlay" id="communityImageOverlay" aria-hidden="true">
+  <div class="community-image-overlay__backdrop" id="communityImageOverlayBackdrop"></div>
+  <div class="community-image-overlay__panel" role="dialog" aria-modal="true" aria-label="Project image viewer">
+    <button class="community-image-overlay__close" id="communityImageOverlayClose" type="button" aria-label="Close image viewer">x</button>
+    <img id="communityImageOverlayImage" src="" alt="" />
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function () {
+    var overlay = document.getElementById('communityImageOverlay');
+    if (!overlay) return;
+
+    var backdrop = document.getElementById('communityImageOverlayBackdrop');
+    var closeButton = document.getElementById('communityImageOverlayClose');
+    var image = document.getElementById('communityImageOverlayImage');
+    var triggers = document.querySelectorAll('[data-image]');
+
+    function closeOverlay() {
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      if (image) {
+        image.src = '';
+        image.alt = '';
+      }
+    }
+
+    function openOverlay(src, alt) {
+      if (!image) return;
+      image.src = src;
+      image.alt = alt || '';
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+    }
+
+    triggers.forEach(function (trigger) {
+      var src = trigger.getAttribute('data-image');
+      if (!src) return;
+      var clickHandler = function () {
+        var img = trigger.querySelector('img');
+        openOverlay(src, img ? img.getAttribute('alt') : 'Project image');
+      };
+      trigger.addEventListener('click', clickHandler);
+      trigger.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          clickHandler();
+        }
+      });
+    });
+
+    if (backdrop) backdrop.addEventListener('click', closeOverlay);
+    if (closeButton) closeButton.addEventListener('click', closeOverlay);
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && overlay.classList.contains('is-open')) {
+        closeOverlay();
+      }
+    });
+  })();
+</script>
 {% endblock %}

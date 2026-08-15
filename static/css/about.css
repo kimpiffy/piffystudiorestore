@@ -526,6 +526,36 @@ body.about-page .overlay-panel #overlayContent .project-cta:active {
   text-transform: uppercase;
 }
 
+body.about-page .overlay-panel #overlayContent .btn,
+body.about-page .overlay-panel #overlayContent .project-cta,
+body.about-page .overlay-panel #overlayContent a,
+body.about-page .overlay-panel #overlayContent button {
+  border: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.about-page .overlay-panel #overlayContent .btn:focus,
+body.about-page .overlay-panel #overlayContent .btn:focus-visible,
+body.about-page .overlay-panel #overlayContent .project-cta:focus,
+body.about-page .overlay-panel #overlayContent .project-cta:focus-visible,
+body.about-page .overlay-panel #overlayContent a:focus,
+body.about-page .overlay-panel #overlayContent a:focus-visible,
+body.about-page .overlay-panel #overlayContent button:focus,
+body.about-page .overlay-panel #overlayContent button:focus-visible {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+}
+
 /* Project CTA buttons - add hover effects */
 body.about-page .project-cta:hover,
 body.about-page .project-cta:focus,
@@ -566,30 +596,6 @@ body.about-page .about-word.is-wobbling .wobble-span{
 }
 
 /* Mobile: static tags + huge blob spill */
-/* Force portrait orientation on mobile */
-@media screen and (max-width: 767px) and (orientation: landscape) {
-  body.about-page {
-    display: none;
-  }
-  
-  body.about-page::before {
-    content: "Please rotate your device to portrait mode";
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--uranium);
-    font-family: 'picnic', sans-serif;
-    font-size: 1.5rem;
-    text-align: center;
-    z-index: 9999;
-    background: var(--ink);
-    padding: 2rem;
-    border-radius: 10px;
-    display: block;
-  }
-}
-
 @media (max-width: 767px){
 
   /* Lock About page to viewport on mobile */

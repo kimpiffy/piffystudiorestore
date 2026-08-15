@@ -119,7 +119,7 @@ body.contact-body{
 }
 
 .contact-form-wrap{
-  width: min(900px, 80vw);
+  width: min(980px, 82vw);
   position: relative;
   background: transparent;
   border-radius: 20px;
@@ -153,9 +153,9 @@ body.contact-body{
 .contact-title:hover,
 .contact-title:focus-visible {
   text-transform: uppercase;
-  color: var(--blob);
-  -webkit-text-stroke-color: var(--modal-pink);
-  text-stroke-color: var(--modal-pink);
+  color: var(--modal-pink);
+  -webkit-text-stroke-color: var(--uranium);
+  text-stroke-color: var(--uranium);
 }
 
 /* ------------------------------------
@@ -400,13 +400,27 @@ body.contact-body{
   }
 }
 
+@media (min-width: 1440px){
+  .contact-form-wrap{
+    width: min(1180px, 72vw);
+  }
+
+  .contact-inner{
+    padding: 4rem 4.4rem;
+  }
+
+  .field-grid {
+    gap: 1.25rem 1.6rem;
+  }
+}
+
 .contact-btn:hover,
 .contact-btn:focus,
 .contact-btn:active{
   text-transform: uppercase;
-  color: var(--blob);
-  -webkit-text-stroke-color: var(--modal-pink);
-  text-stroke-color: var(--modal-pink);
+  color: var(--modal-pink);
+  -webkit-text-stroke-color: var(--uranium);
+  text-stroke-color: var(--uranium);
 }
 
 /* ------------------------------------

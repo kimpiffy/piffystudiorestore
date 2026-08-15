@@ -24,6 +24,26 @@ body.styles-page .site-content {
   box-sizing: border-box;
 }
 
+@media (min-width: 768px) and (max-width: 1199.98px) and (orientation: portrait) {
+  .styles-shell {
+    width: min(100%, calc(100vw - 72px));
+    max-width: calc(100vw - 72px);
+    margin: 0 auto;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) and (orientation: landscape) {
+  .styles-shell {
+    width: min(100%, calc(100vw - 120px));
+    max-width: calc(100vw - 120px);
+    margin: 0 auto;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
 .styles-frame {
   position: relative;
   flex: 0 0 auto;

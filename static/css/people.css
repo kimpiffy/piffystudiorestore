@@ -451,10 +451,13 @@ body.people-page .blob-svg path[id$="_outline"] {
   text-transform: uppercase;
   color: #031624;
   outline: none;
+  text-decoration: none;
 }
 
 .project-cta:focus-visible {
   box-shadow: 0 0 0 4px rgba(255, 165, 0, 0.12);
+  text-decoration: none;
+  outline: none;
 }
 
 @media (max-width: 767px) {
