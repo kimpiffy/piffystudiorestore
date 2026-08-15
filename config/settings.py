@@ -26,18 +26,18 @@ DEBUG = os.getenv("DEBUG", "false").strip().lower() in (
 
 raw_allowed = os.getenv(
     "ALLOWED_HOSTS",
-    "localhost,127.0.0.1,.github.dev,.app.github.dev,piffystudio.onrender.com",
+    "localhost,127.0.0.1,.github.dev,.app.github.dev,piffystudio.onrender.com,piffy.art,www.piffy.art",
 )
 ALLOWED_HOSTS = [h.strip() for h in raw_allowed.split(",") if h.strip()]
 
 SEO_CANONICAL_BASE_URL = os.getenv(
     "SEO_CANONICAL_BASE_URL",
-    "https://piffystudio.onrender.com",
+    "https://piffy.art",
 ).strip().rstrip("/")
 
 raw_production_hosts = os.getenv(
     "SEO_PRODUCTION_HOSTS",
-    "piffystudio.onrender.com",
+    "piffy.art,www.piffy.art",
 )
 SEO_PRODUCTION_HOSTS = [
     h.strip().lower() for h in raw_production_hosts.split(",") if h.strip()
@@ -47,6 +47,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 CSRF_TRUSTED_ORIGINS = [
     "https://piffystudio.onrender.com",
+    "https://piffy.art",
+    "https://www.piffy.art",
 ]
 
 # -------------------------------
