@@ -375,7 +375,7 @@ body.nav-in-flow #navbar {
   position: relative;
   top: 0;
   left: 0;
-  margin: 30px 0 0 60px;
+  margin: 0 0 0 var(--nav-anchor-left, 16px);
 }
 
 /* Smart/revealing nav (opt-in via JS on pages with internally-scrolling
@@ -791,7 +791,7 @@ body.nav-expanded #navbar {
   }
 
   #navbar{
-    --nav-anchor-left: 26px;
+    --nav-anchor-left: 14px;
     --nav-panel-align-shift: 12px;
     --nav-icon-box-size: 42px;
     top: 25px;
@@ -983,7 +983,7 @@ body.nav-expanded #navbar {
 
 @media (min-width: 577px) and (max-width: 991.98px) {
   #navbar {
-    --nav-anchor-left: 35px;
+    --nav-anchor-left: 14px;
     top: 30px;
   }
 
