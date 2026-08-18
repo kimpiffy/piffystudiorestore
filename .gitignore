@@ -20,6 +20,10 @@ staticfiles/
 media/
 db.sqlite3
 
+# ---- NODE / MEDIA OPTIMIZER ----
+node_modules/
+.media-optimizer-state.json
+
 # ---- EDITOR ----
 .vscode/
 .idea/

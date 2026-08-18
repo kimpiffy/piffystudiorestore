@@ -58,6 +58,8 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
     "https://piffystudio.onrender.com",
     "https://piffy.art",
     "https://www.piffy.art",
@@ -121,6 +123,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "pages.context_processors.seo_defaults",
+                "shop.context_processors.cart_count",
             ],
         },
     },
@@ -217,9 +220,22 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+CLOUDINARY_URL = os.getenv("CLOUDINARY_URL", "").strip()
+CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME", "").strip()
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY", "").strip()
+CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET", "").strip()
+HAS_CLOUDINARY_CONFIG = bool(
+    CLOUDINARY_URL
+    or (CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET)
+)
+
 STORAGES = {
     "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"
+        "BACKEND": (
+            "cloudinary_storage.storage.MediaCloudinaryStorage"
+            if HAS_CLOUDINARY_CONFIG
+            else "django.core.files.storage.FileSystemStorage"
+        )
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -228,7 +244,8 @@ STORAGES = {
     },
 }
 
-# Cloudinary reads credentials from env vars configured at deploy/runtime.
+# Cloudinary is used only when its runtime credentials are present.
+# Local development and Codespaces fall back to the default filesystem media store.
 
 # -------------------------------
 # EMAIL CONFIGURATION (Gmail SMTP)

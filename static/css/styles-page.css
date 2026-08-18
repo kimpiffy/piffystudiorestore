@@ -20,8 +20,18 @@ body.styles-page .site-content {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: clamp(4px, 0.8vw, 10px) clamp(4px, 0.9vw, 12px);
+  padding: clamp(10px, 1.4vw, 18px) clamp(12px, 2vw, 28px);
   box-sizing: border-box;
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .styles-shell {
+    width: min(100%, calc(100vw - 110px));
+    max-width: calc(100vw - 110px);
+    margin: 0 auto;
+    padding-left: clamp(24px, 2.2vw, 42px);
+    padding-right: clamp(24px, 2.2vw, 42px);
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1199.98px) and (orientation: portrait) {
@@ -118,7 +128,7 @@ body.styles-page .site-content {
     display: block;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 10px;
+    padding: 10px clamp(10px, 2vw, 18px) 16px;
   }
 
   .styles-frame,
@@ -128,11 +138,21 @@ body.styles-page .site-content {
 
   .styles-scroll-stack {
     display: block;
-    width: 100%;
+    width: min(100%, calc(100vw - 24px));
+    margin: 0 auto;
+    padding-top: 100px;
+    box-sizing: border-box;
   }
 
   .styles-scroll-page {
-    margin: 0 0 10px;
+    width: 100%;
+    margin: 0 auto 32px;
+    padding: 0 clamp(4px, 1.5vw, 12px);
+    box-sizing: border-box;
+  }
+
+  .styles-scroll-page:first-child {
+    margin-top: 0;
   }
 
   .styles-scroll-page:last-child {

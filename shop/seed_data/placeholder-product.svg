@@ -1,0 +1,26 @@
+<svg width="1200" height="1500" viewBox="0 0 1200 1500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Temporary product placeholder</title>
+  <desc id="desc">Neutral placeholder image for local shop development.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f3efe9"/>
+      <stop offset="100%" stop-color="#dfe2e8"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#f5f3ef" stop-opacity="0.76"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#bg)"/>
+  <rect x="170" y="170" width="860" height="1160" rx="36" fill="url(#card)" stroke="#bdb7ae" stroke-width="6"/>
+  <rect x="250" y="260" width="700" height="660" rx="24" fill="#ece8e1" stroke="#c7c0b5" stroke-width="5"/>
+  <path d="M320 840C390 720 460 680 560 620C640 570 745 510 860 780V910H320V840Z" fill="#d4d9dc"/>
+  <circle cx="600" cy="515" r="110" fill="#f0ece7" stroke="#c9c2b5" stroke-width="5"/>
+  <path d="M505 520C545 485 570 470 600 470C630 470 655 485 695 520" fill="none" stroke="#b8b0a8" stroke-width="10" stroke-linecap="round"/>
+  <path d="M550 610C555 670 585 730 645 780" fill="none" stroke="#b8b0a8" stroke-width="12" stroke-linecap="round"/>
+  <rect x="320" y="1000" width="560" height="16" rx="8" fill="#d1c8bc"/>
+  <rect x="320" y="1048" width="410" height="16" rx="8" fill="#d1c8bc"/>
+  <rect x="320" y="1096" width="470" height="16" rx="8" fill="#d1c8bc"/>
+  <text x="600" y="1225" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="52" fill="#4e4b47" font-weight="700">TEMPORARY PLACEHOLDER</text>
+  <text x="600" y="1285" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#66615a">Replace with final artwork after upload</text>
+</svg>

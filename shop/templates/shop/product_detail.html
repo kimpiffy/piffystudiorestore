@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block body_class %}shop-page{% endblock %}
+
 {% block content %}
 
 
@@ -15,10 +17,10 @@
                 {% if images %}
                     <img id="main-img"
                          src="{{ images.0.image.url }}"
-                         class="main-image shadow-sm">
+                         class="main-image">
                 {% else %}
                     <img src="{% static 'img/placeholder.png' %}"
-                         class="main-image shadow-sm">
+                         class="main-image">
                 {% endif %}
             </div>
 
@@ -36,7 +38,7 @@
         <!-- RIGHT SIDE — BUY BOX -->
         <div class="col-md-5">
 
-            <div class="buy-box shadow-sm">
+            <div class="buy-box">
 
                 <h1 class="product-title">{{ product.title }}</h1>
 
@@ -60,18 +62,20 @@
                 <form method="POST" action="{% url 'shop:add_to_cart' product.id %}">
                     {% csrf_token %}
 
-                    <button class="btn btn-dark buy-btn">
+                    <button class="buy-btn">
                         Add to Cart
                     </button>
                 </form>
-
-               
 
             </div>
 
         </div>
 
     </div>
+
+    <p class="shop-back-row">
+        <a class="shop-back" href="{% url 'shop:shop_index' %}">go back</a>
+    </p>
 
 </div>
 

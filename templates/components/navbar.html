@@ -48,10 +48,15 @@
 </nav>
 
 {% if request.path|slice:":6" == "/shop/" %}
-  <a href="{% url 'shop:cart' %}"
-     class="cart-icon-fixed"
-     aria-label="Cart">
-    <span class="cart-icon" role="img" aria-hidden="true"></span>
-  </a>
+  <div class="cart-nav-shell" aria-live="polite">
+    {% if cart_count and cart_count > 0 %}
+      <span class="cart-count-badge">{{ cart_count }}</span>
+    {% endif %}
+    <a href="{% url 'shop:cart' %}"
+       class="cart-icon-fixed"
+       aria-label="Cart">
+      <span class="cart-icon" role="img" aria-hidden="true"></span>
+    </a>
+  </div>
 {% endif %}
 

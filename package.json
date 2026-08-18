@@ -1,0 +1,14 @@
+{
+  "name": "piffystudiorestore",
+  "private": true,
+  "scripts": {
+    "optimize-media": "node scripts/optimize-media.js",
+    "prebuild": "npm run optimize-media"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0",
+    "sharp": "^0.33.5",
+    "svgo": "^3.3.2"
+  }
+}

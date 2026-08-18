@@ -107,9 +107,12 @@
     </div>
   </section>
 
-  <!-- SUCCESS MODAL: only show for contact-success tag -->
   {% for message in messages %}
     {% if 'contact-success' in message.tags %}
+      <div class="contact-success-banner" aria-live="polite">
+        <p class="contact-success-banner__text">{{ message }}</p>
+      </div>
+
       <div class="contact-modal-overlay"
            id="contactModal"
            data-has-messages="true"
@@ -126,10 +129,10 @@
           <p class="contact-modal-subtext">In the meantime, check out our socials:</p>
 
           <div class="contact-modal-socials">
-            <a class="contact-social-btn" href="https://www.instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a class="contact-social-btn" href="https://www.instagram.com/kimpiffy" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <i class="fa-brands fa-instagram"></i>
             </a>
-            <a class="contact-social-btn" href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <a class="contact-social-btn" href="https://www.linkedin.com/in/kimjev/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <i class="fa-brands fa-linkedin-in"></i>
             </a>
           </div>

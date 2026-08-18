@@ -1,0 +1,146 @@
+[
+  {
+    "title": "Harbour Light Study",
+    "slug": "harbour-light-study",
+    "category": "Paintings",
+    "description": "A small atmospheric coastal study exploring layered blues, reflections and soft dusk light.",
+    "price": "420.00",
+    "stock": 2,
+    "featured": true
+  },
+  {
+    "title": "Moss Window",
+    "slug": "moss-window",
+    "category": "Paintings",
+    "description": "A textural interior piece balancing muted greens, warm neutrals and natural shadow play.",
+    "price": "360.00",
+    "stock": 3,
+    "featured": false
+  },
+  {
+    "title": "Tidal Echoes",
+    "slug": "tidal-echoes",
+    "category": "Prints",
+    "description": "Editioned print with layered marks and a rising tide palette inspired by shoreline movement.",
+    "price": "180.00",
+    "stock": 8,
+    "featured": true
+  },
+  {
+    "title": "Cinder Bloom",
+    "slug": "cinder-bloom",
+    "category": "Mixed Media",
+    "description": "A layered mixed-media work built from gestural marks, textured surfaces and quiet floral resonance.",
+    "price": "540.00",
+    "stock": 1,
+    "featured": false
+  },
+  {
+    "title": "Stone and Salt",
+    "slug": "stone-and-salt",
+    "category": "Sculptural Objects",
+    "description": "A compact sculptural composition using earthy tonal contrasts and a rough, weathered finish.",
+    "price": "610.00",
+    "stock": 1,
+    "featured": true
+  },
+  {
+    "title": "Field Notes No. 4",
+    "slug": "field-notes-no-4",
+    "category": "Prints",
+    "description": "A small edition that pairs delicate line work with a natural palette and warm paper tones.",
+    "price": "140.00",
+    "stock": 10,
+    "featured": false
+  },
+  {
+    "title": "River Room",
+    "slug": "river-room",
+    "category": "Paintings",
+    "description": "An abstracted interior landscape capturing river light, open space and tonal drift.",
+    "price": "470.00",
+    "stock": 2,
+    "featured": false
+  },
+  {
+    "title": "Wren Arch",
+    "slug": "wren-arch",
+    "category": "Wall Pieces",
+    "description": "A pared-back wall piece with architectural rhythm and a restrained palette of stone and clay.",
+    "price": "390.00",
+    "stock": 4,
+    "featured": true
+  },
+  {
+    "title": "Soft Horizon",
+    "slug": "soft-horizon",
+    "category": "Paintings",
+    "description": "A calm horizon study balancing pale sky tones with quiet land forms and open space.",
+    "price": "300.00",
+    "stock": 5,
+    "featured": false
+  },
+  {
+    "title": "Glass Meadow",
+    "slug": "glass-meadow",
+    "category": "Prints",
+    "description": "A layered botanical print with translucent colour fields and a softly reflective mood.",
+    "price": "165.00",
+    "stock": 9,
+    "featured": false
+  },
+  {
+    "title": "Evening Quarry",
+    "slug": "evening-quarry",
+    "category": "Mixed Media",
+    "description": "Textural and tonal, this mixed-media work explores the friction between stone, shadow and evening air.",
+    "price": "580.00",
+    "stock": 1,
+    "featured": true
+  },
+  {
+    "title": "Dune Mark",
+    "slug": "dune-mark",
+    "category": "Wall Pieces",
+    "description": "A concise, sculptural composition drawing from dunes, movement and the quiet geometry of marks.",
+    "price": "310.00",
+    "stock": 6,
+    "featured": false
+  },
+  {
+    "title": "Night Garden Fold",
+    "slug": "night-garden-fold",
+    "category": "Paintings",
+    "description": "Deep greens and dusky neutrals fold into a quiet, contemplative garden study.",
+    "price": "420.00",
+    "stock": 2,
+    "featured": true
+  },
+  {
+    "title": "Salt Line",
+    "slug": "salt-line",
+    "category": "Prints",
+    "description": "Minimal marks and textural grain suggest the edge of a shoreline in soft, weathered daylight.",
+    "price": "155.00",
+    "stock": 11,
+    "featured": false
+  },
+  {
+    "title": "Signal Bloom",
+    "slug": "signal-bloom",
+    "category": "Sculptural Objects",
+    "description": "A small sculptural object balancing colour, volume and quiet rhythm in a compact form.",
+    "price": "680.00",
+    "stock": 1,
+    "featured": true
+  },
+  {
+    "title": "Liminal Study",
+    "slug": "liminal-study",
+    "category": "Mixed Media",
+    "description": "A transitional piece mixing soft edges, layered textures and subtle traces of landscape memory.",
+    "price": "510.00",
+    "stock": 3,
+    "featured": false
+  }
+]

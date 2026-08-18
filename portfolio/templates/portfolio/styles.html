@@ -135,7 +135,7 @@
         "(orientation: landscape) and (min-width: 768px) and (max-width: 1199.98px)"
       );
       var desktopLarge = window.innerWidth >= 1280;
-      var scale = landscapeTablet.matches ? 0.75 : desktopLarge ? 1.02 : 1;
+      var scale = landscapeTablet.matches ? 0.75 : desktopLarge ? 0.92 : 1;
 
       var aspect = PAGE_W / PAGE_H;
       var width = availW * scale;
@@ -165,12 +165,14 @@
         if (!totalWidth) return;
 
         var innerWidth = totalWidth - SCALLOP_MARGIN * 2;
-        var scale = innerWidth / PAGE_W;
+        var mobileScaleAdjust = window.innerWidth <= 767 ? 0.96 : 1;
+        var adjustedWidth = innerWidth * mobileScaleAdjust;
+        var scale = adjustedWidth / PAGE_W;
         var innerHeight = Math.round(PAGE_H * scale);
 
         iframe.style.transform = "scale(" + scale + ")";
 
-        applyScallop(frameEl, viewportEl, svgEl, pathEl, innerWidth, innerHeight);
+        applyScallop(frameEl, viewportEl, svgEl, pathEl, adjustedWidth, innerHeight);
       });
     }
 
@@ -187,32 +189,6 @@
     refresh();
     window.addEventListener("resize", refresh);
     scrollModeQuery.addEventListener("change", refresh);
-
-    // Smart/revealing nav: hides on scroll-down, reappears instantly on
-    // scroll-up, only while this page's internal stack is scrolling on
-    // mobile / short-landscape. Desktop/flipbook mode is untouched.
-    var lastScrollTop = 0;
-    shell.addEventListener(
-      "scroll",
-      function () {
-        if (!scrollModeQuery.matches) return;
-
-        var navbar = document.getElementById("navbar");
-        if (!navbar) return;
-
-        var scrollTop = shell.scrollTop;
-        var delta = scrollTop - lastScrollTop;
-
-        if (delta > 4 && scrollTop > 24) {
-          navbar.classList.add("nav-hidden");
-        } else if (delta < -4 || scrollTop <= 24) {
-          navbar.classList.remove("nav-hidden");
-        }
-
-        lastScrollTop = scrollTop;
-      },
-      { passive: true }
-    );
   })();
 </script>
 {% endblock %}

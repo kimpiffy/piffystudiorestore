@@ -358,6 +358,34 @@ class ContactAnimationController {
     const otherWrap = document.getElementById("otherWrap");
     const otherInput = document.getElementById("other_specify");
 
+    const fields = document.querySelectorAll(".contact-form input, .contact-form select, .contact-form textarea");
+
+    function updateFieldState(field) {
+      if (!field) return;
+
+      const isCheckbox = field.type === "checkbox";
+      const value = String(field.value || "").trim();
+      const hasValue = isCheckbox ? field.checked : value.length > 0;
+
+      field.classList.toggle("is-filled", hasValue);
+    }
+
+    fields.forEach((field) => {
+      field.addEventListener("input", () => updateFieldState(field));
+      field.addEventListener("change", () => updateFieldState(field));
+      field.addEventListener("blur", () => updateFieldState(field));
+      updateFieldState(field);
+    });
+
+    const refreshFilledStates = () => {
+      fields.forEach((field) => updateFieldState(field));
+    };
+
+    window.addEventListener("load", refreshFilledStates);
+    window.addEventListener("pageshow", refreshFilledStates);
+    setTimeout(refreshFilledStates, 150);
+    setTimeout(refreshFilledStates, 500);
+
     if (!select || !otherWrap || !otherInput) return;
 
     function sync() {
@@ -370,6 +398,8 @@ class ContactAnimationController {
         otherInput.removeAttribute("required");
         otherInput.value = "";
       }
+
+      updateFieldState(select);
     }
 
     select.addEventListener("change", sync);

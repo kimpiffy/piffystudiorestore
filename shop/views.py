@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
+from accounts.decorators import staff_required
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
@@ -117,7 +118,7 @@ def add_to_cart(request, product_id):
             CartItem.objects.create(cart=cart, product=product, quantity=1)
 
         messages.success(request, f"{product.title} added to cart.")
-        return redirect("shop:cart")
+        return redirect(request.META.get("HTTP_REFERER", "shop:shop_index"))
 
     # GUEST USER - SESSION CART
     cart = get_session_cart(request)
@@ -135,7 +136,7 @@ def add_to_cart(request, product_id):
 
     save_session_cart(request, cart)
     messages.success(request, f"{product.title} added to cart.")
-    return redirect("shop:cart")
+    return redirect(request.META.get("HTTP_REFERER", "shop:shop_index"))
 
 
 # ===========================================================
@@ -197,8 +198,23 @@ def cart_view(request):
     # LOGGED-IN
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)
-        items = cart.items.all()
-        total = sum(item.total_price for item in items)
+        items = []
+        total = 0
+
+        for item in cart.items.all():
+            image_url = None
+            if item.product.images.exists():
+                image_url = item.product.images.first().image.url
+
+            items.append({
+                "id": item.id,
+                "title": item.product.title,
+                "product": item.product,
+                "quantity": item.quantity,
+                "total_price": item.total_price,
+                "image_url": image_url,
+            })
+            total += item.total_price
 
         return render(request, "shop/cart.html", {
             "cart": cart,
@@ -218,12 +234,19 @@ def cart_view(request):
     total = 0
 
     for pid, data in cart.items():
+        product = Product.objects.filter(id=int(pid)).first()
+        image_url = None
+        if product and product.images.exists():
+            image_url = product.images.first().image.url
+
         total += data["price"] * data["quantity"]
         items.append({
-            "id": pid,
-            "title": data["title"],
+            "id": int(pid),
+            "title": product.title if product else data.get("title", "Product"),
+            "product": product,
             "quantity": data["quantity"],
             "total_price": data["price"] * data["quantity"],
+            "image_url": image_url,
         })
 
     return render(request, "shop/cart.html", {
@@ -304,6 +327,14 @@ def create_checkout_session(request):
     if request.method != "POST":
         return redirect("shop:cart")
 
+    if not getattr(settings, "STRIPE_SECRET_KEY", None):
+        messages.error(
+            request,
+            "Checkout is temporarily unavailable because Stripe is not configured. "
+            "Please contact the site owner or try again later.",
+        )
+        return redirect("shop:cart")
+
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
     # GET ITEMS
@@ -371,7 +402,7 @@ def create_checkout_session(request):
 # MANAGEMENT (ADMIN AREA)
 # ===========================================================
 
-@login_required
+@staff_required
 def manage_products(request):
     products = Product.objects.all().order_by('-created_at')
     return render(
@@ -381,7 +412,7 @@ def manage_products(request):
     )
 
 
-@login_required
+@staff_required
 def add_product(request):
     if request.method == "POST":
         form = ProductForm(request.POST)
@@ -395,7 +426,7 @@ def add_product(request):
     return render(request, "shop/manage/product_form.html", {"form": form})
 
 
-@login_required
+@staff_required
 def edit_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
@@ -418,7 +449,7 @@ def edit_product(request, pk):
     })
 
 
-@login_required
+@staff_required
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
@@ -426,7 +457,7 @@ def delete_product(request, pk):
     return redirect("shop:manage_products")
 
 
-@login_required
+@staff_required
 def bulk_delete(request):
     ids = request.POST.getlist("ids")
     Product.objects.filter(id__in=ids).delete()
@@ -434,7 +465,7 @@ def bulk_delete(request):
     return redirect("shop:manage_products")
 
 
-@login_required
+@staff_required
 def duplicate_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.pk = None
@@ -448,7 +479,7 @@ def duplicate_product(request, pk):
 # IMAGE MANAGEMENT
 # ===========================================================
 
-@login_required
+@staff_required
 def upload_product_image(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
@@ -459,7 +490,7 @@ def upload_product_image(request, product_id):
     return redirect("shop:edit_product", pk=product_id)
 
 
-@login_required
+@staff_required
 def delete_product_image(request, image_id):
     image = get_object_or_404(ProductImage, pk=image_id)
     product_id = image.product.id
@@ -468,7 +499,7 @@ def delete_product_image(request, image_id):
     return redirect("shop:edit_product", pk=product_id)
 
 
-@login_required
+@staff_required
 def update_image_order(request):
     if request.method == "POST":
         order = request.POST.getlist("order[]")
@@ -481,7 +512,7 @@ def update_image_order(request):
 # CATEGORY MANAGEMENT
 # ===========================================================
 
-@login_required
+@staff_required
 def manage_categories(request):
     categories = Category.objects.all()
     return render(
@@ -491,7 +522,7 @@ def manage_categories(request):
     )
 
 
-@login_required
+@staff_required
 def add_category(request):
     if request.method == "POST":
         form = CategoryForm(request.POST)
@@ -505,7 +536,7 @@ def add_category(request):
     return render(request, "shop/manage/category_form.html", {"form": form})
 
 
-@login_required
+@staff_required
 def edit_category(request, pk):
     category = get_object_or_404(Category, pk=pk)
 
@@ -524,7 +555,7 @@ def edit_category(request, pk):
     })
 
 
-@login_required
+@staff_required
 def delete_category(request, pk):
     category = get_object_or_404(Category, pk=pk)
     category.delete()
@@ -536,7 +567,7 @@ def delete_category(request, pk):
 # VARIANT MANAGEMENT
 # ===========================================================
 
-@login_required
+@staff_required
 def add_variant(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
@@ -557,7 +588,7 @@ def add_variant(request, product_id):
     })
 
 
-@login_required
+@staff_required
 def edit_variant(request, variant_id):
     variant = get_object_or_404(ProductVariant, pk=variant_id)
     product = variant.product
@@ -578,7 +609,7 @@ def edit_variant(request, variant_id):
     })
 
 
-@login_required
+@staff_required
 def delete_variant(request, variant_id):
     variant = get_object_or_404(ProductVariant, pk=variant_id)
     product_id = variant.product.id
@@ -694,13 +725,13 @@ def stripe_webhook(request):
 # ORDER MANAGEMENT
 # ===========================================================
 
-@login_required
+@staff_required
 def manage_orders(request):
     orders = Order.objects.all().order_by("-created_at")
     return render(request, "shop/manage/orders_list.html", {"orders": orders})
 
 
-@login_required
+@staff_required
 def order_detail(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
 

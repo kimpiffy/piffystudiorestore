@@ -231,9 +231,11 @@ body.contact-body{
 .contact-form input:-webkit-autofill,
 .contact-form textarea:-webkit-autofill,
 .contact-form select:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px var(--uranium) inset !important;
-  box-shadow: 0 0 0px 1000px var(--uranium) inset !important;
+  background: var(--modal-pink) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--modal-pink) inset !important;
+  box-shadow: 0 0 0px 1000px var(--modal-pink) inset !important;
   -webkit-text-fill-color: #031624 !important;
+  border-color: var(--uranium) !important;
 }
 
 .contact-form textarea{
@@ -243,10 +245,13 @@ body.contact-body{
 
 .contact-form input:focus,
 .contact-form select:focus,
-.contact-form textarea:focus{
+.contact-form textarea:focus,
+.contact-form input.is-filled,
+.contact-form select.is-filled,
+.contact-form textarea.is-filled{
   background: var(--modal-pink) !important;
-    border-color: var(--uranium);
-  box-shadow: 0 0 0 2px rgba(255, 169, 49, 0.34);
+  border-color: var(--uranium);
+  box-shadow: 0 0 0 2px rgba(224, 255, 154, 0.32);
 }
 
 .is-hidden{
@@ -584,8 +589,32 @@ body.contact-body{
 }
 
 /* ------------------------------------
-   SUCCESS MODAL – FADE + SCALE + TYPO
+   SUCCESS BANNER + MODAL – FADE + SCALE + TYPO
 ------------------------------------ */
+
+.contact-success-banner{
+  position: fixed;
+  left: 50%;
+  top: 1.25rem;
+  transform: translateX(-50%);
+  z-index: 12000;
+  width: min(640px, calc(100vw - 2rem));
+  background: rgba(123, 108, 246, 0.96);
+  border: 1px solid rgba(255, 75, 179, 0.9);
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(3, 22, 36, 0.25);
+  padding: 0.8rem 1.2rem;
+}
+
+.contact-success-banner__text{
+  margin: 0;
+  text-align: center;
+  color: #031624;
+  font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 
 /* Overlay: hidden by default */
 .contact-modal-overlay{

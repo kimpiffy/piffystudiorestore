@@ -1,61 +1,81 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-<div class="container py-5">
+{% block body_class %}shop-page{% endblock %}
 
-    <h1 class="fw-bold mb-4">Your Cart</h1>
+{% block content %}
+<div class="cart-page-shell">
+
+    <h1 class="cart-page-title">Your Cart</h1>
 
     {% if items %}
-    <table class="table align-middle">
-        <thead class="table-light">
-            <tr>
-                <th>Product</th>
-                <th style="width:120px">Quantity</th>
-                <th>Total</th>
-                <th></th>
-            </tr>
-        </thead>
+    <div class="cart-table-wrap">
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th class="cart-header-cell">Product</th>
+                    <th class="cart-header-cell" style="width:160px">Quantity</th>
+                    <th class="cart-header-cell">Total</th>
+                    <th class="cart-header-cell cart-header-actions">Actions</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td>{{ item.product.title }}</td>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td class="cart-product-cell">
+                        <div class="cart-product-meta">
+                            {% if item.image_url %}
+                                <img class="cart-product-thumb" src="{{ item.image_url }}" alt="{{ item.product.title|default:item.title }}">
+                            {% elif item.product and item.product.images.first %}
+                                <img class="cart-product-thumb" src="{{ item.product.images.first.image.url }}" alt="{{ item.product.title }}">
+                            {% endif %}
+                            <span class="cart-product-name">{{ item.product.title|default:item.title }}</span>
+                        </div>
+                    </td>
 
-                <td>
-                    <form method="POST" action="{% url 'shop:update_cart_item' item.id %}">
-                        {% csrf_token %}
-                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
-                               class="form-control form-control-sm"
-                               onchange="this.form.submit()">
-                    </form>
-                </td>
+                    <td>
+                        <form id="update-form-{{ item.id }}" method="POST" action="{% url 'shop:update_cart_item' item.id %}" class="cart-qty-form">
+                            {% csrf_token %}
+                            <div class="cart-qty-wrap">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="cart-qty-input">
+                            </div>
+                        </form>
+                    </td>
 
-                <td>£{{ item.total_price }}</td>
+                    <td class="cart-line-total">£{{ item.total_price }}</td>
 
-                <td>
-                    <a href="{% url 'shop:remove_from_cart' item.id %}"
-                       class="btn btn-outline-danger btn-sm">
-                        Remove
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    <td class="cart-action-cell">
+                        <div class="cart-action-group">
+                            <button type="submit" form="update-form-{{ item.id }}" class="cart-update-btn">Update</button>
+                            <a href="{% url 'shop:remove_from_cart' item.id %}" class="cart-remove-btn">
+                                Remove
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <h3 class="mt-4">Total: £{{ total }}</h3>
+    <div class="cart-summary">
+        <h3 class="cart-total">Total: £{{ total }}</h3>
 
-  <form action="{% url 'shop:create_checkout_session' %}" method="POST">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-dark btn-lg mt-4">
-        Checkout with Stripe
-    </button>
-</form>
+        <form action="{% url 'shop:create_checkout_session' %}" method="POST" class="cart-checkout-form">
+            {% csrf_token %}
+            <button type="submit" class="cart-checkout-btn">
+                checkout
+            </button>
+        </form>
+    </div>
 
+    <p class="shop-back-row cart-back-row">
+        <a class="shop-back" href="{% url 'shop:shop_index' %}">go back</a>
+    </p>
 
     {% else %}
-        <p class="text-muted">Your cart is empty.</p>
+        <p class="cart-empty">Your cart is empty.</p>
     {% endif %}
 
 </div>

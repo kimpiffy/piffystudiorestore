@@ -53,16 +53,18 @@
                 </div>
 
                 <!-- FEATURED IMAGE -->
-                {% if product.featured %}
-                <img src="{{ product.featured.image.url }}"
-                     class="card-img-top"
-                     style="height: 200px; object-fit: cover;">
-                {% else %}
-                <div class="bg-light d-flex align-items-center justify-content-center"
-                     style="height: 200px;">
-                    <span class="text-muted">No Image</span>
-                </div>
-                {% endif %}
+                {% with first_image=product.images.first %}
+                    {% if first_image %}
+                    <img src="{{ first_image.image.url }}"
+                         class="card-img-top"
+                         style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center"
+                         style="height: 200px;">
+                        <span class="text-muted">No Image</span>
+                    </div>
+                    {% endif %}
+                {% endwith %}
 
                 <div class="card-body">
                     <h5 class="card-title">{{ product.title }}</h5>

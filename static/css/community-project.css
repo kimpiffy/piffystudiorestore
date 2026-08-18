@@ -31,9 +31,10 @@ body.community-project-page .site-content {
 }
 
 .community-project-shell {
-  width: min(1200px, 92vw);
+  width: min(1200px, calc(100% - clamp(140px, 18vw, 260px)));
   margin: 0 auto;
   padding: 8rem 0 6rem;
+  box-sizing: border-box;
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -309,7 +310,7 @@ body.modal-open {
 
 .project-back {
   text-decoration: none;
-  font-size: clamp(1.4rem, 2.15vw, 2rem);
+  font-size: clamp(1.8rem, 2.9vw, 2.7rem);
   -webkit-text-stroke: 0.65px var(--community-pink);
   transition: transform 140ms ease, color 140ms ease, -webkit-text-stroke-color 140ms ease;
 }
@@ -328,8 +329,14 @@ body.modal-open {
 
 @media (max-width: 991.98px) {
   .community-project-shell {
-    width: 90vw;
+    width: min(100%, calc(100vw - clamp(96px, 12vw, 140px)));
     padding-top: 7.2rem;
+  }
+
+  .project-title {
+    justify-self: center;
+    text-align: center;
+    width: 100%;
   }
 
   .project-intro-grid {
@@ -360,9 +367,20 @@ body.modal-open {
 
 @media (max-width: 575.98px) {
   .community-project-shell {
-    width: 92vw;
+    width: min(100%, calc(100vw - clamp(56px, 8vw, 84px)));
     padding-top: 6.6rem;
     padding-bottom: 5.2rem;
+  }
+
+  .project-title {
+    text-align: center;
+    justify-self: center;
+    width: 100%;
+    font-size: clamp(2.8rem, 11vw, 4.4rem);
+  }
+
+  .project-back {
+    font-size: clamp(2rem, 8vw, 2.8rem);
   }
 
   .blob-frame--hero {

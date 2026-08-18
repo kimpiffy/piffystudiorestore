@@ -21,6 +21,7 @@
   const navPanel = document.querySelector('.nav-panel');
   const workDropdown = document.getElementById('workDropdown');
   const dropdownMenu = document.querySelector('.dropdown-menu');
+  const cartLink = document.querySelector('.cart-icon-fixed');
   
   // State
   let hoverEnterTimer = null;
@@ -251,6 +252,15 @@
   
   // Handle clicks outside nav to close
   function handleDocumentClick(event) {
+    const clickedCart = event.target && event.target.closest && event.target.closest('.cart-icon-fixed');
+
+    if (clickedCart) {
+      event.stopPropagation();
+      document.body.classList.remove('nav-expanded');
+      closeNav();
+      return;
+    }
+
     if (!navOpen) return;
     
     if (!navbar.contains(event.target)) {
@@ -293,6 +303,14 @@
     
     // Click behavior (works on both desktop and touch)
     navToggler.addEventListener('click', handleNavClick);
+
+    if (cartLink) {
+      cartLink.addEventListener('click', function(event) {
+        event.stopPropagation();
+        document.body.classList.remove('nav-expanded');
+        closeNav();
+      }, { passive: true });
+    }
     
     if (workDropdown) {
       workDropdown.addEventListener('click', handleDropdownClick);
@@ -316,10 +334,96 @@
 (function() {
   'use strict';
 
+  function setupSmartScrollNav(targets) {
+    const navbar = document.getElementById('navbar');
+    const scrollTargets = Array.isArray(targets) ? targets : [targets];
+    const activeTargets = scrollTargets.filter(Boolean);
+    if (!navbar || activeTargets.length === 0) return;
+
+    const state = { lastScrollTop: 0 };
+
+    const getScrollTop = function(target) {
+      if (!target) return 0;
+      if (target === window || target === document || target === document.documentElement || target === document.body) {
+        return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      }
+      return target.scrollTop || 0;
+    };
+
+    function handleScroll() {
+      let scrollTop = 0;
+      activeTargets.forEach(function(target) {
+        scrollTop = Math.max(scrollTop, getScrollTop(target));
+      });
+
+      const delta = scrollTop - state.lastScrollTop;
+
+      if (delta > 4 && scrollTop > 24) {
+        navbar.classList.add('nav-hidden');
+      } else if (delta < -4 || scrollTop <= 24) {
+        navbar.classList.remove('nav-hidden');
+      }
+
+      state.lastScrollTop = scrollTop;
+    }
+
+    handleScroll();
+
+    activeTargets.forEach(function(target) {
+      const key = target === window ? 'window' : (target.dataset && target.dataset.smartScrollKey) || 'scroll-target';
+      if (target.__smartScrollNavBound && target.__smartScrollNavBound[key]) return;
+
+      target.addEventListener('scroll', handleScroll, { passive: true });
+
+      if (!target.__smartScrollNavBound) {
+        target.__smartScrollNavBound = {};
+      }
+      target.__smartScrollNavBound[key] = true;
+    });
+  }
+
   const body = document.body;
   if (!body) return;
 
+  if (body.classList.contains('community-project-page')) {
+    const pageScrollRoot = document.scrollingElement || document.querySelector('.site-content') || window;
+    const communityScrollTargets = [window, document.querySelector('.site-content'), pageScrollRoot].filter(Boolean);
+    setupSmartScrollNav(communityScrollTargets);
+  }
+
+  if (body.classList.contains('shop-page')) {
+    const pageScrollRoot = document.scrollingElement || document.querySelector('.site-content') || window;
+    const shopScrollTargets = [window, document.querySelector('.site-content'), pageScrollRoot].filter(Boolean);
+    setupSmartScrollNav(shopScrollTargets);
+  }
+
+  const stylesShell = document.querySelector('.styles-shell');
+  if (stylesShell) {
+    const scrollModeQuery = window.matchMedia(
+      '(max-width: 767px), (orientation: landscape) and (max-height: 600px)'
+    );
+
+    function applyStylesNavBehavior() {
+      if (scrollModeQuery.matches) {
+        setupSmartScrollNav(stylesShell);
+      }
+    }
+
+    applyStylesNavBehavior();
+
+    if (scrollModeQuery.addEventListener) {
+      scrollModeQuery.addEventListener('change', applyStylesNavBehavior);
+    } else if (scrollModeQuery.addListener) {
+      scrollModeQuery.addListener(applyStylesNavBehavior);
+    }
+  }
+
   function shouldUseInFlowNav() {
+    if (body.classList.contains('shop-page') || body.classList.contains('styles-page')) {
+      body.classList.remove('nav-in-flow');
+      return false;
+    }
+
     const root = document.scrollingElement || document.documentElement;
     return root.scrollHeight - window.innerHeight > 32;
   }
