@@ -617,13 +617,13 @@ body.about-page .about-word.is-wobbling .wobble-span{
   }
 
   body.about-page #navbar .nav-x {
-    margin-left: 8px !important;
+    margin-left: 0 !important;
     padding-left: 0 !important;
   }
 
   body.about-page .nav-panel {
     top: calc(100% + 12px) !important;
-    left: -10px !important;
+    left: -20px !important;
     right: auto !important;
   }
 
