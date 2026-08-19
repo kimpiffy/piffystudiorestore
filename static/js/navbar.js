@@ -419,7 +419,7 @@
   }
 
   function shouldUseInFlowNav() {
-    if (body.classList.contains('shop-page') || body.classList.contains('styles-page')) {
+    if (body.classList.contains('about-page') || body.classList.contains('shop-page') || body.classList.contains('styles-page')) {
       body.classList.remove('nav-in-flow');
       return false;
     }
