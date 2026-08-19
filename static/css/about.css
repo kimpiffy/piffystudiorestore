@@ -596,12 +596,6 @@ body.about-page .about-word.is-wobbling .wobble-span{
 }
 
 @media (max-width: 991.98px){
-  body.about-page {
-    min-height: auto !important;
-    height: auto !important;
-    max-height: none !important;
-  }
-
   body.about-page header {
     height: 0 !important;
     min-height: 0 !important;
@@ -610,9 +604,9 @@ body.about-page .about-word.is-wobbling .wobble-span{
   }
 
   body.about-page .site-content {
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
     margin-top: 0 !important;
     padding-top: 0 !important;
   }
@@ -620,9 +614,9 @@ body.about-page .about-word.is-wobbling .wobble-span{
   body.about-page .about-stage {
     top: 0 !important;
     margin-top: 0 !important;
-    min-height: 0 !important;
-    height: auto !important;
-    max-height: none !important;
+    min-height: 100dvh !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
   }
 }
 
