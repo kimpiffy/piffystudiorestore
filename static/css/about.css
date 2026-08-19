@@ -610,20 +610,20 @@ body.about-page .about-word.is-wobbling .wobble-span{
   body.about-page #navbar {
     position: fixed !important;
     top: 30px !important;
-    left: 26px !important;
+    left: 34px !important;
     right: auto !important;
     margin: 0 !important;
     z-index: 2000;
   }
 
   body.about-page #navbar .nav-x {
-    margin-left: 0 !important;
+    margin-left: 8px !important;
     padding-left: 0 !important;
   }
 
   body.about-page .nav-panel {
     top: calc(100% + 12px) !important;
-    left: -18px !important;
+    left: -10px !important;
     right: auto !important;
   }
 
