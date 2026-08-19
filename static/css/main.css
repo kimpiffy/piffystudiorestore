@@ -796,7 +796,7 @@ body.nav-expanded #navbar {
   }
 
   #navbar{
-    --nav-anchor-left: 14px;
+    --nav-anchor-left: 34px;
     --nav-panel-align-shift: 12px;
     --nav-icon-box-size: 42px;
     top: 25px;
@@ -806,7 +806,7 @@ body.nav-expanded #navbar {
   /* Keep open-state menu aligned with the adjusted mobile nav anchor. */
   .nav-panel {
     top: calc(100% + 11px);
-    left: -30px;
+    left: -20px;
     right: auto;
   }
 
@@ -834,9 +834,13 @@ body.nav-expanded #navbar {
 
 /* Small breakpoint through tablet: current alignment retained. */
 @media (min-width: 577px) and (max-width: 991.98px) {
+  #navbar {
+    --nav-anchor-left: 34px;
+  }
+
   .nav-panel {
     top: calc(100% + 10px);
-    left: -35px;
+    left: -20px;
     right: auto;
   }
 
