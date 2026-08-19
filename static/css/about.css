@@ -595,6 +595,31 @@ body.about-page .about-word.is-wobbling .wobble-span{
   }
 }
 
+@media (max-width: 991.98px){
+  body.about-page header {
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: visible;
+  }
+
+  body.about-page .site-content {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  body.about-page .about-stage {
+    top: 0 !important;
+    margin-top: 0 !important;
+    min-height: 100dvh !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+  }
+}
+
 /* Mobile: static tags + huge blob spill */
 @media (max-width: 767px){
 
