@@ -7,7 +7,7 @@
   --site-header-h: 92px;
 }
 
-/* Page owns viewport */
+/* Page owns viewport on desktop; mobile uses a normal scroll flow */
 html,
 body.digital-page{
   height: 100%;
@@ -22,6 +22,14 @@ body.digital-page img,
 body.digital-page svg,
 body.digital-page video{
   max-width: 100vw;
+}
+
+@media (max-width: 991px) {
+  html,
+  body.digital-page {
+    overflow-x: hidden;
+    overflow-y: auto !important;
+  }
 }
 
 /* theme vars (override main.css vars) */
@@ -67,7 +75,30 @@ body.digital-page{
   overflow: hidden;
 }
 
-/* >=768: allow blobs to escape, keep body locked */
+@media (max-width: 991px) {
+  html,
+  body.digital-page {
+    overflow-x: hidden;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  .showcase {
+    height: auto !important;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .blob-layer {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* >=768: allow blobs to escape, keep the desktop composition locked to the viewport */
 @media (min-width: 768px){
   .showcase{ overflow: visible; }
   html, body.digital-page{ overflow: hidden; }

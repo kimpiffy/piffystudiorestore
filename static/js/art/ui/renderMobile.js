@@ -5,11 +5,19 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
   blobLayer.classList.remove("portfolio-mosaic-host");
   blobLayer.classList.remove("blob-gallery", "static-grid");
   blobLayer.innerHTML = "";
-  blobLayer.style.display = "flex";
-  blobLayer.style.flexDirection = "column";
-  blobLayer.style.alignItems = "center";
-  blobLayer.style.gap = "1rem";
+
+  const mobileWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
+  const isTwoColumn = mobileWidth >= 576 && mobileWidth <= 991;
+
+  blobLayer.style.display = isTwoColumn ? "grid" : "flex";
+  blobLayer.style.gridTemplateColumns = isTwoColumn ? "repeat(2, minmax(0, 1fr))" : "none";
+  blobLayer.style.flexDirection = isTwoColumn ? "row" : "column";
+  blobLayer.style.alignItems = isTwoColumn ? "start" : "center";
+  blobLayer.style.justifyItems = isTwoColumn ? "center" : "normal";
+  blobLayer.style.gap = isTwoColumn ? "1.35rem 1rem" : "1rem";
   blobLayer.style.width = "100%";
+  blobLayer.style.maxWidth = isTwoColumn ? "min(100%, 760px)" : "100%";
+  blobLayer.style.margin = isTwoColumn ? "0 auto" : "0";
   blobLayer.style.overflow = "visible";
 
   const stack = projects.map((project) => {
@@ -21,7 +29,8 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
     const item = document.createElement("div");
     item.className = "mobile-blob-stack-item";
     item.style.display = "block";
-    item.style.width = "100%";
+    item.style.width = isTwoColumn ? "min(100%, 310px)" : "100%";
+    item.style.maxWidth = isTwoColumn ? "310px" : "none";
     item.style.overflow = "visible";
 
     const button = document.createElement("button");
@@ -29,10 +38,10 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
     button.className = "mobile-art-blob";
     button.setAttribute("data-id", String(project.id));
     button.setAttribute("aria-label", project.title || `Project ${project.id}`);
-    button.style.width = "min(100vw, 400px)";
-    button.style.height = "min(100vw, 400px)";
-    button.style.maxWidth = "400px";
-    button.style.maxHeight = "400px";
+    button.style.width = isTwoColumn ? "min(100%, 290px)" : "min(100vw, 400px)";
+    button.style.height = isTwoColumn ? "min(100%, 290px)" : "min(100vw, 400px)";
+    button.style.maxWidth = isTwoColumn ? "290px" : "400px";
+    button.style.maxHeight = isTwoColumn ? "290px" : "400px";
     button.style.border = "0";
     button.style.background = "transparent";
     button.style.padding = "0";

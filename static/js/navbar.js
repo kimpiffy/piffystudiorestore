@@ -391,10 +391,10 @@
     setupSmartScrollNav(communityScrollTargets);
   }
 
-  if (body.classList.contains('shop-page')) {
+  if (body.classList.contains('shop-page') || body.classList.contains('art-page') || body.classList.contains('digital-page')) {
     const pageScrollRoot = document.scrollingElement || document.querySelector('.site-content') || window;
-    const shopScrollTargets = [window, document.querySelector('.site-content'), pageScrollRoot].filter(Boolean);
-    setupSmartScrollNav(shopScrollTargets);
+    const scrollTargets = [window, document.querySelector('.site-content'), pageScrollRoot].filter(Boolean);
+    setupSmartScrollNav(scrollTargets);
   }
 
   const stylesShell = document.querySelector('.styles-shell');

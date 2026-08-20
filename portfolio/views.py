@@ -537,6 +537,7 @@ def art(request):
             "title": "Untitled I",
             "description": "A series exploring color dialogue and form.",
             "cover": "/static/img/art/piece-one.jpg",
+            "cover_focus_y": "Mid",
             "slug": "untitled-i",
         },
         {
@@ -546,6 +547,7 @@ def art(request):
                 "Digital exploration of movement and transformation."
             ),
             "cover": "/static/img/art/piece-two.jpg",
+            "cover_focus_y": "Mid",
             "slug": "transition",
         },
         {
@@ -553,6 +555,7 @@ def art(request):
             "title": "Luminescence",
             "description": "Mixed media study on light and perception.",
             "cover": "/static/img/art/piece-three.jpg",
+            "cover_focus_y": "Mid",
             "slug": "luminescence",
         },
         {
@@ -560,6 +563,7 @@ def art(request):
             "title": "Fragments",
             "description": "Conceptual work examining broken systems.",
             "cover": "/static/img/art/piece-four.jpg",
+            "cover_focus_y": "Mid",
             "slug": "fragments",
         },
         {
@@ -567,6 +571,7 @@ def art(request):
             "title": "Emergence",
             "description": "Organic forms responding to audio data.",
             "cover": "/static/img/art/piece-five.jpg",
+            "cover_focus_y": "Mid",
             "slug": "emergence",
         },
         {
@@ -576,6 +581,7 @@ def art(request):
                 "Interactive installation exploring fluid dynamics."
             ),
             "cover": "/static/img/art/piece-six.jpg",
+            "cover_focus_y": "Mid",
             "slug": "flux",
         },
     ]
