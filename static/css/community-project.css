@@ -109,8 +109,27 @@ body.community-project-page .site-content {
 }
 
 .blob-frame {
-  border-radius: 34px;
+  position: relative;
+  display: block;
   overflow: hidden;
+  border: 1px solid rgba(224, 255, 154, 0.18);
+  border-radius: 38% 62% 52% 48% / 41% 38% 62% 59%;
+  background: rgba(123, 108, 246, 0.08);
+  box-shadow:
+    0 18px 42px rgba(3, 22, 36, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transform: translateZ(0);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.blob-frame:hover,
+.blob-frame:focus-visible {
+  transform: translateY(-1px);
+  box-shadow:
+    0 22px 46px rgba(3, 22, 36, 0.26),
+    0 0 22px rgba(123, 108, 246, 0.18);
+  outline: none;
 }
 
 .blob-frame img {
@@ -379,37 +398,160 @@ body.modal-open {
   }
 }
 
+@media (max-width: 767px) {
+  body.community-project-page {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  body.community-project-page .site-content {
+    position: relative;
+    overflow: visible;
+    background:
+      radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+      radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+      var(--community-ink);
+  }
+
+  .community-project-shell {
+    width: min(100%, calc(100vw - 18px));
+    padding: 1rem 0 4.5rem;
+  }
+
+  .project-intro-grid {
+    display: block;
+  }
+
+  .project-title {
+    width: min(74vw, 540px);
+    margin: 0 auto 1.35rem;
+    font-size: clamp(2.6rem, 11vw, 5rem);
+    line-height: 0.82;
+    letter-spacing: -0.04em;
+  }
+
+  .hero-media,
+  .gallery-item {
+    width: min(86vw, 480px);
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 36% 64% 58% 42% / 42% 40% 60% 58%;
+    box-shadow:
+      0 12px 38px rgba(3, 22, 36, 0.22),
+      0 0 20px rgba(123, 108, 246, 0.18);
+  }
+
+  .blob-frame--hero {
+    min-height: clamp(270px, 62vw, 420px);
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .project-metadata {
+    margin-top: 1.1rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .meta-row {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  .meta-row dt,
+  .meta-row dd {
+    display: block;
+    width: 100%;
+  }
+
+  .project-description {
+    margin-top: 0.9rem;
+  }
+
+  .community-project-shell p,
+  .community-project-shell li,
+  .community-project-shell dt,
+  .community-project-shell dd {
+    font-size: clamp(0.8rem, 3.2vw, 0.95rem);
+    line-height: 1.55;
+  }
+
+  .project-description p {
+    text-align: left;
+  }
+
+  .project-gallery {
+    margin-top: 1.8rem;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .gallery-item,
+  .gallery-item--1,
+  .gallery-item--2,
+  .gallery-item--3,
+  .gallery-item--4 {
+    width: min(86vw, 480px);
+    min-height: clamp(220px, 52vw, 360px);
+    aspect-ratio: 1 / 1;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .community-image-overlay__panel {
+    width: min(92vw, 960px);
+  }
+
+  .community-image-overlay__panel img {
+    max-width: min(90vw, 960px);
+    max-height: min(82vh, 840px);
+    border-radius: 24px;
+  }
+
+  .project-back-row {
+    margin-top: 1.6rem;
+  }
+
+  .project-back {
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+  }
+}
+
 @media (max-width: 575.98px) {
   .community-project-shell {
-    width: min(100%, calc(100vw - clamp(56px, 8vw, 84px)));
-    padding-top: 6.6rem;
+    width: min(100%, calc(100vw - clamp(20px, 5vw, 36px)));
+    padding-top: 1rem;
     padding-bottom: 5.2rem;
   }
 
   .project-title {
     text-align: center;
     justify-self: center;
-    width: 100%;
-    font-size: clamp(4.5rem, 13.5vw, 7.5rem);
+    width: min(82vw, 440px);
+    font-size: clamp(2.2rem, 12vw, 4.2rem);
     line-height: 0.82;
     white-space: normal;
     overflow: visible;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
   }
 
   .project-back {
-    font-size: clamp(2rem, 8vw, 2.8rem);
+    font-size: clamp(1.7rem, 8vw, 2.6rem);
   }
 
   .blob-frame--hero {
     min-height: 34vh;
   }
 
-  .gallery-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .gallery-item {
-    min-height: 180px;
+  .gallery-item,
+  .gallery-item--1,
+  .gallery-item--2,
+  .gallery-item--3,
+  .gallery-item--4 {
+    width: min(88vw, 420px);
+    min-height: 220px;
   }
 }
