@@ -30,35 +30,60 @@
 
 body.about-page{
   margin:0;
-  min-height: 100dvh;
-  height: 100dvh;
-  max-height: 100dvh;
+  min-height: 100vh;
+  height: auto;
+  max-height: none;
   background:
     radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
     radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
     var(--ink);
   color: var(--uranium);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding-bottom: 0 !important;
 }
 
 html:has(body.about-page){
-  height: 100%;
-  overflow: hidden;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body.about-page .site-content{
+  min-height: 100vh;
+  height: auto;
+  overflow: visible;
+}
+
+body.about-page .about-intro{
+  display: none !important;
+  position: relative;
+  z-index: 10;
+  margin: 0;
+  padding: clamp(5.5rem, 8vh, 6.75rem) clamp(1.25rem, 4vw, 3rem) 0;
+  max-width: min(52rem, calc(100vw - 2.5rem));
+}
+
+body.about-page .about-intro > :first-child,
+body.about-page .about-intro > :last-child,
+body.about-page .about-intro h1,
+body.about-page .about-intro p {
+  margin-top: 0;
 }
 
 @media (min-width: 768px){
   html:has(body.about-page),
   body.about-page{
-    height: 100%;
-    min-height: 100%;
-    overflow: hidden;
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   body.about-page .site-content{
-    min-height: 100dvh;
-    height: 100dvh;
-    overflow: hidden;
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
   }
 }
 
@@ -84,9 +109,9 @@ body.about-page .about-stage{
   top: auto;
   margin-top: 0;
 
-  min-height: 100dvh;
-  height: 100dvh;
-  max-height: 100dvh;
+  min-height: 100vh;
+  height: auto;
+  max-height: none;
   background:
     radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
     radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
@@ -101,8 +126,9 @@ body.about-page .about-stage{
 
 @media (min-width: 768px){
   body.about-page .about-stage{
-    min-height: 100dvh;
-    height: 100dvh;
+    min-height: 100vh;
+    height: auto;
+    max-height: none;
   }
 }
 
@@ -597,16 +623,18 @@ body.about-page .about-word.is-wobbling .wobble-span{
 
 @media (max-width: 991.98px){
   body.about-page header {
-    height: 0 !important;
+    position: relative;
+    z-index: 100000 !important;
+    height: auto !important;
     min-height: 0 !important;
-    max-height: 0 !important;
+    max-height: none !important;
     overflow: visible;
   }
 
   body.about-page .site-content {
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-    max-height: 100dvh !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    max-height: none !important;
     margin-top: 0 !important;
     padding-top: 0 !important;
   }
@@ -614,21 +642,22 @@ body.about-page .about-word.is-wobbling .wobble-span{
   body.about-page .about-stage {
     top: 0 !important;
     margin-top: 0 !important;
-    min-height: 100dvh !important;
-    height: 100dvh !important;
-    max-height: 100dvh !important;
+    min-height: 100vh !important;
+    height: auto !important;
+    max-height: none !important;
   }
 }
 
 /* Mobile: static tags + huge blob spill */
 @media (max-width: 767px){
 
-  /* Lock About page to viewport on mobile */
+  /* Keep the About page scrollable and aligned with the fixed site nav. */
   html:has(body.about-page),
   body.about-page{
-    height: 100%;
-    min-height: 100%;
-    overflow: hidden;
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   body.about-page .about-stage{

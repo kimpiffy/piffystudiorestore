@@ -419,7 +419,19 @@
   }
 
   function shouldUseInFlowNav() {
-    if (body.classList.contains('shop-page') || body.classList.contains('styles-page')) {
+    const fixedNavPages = [
+      'shop-page',
+      'styles-page',
+      'about-page',
+      'art-page',
+      'digital-page',
+      'people-page',
+      'community-project-page',
+      'brand-guidelines-page',
+      'contact-body'
+    ];
+
+    if (fixedNavPages.some(cls => body.classList.contains(cls))) {
       body.classList.remove('nav-in-flow');
       return false;
     }
