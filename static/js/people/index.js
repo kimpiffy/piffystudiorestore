@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const dataEl = $("projects-data");
   const blobLayer = $("blobLayer");
   const navArrows = $("navArrows");
+  const titleChip = $("projectTitleChip");
   const prevBtn = $("prevSet");
   const nextBtn = $("nextSet");
 
@@ -70,6 +71,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openProject(project) {
     if (project) overlay.open(project);
+  }
+
+  function updateTitleChip() {
+    if (!titleChip) return;
+
+    const project = getProject(projects, isMobile() ? mobileIndex : activeIndex);
+    if (!project) return;
+
+    titleChip.textContent = project.title || "Project";
+    titleChip.setAttribute("aria-label", `Open ${project.title}`);
+    titleChip.dataset.projectId = String(project.id);
+    titleChip.onclick = () => openProject(project);
   }
 
   function getDesktopLayout() {
@@ -175,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function render(dir = 0) {
     updateArrowVisibility();
+    updateTitleChip();
     stopAll();
 
     if (isMobile()) {
@@ -230,6 +244,11 @@ document.addEventListener("DOMContentLoaded", () => {
   mqMobile.addEventListener?.("change", () => {
     mobileIndex = 0;
     render(0);
+  });
+
+  titleChip?.addEventListener("click", () => {
+    const project = getProject(projects, isMobile() ? mobileIndex : activeIndex);
+    if (project) openProject(project);
   });
 
   mqTablet.addEventListener?.("change", () => render(0));

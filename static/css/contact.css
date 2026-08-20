@@ -23,7 +23,7 @@ body.contact-body main {
   overflow-x: hidden !important;
   overflow-y: auto !important;
   height: auto !important;
-  min-height: 100dvh !important;
+  min-height: calc(100dvh - var(--footer-bar-h, 52px)) !important;
   max-height: none !important;
   -webkit-overflow-scrolling: touch;
 }
@@ -31,9 +31,10 @@ body.contact-body main {
 body.contact-body {
   position: relative;
   overscroll-behavior-y: auto;
+  overflow-y: auto !important;
 }
 
-html.contact-body {
+html:has(body.contact-body) {
   overflow: hidden auto !important;
 }
 

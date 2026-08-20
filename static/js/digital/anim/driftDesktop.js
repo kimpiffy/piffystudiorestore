@@ -25,7 +25,26 @@ export function createDesktopDrift() {
 
     const rect = () => containerEl.getBoundingClientRect();
 
-    const cfg = {
+    const width = window.innerWidth || document.documentElement.clientWidth || screen.width;
+    const isMidTablet = width >= 768 && width < 1200;
+
+    const cfg = isMidTablet ? {
+      offLeft: 0,
+      offRight: 0,
+      offTop: 0,
+      offBottom: 0,
+      padding: 12,
+      edgePush: 0.022,
+      flowStrength: 0.28,
+      swirlStrength: 0.12,
+      noiseStrength: 0.16,
+      maxSpeed: 0.72,
+      damping: 0.990,
+      repel: 0.14,
+      centerPull: 0.0030,
+      avoidTLStrength: 0.006,
+      avoidTLRadiusFrac: 0.86
+    } : {
       offLeft: -140,
       offRight: -140,
       offTop: -180,
@@ -57,8 +76,8 @@ export function createDesktopDrift() {
 
       const cr = rect();
       const W = cr.width, H = cr.height;
-      const cx = W * 0.60;
-      const cy = H * 0.48;
+      const cx = W * (isMidTablet ? 0.53 : 0.60);
+      const cy = H * (isMidTablet ? 0.54 : 0.48);
 
       // repulsion
       for (let i = 0; i < particles.length; i++) {

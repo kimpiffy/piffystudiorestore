@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const dataEl = $("projects-data");
   const blobLayer = $("blobLayer");
   const navArrows = $("navArrows");
+  const titleChip = $("projectTitleChip");
   const prevBtn = $("prevSet");
   const nextBtn = $("nextSet");
 
@@ -65,8 +66,41 @@ document.addEventListener("DOMContentLoaded", () => {
     if (proj) overlay.open(proj);
   }
 
+  function getActiveProject() {
+    if (isMobile()) {
+      return projects[mobileIndex % projects.length];
+    }
+    return projects[setIndex % projects.length];
+  }
+
+  function updateTitleChip() {
+    if (!titleChip) return;
+
+    const project = getActiveProject();
+    if (!project) return;
+
+    titleChip.textContent = project.title || "Project";
+    titleChip.setAttribute("aria-label", `Open ${project.title}`);
+    titleChip.dataset.projectId = String(project.id);
+    titleChip.onclick = () => onProjectClick(project.id);
+  }
+
+  function getBlobScale() {
+    const width = window.innerWidth || document.documentElement.clientWidth || screen.width;
+    if (width >= 768 && width < 992) return 0.68;
+    if (width >= 992 && width < 1200) return 0.75;
+    return 1;
+  }
+
+  function getMobileBlobSizeVw() {
+    const width = window.innerWidth || document.documentElement.clientWidth || screen.width;
+    if (width >= 768 && width < 1200) return 75;
+    return 100;
+  }
+
   function render(dir = 0) {
     updateArrowVisibility();
+    updateTitleChip();
     stopAll();
 
     if (isMobile()) {
@@ -76,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
         index: mobileIndex,
         dir,
         onProjectClick,
-        mobileSizeVw: 130
+        mobileSizeVw: getMobileBlobSizeVw()
       });
 
       // edge warp animates the blob path
@@ -92,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       blobLayer,
       projects,
       setIndex,
-      blobScale: 1,
+      blobScale: getBlobScale(),
       onProjectClick
     });
 
@@ -125,6 +159,11 @@ document.addEventListener("DOMContentLoaded", () => {
   mqMobile.addEventListener?.("change", () => {
     mobileIndex = 0;
     render(0);
+  });
+
+  titleChip?.addEventListener("click", () => {
+    const project = getActiveProject();
+    if (project) onProjectClick(project.id);
   });
 
   mqTablet.addEventListener?.("change", () => render(0));

@@ -496,8 +496,12 @@ body.art-page .project-cta:focus-visible {
     left: 0 !important;
     right: 0 !important;
     bottom: auto !important;
-    height: auto !important;
+    height: calc(100dvh - var(--footer-bar-h, 48px)) !important;
+    min-height: calc(100dvh - var(--footer-bar-h, 48px)) !important;
     overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .blob-layer {
@@ -507,8 +511,11 @@ body.art-page .project-cta:focus-visible {
     right: 0 !important;
     top: 0 !important;
     bottom: auto !important;
-    height: auto !important;
+    height: 100% !important;
     overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .nav-arrows {
