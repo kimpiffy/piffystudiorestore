@@ -548,25 +548,25 @@ body.digital-page{
   }
 }
 
-/* Final calibration: lift mobile composition so blob and arrows sit clear of footer. */
+/* Final calibration: keep the mobile stage flush with the page background so no separate navy strip appears at the top edge. */
 @media (max-width: 767px){
   body.digital-page .showcase{
-    top: calc(var(--site-header-h, 92px) - 20px) !important;
+    top: var(--site-header-h, 92px) !important;
     padding-top: 0 !important;
-    transform: translateY(-30px) !important;
+    transform: none !important;
   }
 
   body.digital-page #blobLayer {
-    transform: translateY(-30px) !important;
+    transform: none !important;
   }
 
   body.digital-page #blobLayer .blob-outer {
-    transform: translateY(-30px) !important;
+    transform: none !important;
   }
 
   body.digital-page #navArrows{
-    margin-top: -30px !important;
-    transform: translate(-50%, -30px) !important;
+    margin-top: 0 !important;
+    transform: translateX(-50%) !important;
   }
 }
 

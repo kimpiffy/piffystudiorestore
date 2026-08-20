@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Clothing placeholder art">
+  <rect width="800" height="800" fill="#071b2a"/>
+  <path d="M240 200L390 120L560 200L500 300L610 360V680H190V360L300 300L240 200Z" fill="#ff4bb3" opacity="0.8"/>
+  <path d="M300 210L390 170L480 210V360H300V210Z" fill="#f5ff8c" opacity="0.8"/>
+  <path d="M260 360H540V680H260Z" fill="#7b6cf6" opacity="0.7"/>
+  <path d="M240 240L160 380L200 420L290 300" stroke="#d8ff7d" stroke-width="18" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <path d="M560 240L640 380L600 420L510 300" stroke="#d8ff7d" stroke-width="18" stroke-linecap="round" fill="none" opacity="0.8"/>
+</svg>

@@ -73,8 +73,8 @@ export function createWordsController({ bioZone, linksZone, overlay, routes }) {
     const cvHref = routes?.cv || "/static/kimpiffycv.pdf";
 
     overlay.open(`
-      <h2 style="font-family: picnic; font-size: 3rem; margin:0 0 6px 0; text-align:center;">artist, web designer & mother...</h2>
-      <p class="bio-modal-copy" style="opacity:.85; margin: 0 auto 14px auto; line-height:1.55; white-space:pre-line;">
+      <h2 style="font-family: picnic; font-size: 3rem; margin:0 0 1rem 0; text-align:center;">artist, web designer & mother...</h2>
+      <p class="bio-modal-copy" style="display:block; width:100%; max-width:100%; margin:0 auto 1rem auto; padding:0; box-sizing:border-box; opacity:.85; line-height:1.4; white-space:pre-line; text-align:center;">
         ${escapeHtml(BIO_TEXT)}
       </p>
       <div class="cta-row" style="display:flex; justify-content:center; margin-top: 18px;">
@@ -82,7 +82,7 @@ export function createWordsController({ bioZone, linksZone, overlay, routes }) {
            href="${escapeHtml(cvHref)}"
            target="_blank" rel="noopener noreferrer"
            style="font-family: picnic; font-size: 2rem; text-decoration:none;">
-          c.v
+          cv
         </a>
       </div>
     `, { reason: "bio" });

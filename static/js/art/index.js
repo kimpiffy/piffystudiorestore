@@ -1,5 +1,5 @@
 import { $, safeJsonParse, mod } from "./utils.js";
-import { isMobile, mqMobile, mqTablet, DESKTOP_PAGE_SIZE } from "./state.js";
+import { isMobile, isMasonryDesktop, mqMobile, mqTablet, DESKTOP_PAGE_SIZE } from "./state.js";
 
 import { createEdgeWarp } from "../digital/anim/edgeWarp.js";
 import { createMobileDrift } from "../digital/anim/driftMobile.js";
@@ -68,6 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updateArrowVisibility();
     stopAll();
 
+    const useGridLayout = window.innerWidth >= 768 && window.innerWidth < 1200;
+
     if (isMobile()) {
       const { innerEl } = renderMobileOne({
         blobLayer,
@@ -83,18 +85,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
       edgeWarp.start();
       mobileDrift.start(blobLayer, innerEl);
-
       return;
     }
 
-    const { particles } = renderDesktopBlobs({
+    if (useGridLayout) {
+      const { innerEl } = renderMobileOne({
+        blobLayer,
+        projects,
+        index: mobileIndex,
+        dir,
+        onProjectClick: (id) => {
+          const proj = projects.find((item) => String(item.id) === String(id));
+          if (proj) overlay.open(proj, getMosaicSpec(mobileIndex));
+        },
+        mobileSizeVw: 130
+      });
+
+      edgeWarp.start();
+      mobileDrift.start(blobLayer, innerEl);
+      return;
+    }
+
+    if (isMasonryDesktop()) {
+      const { particles } = renderDesktopBlobs({
+        blobLayer,
+        projects,
+        setIndex,
+        onProjectClick
+      });
+
+      edgeWarp.start();
+      return;
+    }
+
+    const { innerEl } = renderMobileOne({
       blobLayer,
       projects,
-      setIndex,
-      onProjectClick
+      index: mobileIndex,
+      dir,
+      onProjectClick: (id) => {
+        const proj = projects.find((item) => String(item.id) === String(id));
+        if (proj) overlay.open(proj, getMosaicSpec(mobileIndex));
+      },
+      mobileSizeVw: 130
     });
 
     edgeWarp.start();
+    mobileDrift.start(blobLayer, innerEl);
   }
 
   bindControls({

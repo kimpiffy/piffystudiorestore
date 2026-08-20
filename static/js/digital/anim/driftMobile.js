@@ -18,7 +18,8 @@ export function createMobileDrift() {
   }
 
   function start(blobLayer, targetInnerEl) {
-    if (!isMobile()) return; // mobile drift only
+    const allowDrift = isMobile() || (window.innerWidth >= 768 && window.innerWidth < 1200);
+    if (!allowDrift) return;
     stop();
 
     if (!blobLayer || !targetInnerEl) return;

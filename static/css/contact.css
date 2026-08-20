@@ -15,18 +15,33 @@ html, body{
   background: var(--page) !important;
 }
 
-body.contact-body .page-content{
-  overflow: visible !important;
+html.contact-body,
+body.contact-body,
+body.contact-body .page-content,
+body.contact-body .site-content,
+body.contact-body main {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100dvh !important;
+  max-height: none !important;
+  -webkit-overflow-scrolling: touch;
 }
 
-body.contact-body{
-  overflow-x: hidden;
+body.contact-body {
+  position: relative;
+  overscroll-behavior-y: auto;
+}
+
+html.contact-body {
+  overflow: hidden auto !important;
 }
 
 .contact-page{
-  min-height: 100vh;
+  min-height: 120vh;
   position: relative;
   background: var(--page);
+  padding-bottom: 3rem;
 }
 
 /* ------------------------------------
@@ -144,15 +159,15 @@ body.contact-body{
   -webkit-text-stroke: 0.7px #ff4bb3;
   text-stroke: 0.7px #ff4bb3;
   text-shadow:
-    0 0 10px rgba(124, 108, 247, 0.8),
-    0 0 20px rgba(124, 108, 247, 0.55),
-    0 0 30px rgba(124, 108, 247, 0.35);
+    0 0 10px rgba(124, 108, 247, 0.92),
+    0 0 22px rgba(124, 108, 247, 0.72),
+    0 0 34px rgba(124, 108, 247, 0.5);
   transition: color 180ms ease, text-transform 180ms ease, -webkit-text-stroke-color 180ms ease;
 }
 
 .contact-title:hover,
 .contact-title:focus-visible {
-  text-transform: uppercase;
+  text-transform: lowercase;
   color: var(--modal-pink);
   -webkit-text-stroke-color: var(--uranium);
   text-stroke-color: var(--uranium);
@@ -387,21 +402,30 @@ body.contact-body{
   -webkit-text-stroke: 0.7px #ff4bb3;
   text-stroke: 0.7px #ff4bb3;
   text-shadow:
-    0 0 10px rgba(124, 108, 247, 0.8),
-    0 0 20px rgba(124, 108, 247, 0.55),
-    0 0 30px rgba(124, 108, 247, 0.35);
+    0 0 10px rgba(124, 108, 247, 0.92),
+    0 0 22px rgba(124, 108, 247, 0.72),
+    0 0 34px rgba(124, 108, 247, 0.5);
   letter-spacing: 3px;
-  font-size: clamp(2rem, 2.9vw, 2.8rem);
+  font-size: clamp(1.9rem, 2.2vw, 2.6rem);
   text-transform: lowercase;
-  padding: 0.65rem 1.25rem;
+  background: transparent;
+  padding: 0.2rem 0.4rem 0.1rem;
   cursor: pointer;
   transition: color 180ms ease, text-transform 200ms ease, -webkit-text-stroke-color 180ms ease;
 }
 
 @media (min-width: 1100px){
   .contact-btn{
-    font-size: 3rem;
+    font-size: 2.5rem;
     letter-spacing: 4px;
+  }
+}
+
+@media (max-width: 768px){
+  .contact-btn{
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
+    letter-spacing: 3px;
+    padding: 0.28rem 0.42rem 0.1rem;
   }
 }
 
@@ -422,7 +446,7 @@ body.contact-body{
 .contact-btn:hover,
 .contact-btn:focus,
 .contact-btn:active{
-  text-transform: uppercase;
+  text-transform: lowercase;
   color: var(--modal-pink);
   -webkit-text-stroke-color: var(--uranium);
   text-stroke-color: var(--uranium);
@@ -435,7 +459,7 @@ body.contact-body{
 @media (max-width: 768px){
   .contact-content{
     align-items: flex-start;
-    padding: 5.5rem 1rem 1rem;
+    padding: 4.5rem 1rem 1rem;
   }
 
   .contact-form-wrap {
@@ -446,10 +470,27 @@ body.contact-body{
 
   .contact-title {
     display: block;
+    text-align: center;
+    margin: 0 0 1rem 0;
+    font-family: 'picnic', sans-serif;
+    font-size: clamp(3.2rem, 4.2vw, 5.6rem);
+    letter-spacing: 3px;
+    text-transform: lowercase;
+    color: var(--uranium);
+    -webkit-text-stroke: 0.7px #ff4bb3;
+    text-stroke: 0.7px #ff4bb3;
+    text-shadow: 0 0 10px rgba(124, 108, 247, 0.92), 0 0 22px rgba(124, 108, 247, 0.72), 0 0 34px rgba(124, 108, 247, 0.5);
+    transition: color 180ms ease, text-transform 180ms ease, -webkit-text-stroke-color 180ms ease;
   }
 
   .contact-inner{
-    padding: 3rem 1.5rem;
+    padding: 0rem 1.5rem;
+  }
+
+  .contact-btn{
+    font-size: clamp(2.5rem, 4vw, 2.2rem);
+    letter-spacing: 3px;
+    padding: 0.2rem 0.28rem 0.08rem;
   }
 
   .actions{
@@ -473,11 +514,11 @@ body.contact-body{
   }
 
   .contact-title {
-    font-size: clamp(2.65rem, 5.2vw, 3.3rem);
+    font-size: clamp(3rem, 6vw, 4rem);
   }
 
   .contact-btn{
-    font-size: clamp(2.25rem, 4.8vw, 3rem);
+    font-size: clamp(2.5rem, 7vw, 3.8rem);
   }
 }
 
@@ -573,12 +614,7 @@ body.contact-body{
   }
 }
 
-/* iPhone SE-sized screens: hide title to preserve space for form actions. */
-@media (max-width: 430px) and (max-height: 700px){
-  .contact-title {
-    display: none !important;
-  }
-}
+/* Keep the contact heading visible on all sizes; do not hide it on small screens. */
 
 /* ------------------------------------
    MISC
@@ -675,14 +711,14 @@ body.contact-body .navbar { position: relative; z-index: 10001; }
 .contact-modal h1,
 .contact-modal .thankyou {
   font-family: 'picnic', sans-serif;
-  font-size: 3rem;
+  font-size: clamp(2.7rem, 3.2vw, 4.4rem);
   color: #031624;
   margin: 0 0 0.6rem 0;
 }
 
 .contact-modal .contact-modal-title {
   font-family: "picnic", sans-serif;
-  font-size: 2.5rem;
+  font-size: clamp(2.2rem, 2.8vw, 3.5rem);
   color: #031624;
   margin: 0 0 0.6rem 0;
   text-transform: none;

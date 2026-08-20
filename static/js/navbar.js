@@ -386,15 +386,21 @@
   if (!body) return;
 
   if (body.classList.contains('community-project-page')) {
-    const pageScrollRoot = document.scrollingElement || document.querySelector('.site-content') || window;
-    const communityScrollTargets = [window, document.querySelector('.site-content'), pageScrollRoot].filter(Boolean);
+    const pageScrollRoot = document.scrollingElement || document.querySelector('.site-content') || document.body || window;
+    const communityScrollTargets = [window, document.body, document.documentElement, document.querySelector('.site-content'), pageScrollRoot].filter(Boolean);
     setupSmartScrollNav(communityScrollTargets);
   }
 
-  if (body.classList.contains('shop-page') || body.classList.contains('art-page') || body.classList.contains('digital-page')) {
-    const pageScrollRoot = document.scrollingElement || document.querySelector('.site-content') || window;
-    const scrollTargets = [window, document.querySelector('.site-content'), pageScrollRoot].filter(Boolean);
+  if (body.classList.contains('shop-page') || body.classList.contains('art-page') || body.classList.contains('digital-page') || body.classList.contains('contact-body')) {
+    const pageScrollRoot = document.scrollingElement || document.querySelector('.site-content') || document.body || window;
+    const scrollTargets = [window, document.body, document.documentElement, document.querySelector('.site-content'), pageScrollRoot].filter(Boolean);
     setupSmartScrollNav(scrollTargets);
+  }
+
+  if (body.classList.contains('contact-body')) {
+    const contactScrollRoot = document.scrollingElement || document.querySelector('.site-content') || document.body || window;
+    const contactTargets = [window, document.body, document.documentElement, document.querySelector('.site-content'), contactScrollRoot].filter(Boolean);
+    setupSmartScrollNav(contactTargets);
   }
 
   const stylesShell = document.querySelector('.styles-shell');

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Falmouth University placeholder art">
+  <rect width="800" height="800" fill="#071b2a"/>
+  <g opacity="0.9">
+    <rect x="160" y="180" width="480" height="440" rx="40" fill="#7b6cf6"/>
+    <rect x="220" y="240" width="360" height="320" rx="24" fill="#f5ff8c"/>
+    <path d="M180 600L620 600" stroke="#ff4bb3" stroke-width="22" stroke-linecap="round"/>
+    <path d="M160 170L400 90L640 170" fill="none" stroke="#d8ff7d" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <circle cx="400" cy="390" r="110" fill="#ff4bb3" opacity="0.76"/>
+  <circle cx="400" cy="390" r="42" fill="#031624" opacity="0.8"/>
+</svg>

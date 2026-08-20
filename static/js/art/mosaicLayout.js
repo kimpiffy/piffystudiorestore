@@ -247,6 +247,9 @@ function buildCell(project, spec, index) {
   const clipId = `cellClip_${index}`;
   const imageHref = project?.cover ? String(project.cover) : "";
   const title = escapeHtml(project?.title || "");
+  const imageScale = 1.26;
+  const insetX = spec.width * (imageScale - 1) * 0.5;
+  const insetY = spec.height * (imageScale - 1) * 0.5;
 
   return `
     <svg
@@ -270,10 +273,10 @@ function buildCell(project, spec, index) {
       </defs>
       <image
         href="${escapeHtml(imageHref)}"
-        x="0"
-        y="0"
-        width="${spec.width}"
-        height="${spec.height}"
+        x="${-insetX}"
+        y="${-insetY}"
+        width="${spec.width * imageScale}"
+        height="${spec.height * imageScale}"
         preserveAspectRatio="xMidYMid slice"
         clip-path="url(#${clipId})"
       ></image>

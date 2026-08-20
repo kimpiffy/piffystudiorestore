@@ -43,7 +43,11 @@
   </section>
 
   <p class="project-back-row">
-    <a class="project-back" href="{% url 'portfolio:people' %}">go back</a>
+    {% if back_url %}
+      <a class="project-back" href="{{ back_url }}">{{ back_label|default:'go back' }}</a>
+    {% else %}
+      <a class="project-back" href="{% url 'portfolio:people' %}">go back</a>
+    {% endif %}
   </p>
 </article>
 

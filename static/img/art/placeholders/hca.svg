@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="HCA placeholder art">
+  <rect width="800" height="800" fill="#071b2a"/>
+  <g opacity="0.9">
+    <rect x="120" y="150" width="160" height="500" fill="#f5ff8c"/>
+    <rect x="320" y="150" width="160" height="500" fill="#7b6cf6"/>
+    <rect x="520" y="150" width="160" height="500" fill="#ff4bb3"/>
+  </g>
+  <path d="M120 650H680" stroke="#d8ff7d" stroke-width="16" stroke-linecap="round" opacity="0.8"/>
+  <path d="M170 180H230V640H170" fill="none" stroke="#031624" stroke-width="14" opacity="0.8"/>
+  <path d="M370 180H430V640H370" fill="none" stroke="#031624" stroke-width="14" opacity="0.8"/>
+  <path d="M570 180H630V640H570" fill="none" stroke="#031624" stroke-width="14" opacity="0.8"/>
+</svg>

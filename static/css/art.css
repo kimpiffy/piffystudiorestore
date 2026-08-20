@@ -81,12 +81,28 @@ body.art-page .wrap {
   display: block;
   -webkit-text-stroke: 0.7px var(--art-pink);
   text-shadow:
-    0 0 8px rgba(123, 108, 246, 0.8),
-    0 0 16px rgba(255, 75, 179, 0.45);
+    0 0 10px rgba(124, 108, 247, 0.9),
+    0 0 22px rgba(124, 108, 247, 0.7),
+    0 0 34px rgba(124, 108, 247, 0.45);
+  transition: color 180ms ease, -webkit-text-stroke-color 180ms ease, text-shadow 180ms ease;
+}
+
+body.art-page .mobile-art-title:hover,
+body.art-page .mobile-art-title:focus-visible {
+  color: var(--art-pink);
+  -webkit-text-stroke-color: var(--art-uranium);
+  text-shadow:
+    0 0 12px rgba(124, 108, 247, 0.9),
+    0 0 24px rgba(124, 108, 247, 0.7),
+    0 0 36px rgba(124, 108, 247, 0.5);
 }
 
 body.art-page footer {
   display: flex;
+}
+
+body.art-page .footer-inner {
+  overflow-x: hidden;
 }
 
 .art-header {
@@ -121,6 +137,231 @@ body.art-page .blob-svg path[id$="_outline"] {
   stroke: transparent !important;
 }
 
+body.art-page .blob-shade {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.art-page .overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 100;
+}
+
+body.art-page .overlay.is-open {
+  display: block;
+}
+
+body.art-page .overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 22, 36, 0.72);
+  transition: background 360ms ease;
+}
+
+body.art-page .overlay-backdrop.is-visible {
+  background: rgba(3, 22, 36, 0.8);
+}
+
+body.art-page .overlay-panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(860px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  border-radius: 34px;
+  background: var(--art-pink);
+  padding: clamp(0.5rem, 1vw, 1rem) clamp(2rem, 4vw, 3rem) clamp(1rem, 2.5vw, 1.75rem) clamp(2rem, 4vw, 3rem);
+  color: #031624;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+  pointer-events: auto;
+}
+
+body.art-page .overlay-panel,
+body.art-page .overlay-panel p,
+body.art-page .overlay-panel h1,
+body.art-page .overlay-panel h2,
+body.art-page .overlay-panel h3,
+body.art-page .overlay-panel h4,
+body.art-page .overlay-panel h5,
+body.art-page .overlay-panel h6,
+body.art-page .overlay-panel a,
+body.art-page .overlay-panel button {
+  color: #031624;
+}
+
+body.art-page .blob,
+body.art-page .blob * {
+  background: transparent !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.art-page .blob:focus,
+body.art-page .blob:focus-visible,
+body.art-page .blob:active,
+body.art-page .blob:hover {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transform: none !important;
+}
+
+body.art-page .overlay-panel #overlayContent {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+body.art-page .overlay-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0.35rem 0.1rem 0.2rem;
+}
+
+body.art-page .overlay-card__media {
+  display: none;
+}
+
+body.art-page .overlay-card__image {
+  width: 100%;
+  display: block;
+  border-radius: 24px;
+  object-fit: cover;
+  background: rgba(3, 22, 36, 0.08);
+}
+
+body.art-page .overlay-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+body.art-page .overlay-title {
+  margin: 0 0 0.7rem;
+  color: var(--art-ink);
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  line-height: 0.95;
+  text-transform: lowercase;
+  text-align: center;
+  transition: color 180ms ease, text-transform 180ms ease, -webkit-text-stroke-color 180ms ease, text-shadow 180ms ease;
+  -webkit-text-stroke: 0 transparent;
+  text-shadow: none;
+}
+
+body.art-page .overlay-desc,
+body.art-page .overlay-panel p {
+  margin: 0.7rem clamp(0.75rem, 2.8vw, 2rem) 0.7rem;
+  max-width: 36rem;
+  color: #031624;
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+body.art-page .overlay-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 4px;
+  margin-left: auto;
+  margin-right: 0;
+  transform: translateX(28px);
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  color: #031624;
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: 2rem;
+  line-height: 1;
+  text-transform: lowercase;
+  transition: color 140ms ease, text-transform 120ms ease, transform 120ms ease;
+  -webkit-font-smoothing: antialiased;
+  z-index: 130;
+  pointer-events: auto;
+}
+
+body.art-page .overlay-close:hover,
+body.art-page .overlay-close:focus-visible {
+  color: #031624;
+  text-transform: uppercase;
+  outline: none;
+}
+
+body.art-page .overlay-title:hover,
+body.art-page .overlay-title:focus-visible {
+  color: #031624;
+  text-transform: uppercase;
+  -webkit-text-stroke-color: transparent;
+  text-shadow: none;
+}
+
+body.art-page .cta-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+}
+
+body.art-page .project-cta,
+body.art-page .project-cta:hover,
+body.art-page .project-cta:focus,
+body.art-page .project-cta:active,
+body.art-page .project-cta:focus-visible {
+  background: transparent !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  color: #031624 !important;
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
+  font-size: clamp(1.15rem, 2vw, 1.6rem) !important;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  transform: none !important;
+}
+
+body.art-page .project-cta:hover,
+body.art-page .project-cta:focus,
+body.art-page .project-cta:active,
+body.art-page .project-cta:focus-visible {
+  text-transform: uppercase;
+}
+
 .portfolio-mosaic-host {
   position: absolute;
   inset: 0;
@@ -152,7 +393,23 @@ body.art-page .blob-svg path[id$="_outline"] {
 
 .cell-hit {
   fill: transparent;
+  stroke: transparent;
+  stroke-width: 0;
   pointer-events: all;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.cell-hit:hover,
+.cell-hit:focus,
+.cell-hit:active,
+.cell-hit:focus-visible {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 0;
+  outline: none;
+  filter: none;
 }
 
 .portfolio-void {
@@ -167,147 +424,6 @@ body.art-page .blob-svg path[id$="_outline"] {
 
 .portfolio-mosaic.is-dimmed .portfolio-cell.is-selected {
   opacity: 1;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  display: none;
-  z-index: 100;
-}
-
-.overlay.is-open {
-  display: block;
-}
-
-.overlay-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(17, 17, 17, 0);
-  transition: background 360ms ease;
-}
-
-.overlay-backdrop.is-visible {
-  background: var(--art-overlay);
-}
-
-.overlay-panel {
-  position: fixed;
-  inset: 0;
-  background: transparent;
-  padding: 0;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.overlay-panel #overlayContent {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.overlay-grid {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: clamp(1.5rem, 3vw, 3rem);
-  align-items: center;
-  padding: 7rem 4vw 4rem;
-}
-
-.overlay-left,
-.overlay-right {
-  position: relative;
-  min-width: 0;
-}
-
-.overlay-left {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.overlay-right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.overlay-preview-shell {
-  width: min(52vw, 640px);
-  aspect-ratio: 1 / 1;
-  opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 420ms ease, transform 420ms ease;
-}
-
-.overlay.is-opened .overlay-preview-shell,
-.overlay-preview-shell.is-visible {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.overlay-preview {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.overlay-info {
-  max-width: 36rem;
-  opacity: 0;
-  transform: translateX(18px);
-  transition: opacity 420ms ease, transform 420ms ease;
-}
-
-.overlay.is-opened .overlay-info {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.overlay-title {
-  margin: 0 0 1rem;
-  color: var(--art-uranium);
-  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-  font-size: clamp(2.25rem, 4.8vw, 4rem);
-  line-height: 0.92;
-  text-transform: lowercase;
-  -webkit-text-stroke: 1px var(--art-pink);
-  text-shadow: 0 0 16px rgba(123, 108, 246, 0.35), 0 6px 22px rgba(123, 108, 246, 0.22);
-}
-
-.overlay-desc {
-  margin: 0;
-  color: rgba(244, 241, 230, 0.92);
-  font-size: clamp(1rem, 1.7vw, 1.15rem);
-  line-height: 1.55;
-}
-
-.overlay-close {
-  position: fixed;
-  top: 3.5vh;
-  right: 3.5vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  color: #fff;
-  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-  font-size: 1.8rem;
-  z-index: 130;
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-.overlay-close:hover,
-.overlay-close:focus-visible {
-  color: var(--art-uranium);
-  outline: none;
 }
 
 .nav-arrows {
@@ -656,7 +772,7 @@ body.art-page .blob-svg path[id$="_outline"] {
 }
 
 /* Mid-size range: keep the stacked art layout but split it into a compact two-column grid. */
-@media (min-width: 567px) and (max-width: 991px){
+@media (min-width: 768px) and (max-width: 991px){
   html,
   body.art-page {
     overflow: visible !important;
@@ -769,6 +885,95 @@ body.art-page .blob-svg path[id$="_outline"] {
   }
 }
 
+@media (min-width: 992px) and (max-width: 1199px){
+  html,
+  body.art-page {
+    overflow: visible !important;
+    overflow-x: hidden;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y;
+    height: auto !important;
+    min-height: 100% !important;
+    max-height: none !important;
+  }
+
+  body.art-page .showcase{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    top: calc(var(--site-header-h, 92px) - 4px) !important;
+    padding-top: 14px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  body.art-page #blobLayer{
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    height: auto !important;
+    flex: 0 0 auto !important;
+    width: min(100%, calc(100vw - clamp(88px, 10vw, 140px))) !important;
+    max-width: 1200px !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    justify-items: center !important;
+    align-items: start !important;
+    gap: 2rem 1.2rem !important;
+    justify-content: center !important;
+    padding-bottom: calc(clamp(7rem, 18vw, 10rem) + var(--footer-bar-h, 52px) + 1.25rem) !important;
+    margin: 0 auto clamp(1.5rem, 3vw, 2.25rem) !important;
+  }
+
+  body.art-page #blobLayer .mobile-blob-stack-item,
+  body.art-page #blobLayer .blob-outer {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: min(100%, 350px) !important;
+    max-width: 350px !important;
+    height: auto !important;
+    display: block !important;
+    padding-top: var(--mobile-blob-top, 0px) !important;
+    margin: 0 auto !important;
+  }
+
+  body.art-page #blobLayer .mobile-art-blob,
+  body.art-page #blobLayer .blob-inner,
+  body.art-page #blobLayer .mobile-blob-stack-item svg {
+    width: min(100%, 350px) !important;
+    height: min(100%, 350px) !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+
+  body.art-page #blobLayer .mobile-art-blob .blob-svg,
+  body.art-page #blobLayer .mobile-art-blob .blob-svg image,
+  body.art-page #blobLayer .mobile-art-blob .blob-img {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    object-fit: cover;
+  }
+
+  body.art-page .mobile-art-title {
+    font-size: clamp(1.52rem, 4.72vw, 2.19rem) !important;
+    width: 100% !important;
+    display: block !important;
+    margin-top: 0.75rem !important;
+    -webkit-text-stroke: 0.55px var(--art-pink) !important;
+  }
+
+  body.art-page #navArrows{
+    display: none !important;
+  }
+}
+
 @media (max-width: 566px){
   body.art-page .showcase{
     display: flex !important;
@@ -785,9 +990,10 @@ body.art-page .blob-svg path[id$="_outline"] {
     bottom: auto !important;
     height: auto !important;
     flex: 0 0 auto !important;
-    width: 100% !important;
+    width: min(100%, calc(100vw - 18px)) !important;
     display: flex !important;
     justify-content: center !important;
+    margin: 0 auto !important;
   }
 
   body.art-page #blobLayer .blob-outer{

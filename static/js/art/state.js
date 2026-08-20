@@ -1,8 +1,10 @@
-export const mqMobile = window.matchMedia("(max-width: 991px)");
-export const mqTablet = window.matchMedia("(min-width: 992px) and (max-width: 1024px)");
+export const mqMobile = window.matchMedia("(max-width: 767px)");
+export const mqTablet = window.matchMedia("(min-width: 768px) and (max-width: 1199px)");
+export const mqMasonryDesktop = window.matchMedia("(min-width: 1200px)");
 
 export const isMobile = () => mqMobile.matches;
 export const isTablet = () => mqTablet.matches;
+export const isMasonryDesktop = () => mqMasonryDesktop.matches;
 
 export const DESKTOP_PAGE_SIZE = 9;
 

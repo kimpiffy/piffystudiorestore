@@ -7,18 +7,27 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
   blobLayer.innerHTML = "";
 
   const mobileWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
-  const isTwoColumn = mobileWidth >= 576 && mobileWidth <= 991;
+  const isGridLayout = mobileWidth >= 768 && mobileWidth < 1200;
+  const columnCount = mobileWidth >= 992 ? 3 : mobileWidth >= 768 ? 2 : 1;
+  const gridCardSize = columnCount === 1 ? 400 : 350;
+  const gridWidth = columnCount === 1
+    ? "min(100%, calc(100vw - 18px))"
+    : columnCount === 2
+      ? "min(100%, calc(100vw - 72px))"
+      : "min(100%, calc(100vw - clamp(88px, 10vw, 140px)))";
 
-  blobLayer.style.display = isTwoColumn ? "grid" : "flex";
-  blobLayer.style.gridTemplateColumns = isTwoColumn ? "repeat(2, minmax(0, 1fr))" : "none";
-  blobLayer.style.flexDirection = isTwoColumn ? "row" : "column";
-  blobLayer.style.alignItems = isTwoColumn ? "start" : "center";
-  blobLayer.style.justifyItems = isTwoColumn ? "center" : "normal";
-  blobLayer.style.gap = isTwoColumn ? "1.35rem 1rem" : "1rem";
+  blobLayer.style.display = isGridLayout ? "grid" : "flex";
+  blobLayer.style.gridTemplateColumns = isGridLayout ? `repeat(${columnCount}, minmax(0, 1fr))` : "none";
+  blobLayer.style.flexDirection = isGridLayout ? "row" : "column";
+  blobLayer.style.alignItems = isGridLayout ? "start" : "center";
+  blobLayer.style.justifyItems = isGridLayout ? "center" : "normal";
+  blobLayer.style.gap = isGridLayout ? "2rem 1.2rem" : "1rem";
   blobLayer.style.width = "100%";
-  blobLayer.style.maxWidth = isTwoColumn ? "min(100%, 760px)" : "100%";
-  blobLayer.style.margin = isTwoColumn ? "0 auto" : "0";
+  blobLayer.style.maxWidth = gridWidth;
+  blobLayer.style.margin = "0 auto";
   blobLayer.style.overflow = "visible";
+  blobLayer.style.minHeight = "auto";
+  blobLayer.style.paddingBottom = "2.5rem";
 
   const stack = projects.map((project) => {
     const uid = `b_${String(project.id).replace(/[^a-zA-Z0-9_-]/g, "_")}_${Math.floor(Math.random() * 1e9)}`;
@@ -28,20 +37,23 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
 
     const item = document.createElement("div");
     item.className = "mobile-blob-stack-item";
-    item.style.display = "block";
-    item.style.width = isTwoColumn ? "min(100%, 310px)" : "100%";
-    item.style.maxWidth = isTwoColumn ? "310px" : "none";
+    item.style.display = "flex";
+    item.style.flexDirection = "column";
+    item.style.alignItems = "center";
+    item.style.width = "100%";
+    item.style.maxWidth = isGridLayout ? `${gridCardSize}px` : "100%";
     item.style.overflow = "visible";
+    item.style.margin = "0 auto 0.25rem";
 
     const button = document.createElement("button");
     button.type = "button";
     button.className = "mobile-art-blob";
     button.setAttribute("data-id", String(project.id));
     button.setAttribute("aria-label", project.title || `Project ${project.id}`);
-    button.style.width = isTwoColumn ? "min(100%, 290px)" : "min(100vw, 400px)";
-    button.style.height = isTwoColumn ? "min(100%, 290px)" : "min(100vw, 400px)";
-    button.style.maxWidth = isTwoColumn ? "290px" : "400px";
-    button.style.maxHeight = isTwoColumn ? "290px" : "400px";
+    button.style.width = isGridLayout ? `${gridCardSize}px` : "min(100vw, 400px)";
+    button.style.height = isGridLayout ? `${gridCardSize}px` : "min(100vw, 400px)";
+    button.style.maxWidth = isGridLayout ? `${gridCardSize}px` : "400px";
+    button.style.maxHeight = isGridLayout ? `${gridCardSize}px` : "400px";
     button.style.border = "0";
     button.style.background = "transparent";
     button.style.padding = "0";
@@ -51,15 +63,33 @@ export function renderMobileOne({ blobLayer, projects, index, dir, onProjectClic
     button.style.position = "relative";
     button.innerHTML = makeWarpSVG({ uid, cover, title: project.title, initialD, focusY: project.cover_focus_y });
 
-    const title = document.createElement("h3");
+    const title = document.createElement("button");
+    title.type = "button";
     title.className = "mobile-art-title";
     title.style.display = "block";
     title.style.width = "100%";
     title.style.margin = "0.65rem 0 0";
+    title.style.border = "0";
+    title.style.background = "transparent";
+    title.style.padding = "0";
+    title.style.cursor = "pointer";
     title.textContent = project.title || "Untitled";
+
+    button.setAttribute("data-project-id", String(project.id));
+    button.setAttribute("data-id", String(project.id));
+    title.setAttribute("data-project-id", String(project.id));
+    title.setAttribute("data-id", String(project.id));
 
     button.addEventListener("click", () => onProjectClick(project.id));
     button.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onProjectClick(project.id);
+      }
+    });
+
+    title.addEventListener("click", () => onProjectClick(project.id));
+    title.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         onProjectClick(project.id);

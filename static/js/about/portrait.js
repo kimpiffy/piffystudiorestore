@@ -105,20 +105,37 @@ export function createPortraitController(portraitBtn) {
       video.loop = true;
       video.muted = true;
       video.defaultMuted = true;
+      video.autoplay = true;
+      video.setAttribute("autoplay", "");
       video.setAttribute("muted", "");
       video.setAttribute("playsinline", "");
       video.setAttribute("webkit-playsinline", "");
 
       const tryPlay = () => {
+        if (!video || video.paused === false) return;
+        video.muted = true;
+        video.defaultMuted = true;
+        video.setAttribute("muted", "");
         const playback = video.play();
         if (playback && typeof playback.catch === "function") {
-          playback.catch(() => {});
+          playback.catch(() => {
+            window.setTimeout(() => {
+              if (video && video.paused) {
+                video.muted = true;
+                video.play().catch(() => {});
+              }
+            }, 180);
+          });
         }
       };
 
+      video.addEventListener("loadedmetadata", tryPlay, { once: true });
       video.addEventListener("canplay", tryPlay, { once: true });
-      video.addEventListener("loadeddata", tryPlay, { once: true });
+      video.addEventListener("canplaythrough", tryPlay, { once: true });
+      video.addEventListener("touchstart", tryPlay, { once: true, passive: true });
+      window.addEventListener("pointerdown", tryPlay, { once: true, passive: true });
       window.requestAnimationFrame(tryPlay);
+      window.setTimeout(tryPlay, 180);
     }
   }
 

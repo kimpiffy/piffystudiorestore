@@ -240,6 +240,250 @@ COMMUNITY_PROJECT_DETAILS = {
 }
 
 
+ART_PROJECT_DETAILS = {
+    "polycephaly": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "polycephaly",
+        "title": "Polycephaly",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/polycephaly.svg",
+        "description": "Placeholder study exploring layered identities and multiplicity.",
+        "metadata": [
+            ["Status", "Placeholder"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/polycephaly.svg",
+            "/static/img/art/placeholders/polycephaly.svg",
+            "/static/img/art/placeholders/polycephaly.svg",
+            "/static/img/art/placeholders/polycephaly.svg",
+        ],
+    },
+    "pine": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "pine",
+        "title": "Pine",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/pine.svg",
+        "description": "Placeholder study in tactile, resin-like structure and rhythm.",
+        "metadata": [
+            ["Status", "Placeholder"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/pine.svg",
+            "/static/img/art/placeholders/pine.svg",
+            "/static/img/art/placeholders/pine.svg",
+            "/static/img/art/placeholders/pine.svg",
+        ],
+    },
+    "piffy": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "piffy",
+        "title": "Piffy",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/piffy.svg",
+        "description": "Placeholder work using bold repetition and chromatic tension.",
+        "metadata": [
+            ["Status", "Placeholder"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/piffy.svg",
+            "/static/img/art/placeholders/piffy.svg",
+            "/static/img/art/placeholders/piffy.svg",
+            "/static/img/art/placeholders/piffy.svg",
+        ],
+    },
+    "matrascence": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "matrascence",
+        "title": "Matrascence",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/matrascence.svg",
+        "description": "Placeholder work on transformation, softness and spatial drift.",
+        "metadata": [
+            ["Status", "Placeholder"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/matrascence.svg",
+            "/static/img/art/placeholders/matrascence.svg",
+            "/static/img/art/placeholders/matrascence.svg",
+            "/static/img/art/placeholders/matrascence.svg",
+        ],
+    },
+    "clothing": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "clothing",
+        "title": "Clothing",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/clothing.svg",
+        "description": "Placeholder study tracing material language and bodily shape.",
+        "metadata": [
+            ["Status", "Placeholder"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/clothing.svg",
+            "/static/img/art/placeholders/clothing.svg",
+            "/static/img/art/placeholders/clothing.svg",
+            "/static/img/art/placeholders/clothing.svg",
+        ],
+    },
+    "ars-lapsu": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "ars-lapsu",
+        "title": "Ars Lapsu",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/ars-lapsu.svg",
+        "description": "Placeholder work exploring rift, echo and threshold forms.",
+        "metadata": [
+            ["Status", "Placeholder"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/ars-lapsu.svg",
+            "/static/img/art/placeholders/ars-lapsu.svg",
+            "/static/img/art/placeholders/ars-lapsu.svg",
+            "/static/img/art/placeholders/ars-lapsu.svg",
+        ],
+    },
+    "hca": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "hca",
+        "title": "HCA",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/hca.svg",
+        "description": "Placeholder study for modular structure and visual memory.",
+        "metadata": [
+            ["Status", "Placeholder"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/hca.svg",
+            "/static/img/art/placeholders/hca.svg",
+            "/static/img/art/placeholders/hca.svg",
+            "/static/img/art/placeholders/hca.svg",
+        ],
+    },
+    "falmouth-university": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "falmouth-university",
+        "title": "Falmouth University",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/falmouth-university.svg",
+        "description": "Placeholder piece considering academic context, process and atmosphere.",
+        "metadata": [
+            ["Status", "Placeholder"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/falmouth-university.svg",
+            "/static/img/art/placeholders/falmouth-university.svg",
+            "/static/img/art/placeholders/falmouth-university.svg",
+            "/static/img/art/placeholders/falmouth-university.svg",
+        ],
+    },
+    "1": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "1",
+        "title": "1",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/1.svg",
+        "description": "Placeholder work for the grid.",
+        "metadata": [
+            ["Status", "Coming soon"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/1.svg",
+            "/static/img/art/placeholders/1.svg",
+            "/static/img/art/placeholders/1.svg",
+            "/static/img/art/placeholders/1.svg",
+        ],
+    },
+    "2": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "2",
+        "title": "2",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/2.svg",
+        "description": "Placeholder work for the grid.",
+        "metadata": [
+            ["Status", "Coming soon"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/2.svg",
+            "/static/img/art/placeholders/2.svg",
+            "/static/img/art/placeholders/2.svg",
+            "/static/img/art/placeholders/2.svg",
+        ],
+    },
+    "3": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "3",
+        "title": "3",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/3.svg",
+        "description": "Placeholder work for the grid.",
+        "metadata": [
+            ["Status", "Coming soon"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/3.svg",
+            "/static/img/art/placeholders/3.svg",
+            "/static/img/art/placeholders/3.svg",
+            "/static/img/art/placeholders/3.svg",
+        ],
+    },
+    "4": {
+        "template": "portfolio/community_project_detail.html",
+        "slug": "4",
+        "title": "4",
+        "subtitle": "Placeholder Art Project",
+        "hero_image": "/static/img/art/placeholders/4.svg",
+        "description": "Placeholder work for the grid.",
+        "metadata": [
+            ["Status", "Coming soon"],
+            ["Type", "Art project"],
+            ["Year", "TBC"],
+            ["Location", "TBC"],
+        ],
+        "gallery": [
+            "/static/img/art/placeholders/4.svg",
+            "/static/img/art/placeholders/4.svg",
+            "/static/img/art/placeholders/4.svg",
+            "/static/img/art/placeholders/4.svg",
+        ],
+    },
+}
+
+
 def people(request):
     title = "Creative Health, SEND & Community Arts Practice | Kim Piffy"
     description = (
@@ -531,60 +775,38 @@ def art(request):
         "Explore immersive installations, UV-responsive artwork, sensory environments, "
         "conceptual art and technology-led commissions by UK multidisciplinary artist Kim Piffy."
     )
-    projects = [
-        {
-            "id": "piece-one",
-            "title": "Untitled I",
-            "description": "A series exploring color dialogue and form.",
-            "cover": "/static/img/art/piece-one.jpg",
-            "cover_focus_y": "Mid",
-            "slug": "untitled-i",
-        },
-        {
-            "id": "piece-two",
-            "title": "Transition",
-            "description": (
-                "Digital exploration of movement and transformation."
-            ),
-            "cover": "/static/img/art/piece-two.jpg",
-            "cover_focus_y": "Mid",
-            "slug": "transition",
-        },
-        {
-            "id": "piece-three",
-            "title": "Luminescence",
-            "description": "Mixed media study on light and perception.",
-            "cover": "/static/img/art/piece-three.jpg",
-            "cover_focus_y": "Mid",
-            "slug": "luminescence",
-        },
-        {
-            "id": "piece-four",
-            "title": "Fragments",
-            "description": "Conceptual work examining broken systems.",
-            "cover": "/static/img/art/piece-four.jpg",
-            "cover_focus_y": "Mid",
-            "slug": "fragments",
-        },
-        {
-            "id": "piece-five",
-            "title": "Emergence",
-            "description": "Organic forms responding to audio data.",
-            "cover": "/static/img/art/piece-five.jpg",
-            "cover_focus_y": "Mid",
-            "slug": "emergence",
-        },
-        {
-            "id": "piece-six",
-            "title": "Flux",
-            "description": (
-                "Interactive installation exploring fluid dynamics."
-            ),
-            "cover": "/static/img/art/piece-six.jpg",
-            "cover_focus_y": "Mid",
-            "slug": "flux",
-        },
+    projects = []
+    art_order = [
+        "polycephaly",
+        "pine",
+        "piffy",
+        "matrascence",
+        "clothing",
+        "ars-lapsu",
+        "hca",
+        "falmouth-university",
+        "1",
+        "2",
+        "3",
+        "4",
     ]
+
+    for slug in art_order:
+        item = ART_PROJECT_DETAILS[slug]
+        projects.append(
+            {
+                "id": item["slug"],
+                "title": item["title"],
+                "description": item["description"],
+                "cover": item["hero_image"],
+                "cover_focus_y": item.get("cover_focus_y", "Mid"),
+                "slug": item["slug"],
+                "learn_more_label": "Learn More",
+                "learn_more_url": reverse(
+                    "portfolio:art_project_detail", kwargs={"slug": slug}
+                ),
+            }
+        )
 
     return render(
         request,
@@ -601,5 +823,37 @@ def art(request):
                 twitter_description=description,
             ),
             "section_h1": "Art, Installations and Sensory Environments",
+        },
+    )
+
+
+def art_project_detail(request, slug):
+    project = ART_PROJECT_DETAILS.get(slug)
+    if not project:
+        raise Http404("Art project not found")
+
+    title = f"{project['title']} | Art Project | Kim Piffy"
+    description = (
+        f"Explore {project['title']}: {project['subtitle']}. "
+        "Project details, process notes, gallery and credits."
+    )
+
+    return render(
+        request,
+        project["template"],
+        {
+            "project": project,
+            "back_url": reverse("portfolio:art"),
+            "back_label": "go back",
+            "seo": build_seo(
+                request,
+                title=title,
+                description=description,
+                og_title=title,
+                og_description=description,
+                twitter_title=title,
+                twitter_description=description,
+            ),
+            "section_h1": project["title"],
         },
     )

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Pine placeholder art">
+  <rect width="800" height="800" fill="#071b2a"/>
+  <g opacity="0.95">
+    <path d="M400 90L545 300H470L610 500H520L670 710H130L280 500H190L330 300H255L400 90Z" fill="#d8ff7d"/>
+    <path d="M400 170L510 330H455L540 470H475L560 620H240L325 470H260L345 330H290L400 170Z" fill="#7b6cf6" opacity="0.72"/>
+  </g>
+  <path d="M350 620H450V760H350Z" fill="#ff4bb3" opacity="0.8"/>
+</svg>

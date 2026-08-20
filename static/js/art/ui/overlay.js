@@ -1,5 +1,4 @@
 import { escapeHtml } from "../utils.js";
-import { buildPreviewMarkup } from "../mosaicLayout.js";
 
 export function createOverlay(nodes, { onOpen, onClose }) {
   const { overlay, overlayBackdrop, overlayClose, overlayContent } = nodes;
@@ -26,24 +25,23 @@ export function createOverlay(nodes, { onOpen, onClose }) {
     mosaic.querySelectorAll(".portfolio-cell.is-selected").forEach((cell) => cell.classList.remove("is-selected"));
   }
 
-  function open(project, spec) {
+  function open(project) {
     onOpen?.();
 
     const title = escapeHtml(project.title);
     const blurb = escapeHtml(project.description || project.blurb || project.tagline || "");
+    const learnMoreLabel = escapeHtml(project.learn_more_label || "Learn More");
+    const learnMoreHref = project.learn_more_url ? escapeHtml(project.learn_more_url) : "";
+    const learnMoreCta = learnMoreHref
+      ? `<div class="cta-row"><a class="btn project-cta lilac" href="${learnMoreHref}">${learnMoreLabel}</a></div>`
+      : "";
 
     overlayContent.innerHTML = `
-      <div class="overlay-grid">
-        <div class="overlay-left">
-          <div class="overlay-preview-shell">
-            ${buildPreviewMarkup(project, spec)}
-          </div>
-        </div>
-        <div class="overlay-right">
-          <div class="overlay-info">
-            <h2 class="overlay-title">${title}</h2>
-            ${blurb ? `<p class="overlay-desc">${blurb}</p>` : ""}
-          </div>
+      <div class="overlay-card">
+        <div class="overlay-card__body">
+          <h2 class="overlay-title">${title}</h2>
+          ${blurb ? `<p class="overlay-desc">${blurb}</p>` : ""}
+          ${learnMoreCta}
         </div>
       </div>
     `;

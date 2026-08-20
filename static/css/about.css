@@ -279,9 +279,9 @@ body.about-page .about-word{
   background: transparent;
   border: 0;
   text-shadow: 
-    0 0 10px rgba(124, 108, 247, 0.8),
-    0 0 20px rgba(124, 108, 247, 0.6),
-    0 0 30px rgba(124, 108, 247, 0.4),
+    0 0 12px rgba(124, 108, 247, 0.95),
+    0 0 24px rgba(124, 108, 247, 0.7),
+    0 0 36px rgba(124, 108, 247, 0.5),
     2px 2px 4px rgba(0, 0, 0, 0.8);
   z-index: 100 !important;
 
@@ -526,29 +526,59 @@ body.about-page .overlay-panel .overlay-close:focus-visible{
 }
 
 /* Bio heading: lowercase by default, uppercase on interaction. */
+body.about-page .overlay-panel #overlayContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
 body.about-page .overlay-panel #overlayContent .bio-modal-title{
+  margin: 0 0 1rem;
+  color: #031624;
   text-transform: lowercase;
+  text-align: center;
 }
 
 body.about-page .overlay-panel #overlayContent .bio-modal-title:hover,
 body.about-page .overlay-panel #overlayContent .bio-modal-title:focus,
 body.about-page .overlay-panel #overlayContent .bio-modal-title:active{
+  color: #031624;
   text-transform: uppercase;
 }
 
 body.about-page .overlay-panel #overlayContent .bio-modal-copy{
-  font-size: 13pt;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.7rem auto 0.7rem;
+  padding: 0;
+  box-sizing: border-box;
+  color: #031624;
+  font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+  line-height: 1.4;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   text-align: center;
 }
 
-body.about-page .overlay-panel #overlayContent .project-cta {
+body.about-page .overlay-panel #overlayContent .project-cta,
+body.about-page .overlay-panel #overlayContent .btn {
+  display: inline-block;
+  margin-top: 0.15rem;
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  letter-spacing: 0.02em;
+  color: #031624 !important;
   text-transform: lowercase;
 }
 
 body.about-page .overlay-panel #overlayContent .project-cta:hover,
 body.about-page .overlay-panel #overlayContent .project-cta:focus,
-body.about-page .overlay-panel #overlayContent .project-cta:active {
+body.about-page .overlay-panel #overlayContent .project-cta:active,
+body.about-page .overlay-panel #overlayContent .project-cta:focus-visible {
+  color: #031624 !important;
   text-transform: uppercase;
 }
 
@@ -585,7 +615,9 @@ body.about-page .overlay-panel #overlayContent button:focus-visible {
 /* Project CTA buttons - add hover effects */
 body.about-page .project-cta:hover,
 body.about-page .project-cta:focus,
-body.about-page .project-cta:active {
+body.about-page .project-cta:active,
+body.about-page .project-cta:focus-visible {
+  color: #031624;
   text-transform: uppercase;
   outline: none;
 }

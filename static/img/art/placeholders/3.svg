@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Placeholder 3">
+  <rect width="800" height="800" fill="#071b2a"/>
+  <g opacity="0.9">
+    <path d="M120 600C180 370 260 240 400 120C540 240 620 370 680 600H120Z" fill="#ff4bb3"/>
+    <path d="M220 600C260 430 320 320 400 230C480 320 540 430 580 600H220Z" fill="#f5ff8c"/>
+  </g>
+  <path d="M400 150V650" stroke="#7b6cf6" stroke-width="18" stroke-linecap="round"/>
+</svg>

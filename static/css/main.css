@@ -271,7 +271,16 @@ img, svg, video {
 /* Modal body copy stays on body size; headers are larger than CTA/link text. */
 .overlay-panel #overlayContent :is(p, li, span, small),
 .contact-modal :is(p, li, span, small) {
-  font-size: var(--modal-body-text-size) !important;
+  display: block !important;
+  font-size: clamp(0.95rem, 1.8vw, 1.2rem) !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.03em !important;
+  margin-top: 0.7rem !important;
+  margin-bottom: 0.7rem !important;
+  margin-left: clamp(0.8rem, 2.8vw, 2rem) !important;
+  margin-right: clamp(0.8rem, 2.8vw, 2rem) !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
 }
 
 .overlay-panel #overlayContent :is(h1, h2, h3, h4),

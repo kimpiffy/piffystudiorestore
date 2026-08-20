@@ -8,6 +8,7 @@ urlpatterns = [
     path('people/', views.people, name='people'),
     path('digital/', views.digital, name='digital'),  # Corrected name
     path('art/', views.art, name='art'),  # Corrected name
+    path('art/<slug:slug>/', views.art_project_detail, name='art_project_detail'),
     path('styles/', views.styles, name='styles'),
     path('industry/', views.industry, name='industry'),
     re_path(

@@ -32,7 +32,9 @@ body {
 }
 
 body.art-page .site-footer {
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   bottom: 0;
   z-index: 9999;
 }
