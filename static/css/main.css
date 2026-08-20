@@ -341,6 +341,15 @@ header {
   overflow: hidden;
 }
 
+body.art-page .site-content,
+body.art-page main,
+body.art-page .page-content {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
 .site-content {
   height: 100dvh;
   min-height: 100dvh;

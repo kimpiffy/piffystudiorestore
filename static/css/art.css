@@ -11,7 +11,7 @@
 html,
 body.art-page {
   min-height: 100%;
-  height: auto;
+  height: 100%;
   max-height: none;
   margin: 0;
   background: var(--art-ink);
@@ -21,6 +21,8 @@ body.art-page {
   color: #f4f1e6;
   overflow-x: hidden;
   overflow-y: hidden;
+  min-height: 100vh;
+  max-height: 100vh;
   background:
     radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
     radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
@@ -33,6 +35,7 @@ body.art-page {
 
 body.art-page .site-content,
 body.art-page main,
+body.art-page .page-content,
 body.art-page .wrap,
 body.art-page .showcase,
 body.art-page .blob-layer,
@@ -42,6 +45,14 @@ body.art-page .portfolio-mosaic {
   max-height: none !important;
   height: auto !important;
   min-height: 100vh !important;
+}
+
+body.art-page .site-content,
+body.art-page main,
+body.art-page .page-content {
+  max-height: none !important;
+  min-height: 0 !important;
+  height: auto !important;
 }
 
 body.art-page .site-content {
@@ -306,10 +317,20 @@ body.art-page .blob-svg path[id$="_outline"] {
 @media (max-width: 991px) {
   html,
   body.art-page {
+    overflow: visible !important;
     overflow-x: hidden;
-    overflow-y: auto !important;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y;
     height: auto !important;
     min-height: 100% !important;
+    max-height: none !important;
+  }
+
+  body.art-page {
+    padding-bottom: 0 !important;
+    position: relative;
   }
 
   body.art-page .site-content {
@@ -337,29 +358,39 @@ body.art-page .blob-svg path[id$="_outline"] {
     height: auto !important;
     min-height: 0 !important;
   }
+
+  body.art-page .showcase,
+  body.art-page #blobLayer {
+    padding-bottom: calc(var(--footer-bar-h, 52px) + 2.25rem) !important;
+  }
 }
 
 @media (max-width: 800px) {
   .showcase,
   .blob-layer {
     width: 100vw;
-    height: 100vh;
+    height: auto !important;
+    min-height: 0 !important;
   }
 
   .showcase {
-    top: var(--site-header-h) !important;
+    position: relative !important;
+    inset: auto !important;
+    top: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: calc(var(--footer-bar-h, 48px) + 12px) !important;
+    bottom: auto !important;
     height: auto !important;
     overflow: visible !important;
   }
 
   .blob-layer {
+    position: relative !important;
+    inset: auto !important;
     left: 0 !important;
     right: 0 !important;
     top: 0 !important;
-    bottom: 0 !important;
+    bottom: auto !important;
     height: auto !important;
     overflow: visible !important;
   }
@@ -501,24 +532,39 @@ body.art-page .blob-svg path[id$="_outline"] {
 @media (max-width: 767px){
   :root { --mobile-blob-top: 20px; }
 
-  html.art-page,
+  html,
   body.art-page {
+    overflow: visible !important;
     overflow-x: hidden;
-    overflow-y: auto !important;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y;
     height: auto !important;
     min-height: 100% !important;
+    max-height: none !important;
+  }
+
+  body.art-page main,
+  body.art-page .site-content,
+  body.art-page .wrap,
+  body.art-page .showcase,
+  body.art-page .blob-layer,
+  body.art-page .portfolio-mosaic-host,
+  body.art-page .portfolio-mosaic {
+    position: relative !important;
+    inset: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
   }
 
   body.art-page .site-content {
-    position: relative !important;
-    inset: auto !important;
-    overflow: visible !important;
+    display: block !important;
   }
 
   body.art-page .wrap {
-    position: relative !important;
-    inset: auto !important;
-    overflow: visible !important;
     min-height: auto !important;
     height: auto !important;
   }
@@ -527,24 +573,27 @@ body.art-page .blob-svg path[id$="_outline"] {
 
   body.art-page .showcase{
     position: relative !important;
-    top: auto !important;
+    inset: auto !important;
+    top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     bottom: auto !important;
     width: 100% !important;
     min-height: auto !important;
     height: auto !important;
+    padding: 0 0 2rem !important;
     overflow: visible !important;
-    padding-bottom: 2rem !important;
   }
 
   body.art-page #blobLayer{
     position: relative !important;
+    inset: auto !important;
     left: 0 !important;
     right: 0 !important;
     top: auto !important;
     bottom: auto !important;
     height: auto !important;
+    min-height: auto !important;
     overflow: visible !important;
     z-index: 3 !important;
     display: flex !important;
@@ -553,6 +602,9 @@ body.art-page .blob-svg path[id$="_outline"] {
     align-items: center !important;
     gap: 1rem !important;
     width: min(100%, calc(100vw - 18px)) !important;
+    margin: 0 auto !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 2.5rem !important;
   }
 
   body.art-page #blobLayer .blob-outer{
@@ -604,25 +656,40 @@ body.art-page .blob-svg path[id$="_outline"] {
 }
 
 /* Mid-size range: keep the stacked art layout but split it into a compact two-column grid. */
-@media (min-width: 576px) and (max-width: 991px){
-  html.art-page,
+@media (min-width: 567px) and (max-width: 991px){
+  html,
   body.art-page {
+    overflow: visible !important;
     overflow-x: hidden;
-    overflow-y: auto !important;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y;
     height: auto !important;
     min-height: 100% !important;
+    max-height: none !important;
+  }
+
+  body.art-page main,
+  body.art-page .site-content,
+  body.art-page .wrap,
+  body.art-page .showcase,
+  body.art-page .blob-layer,
+  body.art-page .portfolio-mosaic-host,
+  body.art-page .portfolio-mosaic {
+    position: relative !important;
+    inset: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
   }
 
   body.art-page .site-content {
-    position: relative !important;
-    inset: auto !important;
-    overflow: visible !important;
+    display: block !important;
   }
 
   body.art-page .wrap {
-    position: relative !important;
-    inset: auto !important;
-    overflow: visible !important;
     min-height: auto !important;
     height: auto !important;
   }
@@ -634,6 +701,8 @@ body.art-page .blob-svg path[id$="_outline"] {
     justify-content: flex-start !important;
     top: calc(var(--site-header-h, 92px) - 4px) !important;
     padding-top: 14px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
   }
 
   body.art-page #blobLayer{
@@ -643,15 +712,15 @@ body.art-page .blob-svg path[id$="_outline"] {
     height: auto !important;
     flex: 0 0 auto !important;
     width: min(100%, calc(100vw - 72px)) !important;
-    max-width: 1000px !important;
+    max-width: 1200px !important;
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     justify-items: center !important;
     align-items: start !important;
-    gap: 2.1rem 1.2rem !important;
+    gap: 2rem 1.2rem !important;
     justify-content: center !important;
-    padding-bottom: clamp(7rem, 18vw, 10rem) !important;
-    margin-bottom: clamp(1.5rem, 3vw, 2.25rem) !important;
+    padding-bottom: calc(clamp(7rem, 18vw, 10rem) + var(--footer-bar-h, 52px) + 1.25rem) !important;
+    margin: 0 auto clamp(1.5rem, 3vw, 2.25rem) !important;
   }
 
   body.art-page #blobLayer .mobile-blob-stack-item,
@@ -662,9 +731,11 @@ body.art-page .blob-svg path[id$="_outline"] {
     top: auto !important;
     bottom: auto !important;
     width: min(100%, 350px) !important;
+    max-width: 350px !important;
     height: auto !important;
     display: block !important;
     padding-top: var(--mobile-blob-top, 0px) !important;
+    margin: 0 auto !important;
   }
 
   body.art-page #blobLayer .mobile-art-blob,
@@ -698,8 +769,7 @@ body.art-page .blob-svg path[id$="_outline"] {
   }
 }
 
-/* Mobile tight stack: header -> blob -> arrows -> footer (no vertical centering gaps). */
-@media (max-width: 575.98px){
+@media (max-width: 566px){
   body.art-page .showcase{
     display: flex !important;
     flex-direction: column !important;
@@ -756,8 +826,8 @@ body.art-page .blob-svg path[id$="_outline"] {
   }
 }
 
-/* Final calibration: single-column stack for smallest screens only. */
-@media (max-width: 767px){
+/* Final calibration: single-column stack only below the two-column breakpoints. */
+@media (max-width: 566px){
   body.art-page {
     --mobile-blob-top: 0px;
   }
@@ -790,7 +860,7 @@ body.art-page .blob-svg path[id$="_outline"] {
     gap: 1rem !important;
     overflow: visible !important;
     padding-top: 0.5rem !important;
-    padding-bottom: 3rem !important;
+    padding-bottom: calc(var(--footer-bar-h, 52px) + 2.75rem) !important;
   }
 
   body.art-page #blobLayer .mobile-blob-stack-item,
@@ -801,8 +871,12 @@ body.art-page .blob-svg path[id$="_outline"] {
     top: auto !important;
     bottom: auto !important;
     width: min(100vw, 400px) !important;
+    max-width: 100% !important;
     height: auto !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin: 0 auto 0.25rem !important;
   }
 
   body.art-page #blobLayer .mobile-art-blob,

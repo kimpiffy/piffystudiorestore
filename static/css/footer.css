@@ -31,6 +31,12 @@ body {
   overflow: hidden;
 }
 
+body.art-page .site-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 9999;
+}
+
 .footer-inner {
   position: relative;
   width: 100%;
