@@ -806,7 +806,7 @@ body.nav-expanded #navbar {
   /* Keep open-state menu aligned with the adjusted mobile nav anchor. */
   .nav-panel {
     top: calc(100% + 11px);
-    left: -20px;
+    left: -28px;
     right: auto;
   }
 
@@ -992,7 +992,6 @@ body.nav-expanded #navbar {
 
 @media (min-width: 577px) and (max-width: 991.98px) {
   #navbar {
-    --nav-anchor-left: 14px;
     top: 30px;
   }
 

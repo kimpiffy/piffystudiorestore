@@ -6,7 +6,7 @@ import { createMobileDrift } from "../digital/anim/driftMobile.js";
 
 import { createOverlay } from "./ui/overlay.js";
 import { renderDesktopBlobs } from "./ui/renderDesktop.js";
-import { renderMobileOne } from "../digital/ui/renderMobile.js";
+import { renderMobileOne } from "./ui/renderMobile.js";
 import { bindControls } from "./ui/controls.js";
 import { getMosaicSpec } from "./mosaicLayout.js";
 

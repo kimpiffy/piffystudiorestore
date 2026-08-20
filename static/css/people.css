@@ -461,14 +461,14 @@ body.people-page .blob-svg path[id$="_outline"] {
 }
 
 @media (max-width: 767px) {
-  .overlay-panel {
+  body.people-page .overlay-panel {
     width: 90vw;
     max-height: calc(100dvh - 28px);
   }
 
-  .wrap { padding: 0 !important; }
+  body.people-page .wrap { padding: 0 !important; }
 
-  .showcase {
+  body.people-page .showcase {
     position: fixed !important;
     top: var(--site-header-h) !important;
     left: 0 !important;
@@ -478,7 +478,7 @@ body.people-page .blob-svg path[id$="_outline"] {
     overflow: visible !important;
   }
 
-  #blobLayer {
+  body.people-page #blobLayer {
     position: absolute !important;
     left: 0 !important;
     right: 0 !important;
@@ -489,7 +489,7 @@ body.people-page .blob-svg path[id$="_outline"] {
     z-index: 3 !important;
   }
 
-  #blobLayer .blob-outer {
+  body.people-page #blobLayer .blob-outer {
     position: absolute !important;
     left: 0 !important;
     right: 0 !important;
@@ -502,19 +502,19 @@ body.people-page .blob-svg path[id$="_outline"] {
     padding-top: 0 !important;
   }
 
-  #blobLayer .blob-inner {
+  body.people-page #blobLayer .blob-inner {
     position: relative !important;
     display: flex !important;
   }
 
-  #blobLayer .blob-svg {
+  body.people-page #blobLayer .blob-svg {
     width: 100% !important;
     height: 100% !important;
     max-width: none !important;
     max-height: none !important;
   }
 
-  #navArrows {
+  body.people-page #navArrows {
     position: fixed !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
@@ -528,26 +528,26 @@ body.people-page .blob-svg path[id$="_outline"] {
 }
 
 @media (max-width: 576px) {
-  .overlay-panel {
+  body.people-page .overlay-panel {
     width: calc(100vw - 28px);
     max-height: calc(100dvh - 28px);
     border-radius: 16px;
     padding: 10px 8px 8px;
   }
 
-  .overlay-panel .overlay-close {
+  body.people-page .overlay-panel .overlay-close {
     margin-right: 0;
   }
 
-  .overlay-panel h2 {
+  body.people-page .overlay-panel h2 {
     font-size: 2.4rem !important;
     line-height: 0.92 !important;
   }
 
   /* Force parity with digital mobile layout for blobs/arrows */
-  :root { --mobile-blob-top: 0px; }
+  body.people-page :root { --mobile-blob-top: 0px; }
 
-  .showcase{
+  body.people-page .showcase{
     position: fixed !important;
     top: var(--site-header-h) !important;
     left: 0 !important;
@@ -558,7 +558,7 @@ body.people-page .blob-svg path[id$="_outline"] {
   }
 
   /* blob layer fills the stage */
-  #blobLayer{
+  body.people-page #blobLayer{
     position: absolute !important;
     left: 0 !important;
     right: 0 !important;
@@ -569,7 +569,7 @@ body.people-page .blob-svg path[id$="_outline"] {
     z-index: 3 !important;
   }
 
-  #blobLayer .blob-outer{
+  body.people-page #blobLayer .blob-outer{
     position: absolute !important;
     left: 0 !important;
     right: 0 !important;
@@ -582,19 +582,19 @@ body.people-page .blob-svg path[id$="_outline"] {
     padding-top: 0 !important;
   }
 
-  #blobLayer .blob-inner{
+  body.people-page #blobLayer .blob-inner{
     position: relative !important;
     display: flex !important;
   }
 
-  #blobLayer .blob-svg{
+  body.people-page #blobLayer .blob-svg{
     width: 100% !important;
     height: 100% !important;
     max-width: none !important;
     max-height: none !important;
   }
 
-  #navArrows{
+  body.people-page #navArrows{
     position: fixed !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
@@ -606,7 +606,7 @@ body.people-page .blob-svg path[id$="_outline"] {
     pointer-events: auto !important;
   }
 
-  .project-cta {
+  body.people-page .project-cta {
     font-size: 1.6rem;
     padding: 8px 14px;
   }
@@ -736,15 +736,33 @@ body.people-page .blob-svg path[id$="_outline"] {
   }
 }
 
+/* Mid-width phones/tablets were too large: cap single-blob scale in this band. */
+@media (min-width: 422px) and (max-width: 767px) {
+  body.people-page #blobLayer .blob-inner {
+    width: min(72vw, 430px) !important;
+    height: min(72vw, 430px) !important;
+  }
+}
+
 /* Final calibration: lift mobile composition so blob and arrows sit clear of footer. */
 @media (max-width: 767px) {
   body.people-page .showcase {
-    padding-top: 6px !important;
+    top: calc(var(--site-header-h, 92px) - 20px) !important;
+    padding-top: 0 !important;
+    transform: translateY(-30px) !important;
+  }
+
+  body.people-page #blobLayer {
+    transform: translateY(-30px) !important;
+  }
+
+  body.people-page #blobLayer .blob-outer {
     transform: translateY(-30px) !important;
   }
 
   body.people-page #navArrows {
-    margin-top: -6px !important;
+    margin-top: -30px !important;
+    transform: translate(-50%, -30px) !important;
   }
 }
 

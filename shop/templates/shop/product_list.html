@@ -48,10 +48,10 @@
           </svg>
         </a>
 
+        <h3 class="product-title">{{ product.title }}</h3>
+
         <div class="meta-row">
-          <div class="price">
-            {{ product.title }} — £{{ product.price }}
-          </div>
+          <div class="price">£{{ product.price }}</div>
 
           <button class="like" type="button" data-product="{{ product.id }}" aria-label="Like {{ product.title }}">
             <span class="like-heart" aria-hidden="true">♡</span>
