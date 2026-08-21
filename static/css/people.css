@@ -237,7 +237,7 @@ body.people-page .blob-svg path[id$="_outline"] {
   letter-spacing: 0.04em;
   text-transform: lowercase;
   cursor: pointer;
-  text-shadow: 0 0 10px rgba(124, 108, 247, 0.7);
+  text-shadow: var(--nav-glow);
   -webkit-text-stroke: 0.55px var(--people-pink);
   transition: color 180ms ease, transform 180ms ease;
 }
@@ -340,7 +340,7 @@ body.people-page .blob-svg path[id$="_outline"] {
     color: var(--people-uranium) !important;
     -webkit-text-fill-color: var(--people-uranium) !important;
     -webkit-text-stroke: 0.55px var(--people-pink) !important;
-    text-shadow: 0 0 10px rgba(124, 108, 247, 0.7) !important;
+    text-shadow: var(--nav-glow) !important;
   }
 
   body.people-page .project-title-chip:hover,

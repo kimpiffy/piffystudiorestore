@@ -1004,10 +1004,7 @@ body.nav-expanded #navbar {
   }
 
   .nav-x[aria-expanded="true"] .nav-x__upper {
-    text-shadow:
-      0 0 8px rgba(124, 108, 247, 0.7),
-      0 0 16px rgba(124, 108, 247, 0.45),
-      0 0 24px rgba(124, 108, 247, 0.3) !important;
+    text-shadow: var(--nav-glow) !important;
   }
 }
 

@@ -16,18 +16,31 @@
 }
 
 body.community-project-page {
+  min-height: 100vh;
   background: var(--community-ink);
   color: var(--community-cream);
   overflow-y: auto;
   overflow-x: hidden;
+  background-image:
+    radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+    radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+    var(--community-ink);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
 }
 
 body.community-project-page .site-content {
-  overflow-y: auto;
-  overflow-x: hidden;
+  min-height: 100vh;
+  height: auto;
+  max-height: none;
+  overflow: visible;
   background: radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
               radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
               var(--community-ink);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
 }
 
 .community-project-shell {
@@ -48,9 +61,9 @@ body.community-project-page .site-content {
   color: var(--community-uranium);
   -webkit-text-stroke: 0.8px var(--community-pink);
   text-shadow:
-    0 0 10px rgba(124, 108, 247, 0.9),
-    0 0 22px rgba(124, 108, 247, 0.7),
-    0 0 34px rgba(124, 108, 247, 0.45);
+    0 0 12px rgba(123, 108, 246, 0.95),
+    0 0 24px rgba(123, 108, 246, 0.78),
+    0 0 42px rgba(123, 108, 246, 0.48);
 }
 
 .project-title {
@@ -423,7 +436,7 @@ body.modal-open {
 
   .community-project-shell {
     width: min(100%, calc(100vw - 18px));
-    padding: clamp(4.5rem, 16vw, 6rem) 0 4.5rem;
+    padding: clamp(5.625rem, 20vw, 7.5rem) 0 5.625rem;
   }
 
   .project-intro-grid {
@@ -520,7 +533,7 @@ body.modal-open {
   }
 
   .project-back-row {
-    margin-top: 1.6rem;
+    margin-top: 2rem;
   }
 
   .project-back {
@@ -531,8 +544,8 @@ body.modal-open {
 @media (max-width: 575.98px) {
   .community-project-shell {
     width: min(100%, calc(100vw - clamp(20px, 5vw, 36px)));
-    padding-top: clamp(5rem, 18vw, 6.5rem);
-    padding-bottom: 5.2rem;
+    padding-top: clamp(6.25rem, 22.5vw, 8.125rem);
+    padding-bottom: 6.5rem;
   }
 
   .project-title {
