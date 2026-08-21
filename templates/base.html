@@ -74,12 +74,21 @@
         }, 650);
       };
 
+      const hideWhenReady = () => {
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            window.setTimeout(startHide, 550);
+          });
+          return;
+        }
+
+        window.setTimeout(startHide, 900);
+      };
+
       if (document.readyState === 'complete') {
-        window.setTimeout(startHide, 350);
+        hideWhenReady();
       } else {
-        window.addEventListener('load', () => {
-          window.setTimeout(startHide, 350);
-        }, { once: true });
+        window.addEventListener('load', hideWhenReady, { once: true });
       }
     })();
   </script>

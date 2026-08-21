@@ -225,7 +225,7 @@ body.digital-page .cta-row {
   letter-spacing: 0.04em;
   text-transform: lowercase;
   cursor: pointer;
-  text-shadow: 0 0 10px rgba(124, 108, 247, 0.7);
+  text-shadow: var(--nav-glow);
   -webkit-text-stroke: 0.55px #ff4bb3;
   transition: color 180ms ease, transform 180ms ease;
 }
@@ -256,7 +256,7 @@ body.digital-page .cta-row {
     color: var(--uranium) !important;
     -webkit-text-fill-color: var(--uranium) !important;
     -webkit-text-stroke: 0.55px var(--brand-modal-pink) !important;
-    text-shadow: 0 0 10px rgba(124, 108, 247, 0.7) !important;
+    text-shadow: var(--nav-glow) !important;
   }
 
   body.digital-page .project-title-chip:hover,
@@ -625,7 +625,7 @@ body.digital-page .cta-row {
     background: transparent !important;
     border-radius: 0 !important;
     -webkit-text-stroke: 0.55px var(--brand-modal-pink) !important;
-    text-shadow: 0 0 10px rgba(124, 108, 247, 0.7) !important;
+    text-shadow: var(--nav-glow) !important;
   }
 
   body.digital-page #navArrows {

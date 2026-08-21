@@ -20,9 +20,9 @@ body.art-page {
 body.art-page {
   color: #f4f1e6;
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
   min-height: 100vh;
-  max-height: 100vh;
+  max-height: none;
   background:
     radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
     radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
@@ -51,7 +51,7 @@ body.art-page .site-content,
 body.art-page main,
 body.art-page .page-content {
   max-height: none !important;
-  min-height: 0 !important;
+  min-height: 100vh !important;
   height: auto !important;
 }
 
@@ -59,6 +59,13 @@ body.art-page .site-content {
   flex: 0 0 auto;
   position: relative;
   inset: auto;
+  background:
+    radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
+    radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
+    var(--art-ink);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
 }
 
 body.art-page .wrap {
@@ -81,10 +88,7 @@ body.art-page .wrap {
   width: 100%;
   display: block;
   -webkit-text-stroke: 0.7px var(--art-pink);
-  text-shadow:
-    0 0 10px rgba(124, 108, 247, 0.9),
-    0 0 22px rgba(124, 108, 247, 0.7),
-    0 0 34px rgba(124, 108, 247, 0.45);
+  text-shadow: var(--nav-glow);
   transition: color 180ms ease, -webkit-text-stroke-color 180ms ease, text-shadow 180ms ease;
 }
 
@@ -96,10 +100,7 @@ body.art-page .mobile-blob-stack-item:focus-within .mobile-art-title {
   -webkit-text-fill-color: var(--art-pink);
   -webkit-text-stroke: 0.7px var(--art-uranium);
   text-transform: lowercase;
-  text-shadow:
-    0 0 12px rgba(124, 108, 247, 0.9),
-    0 0 24px rgba(124, 108, 247, 0.7),
-    0 0 36px rgba(124, 108, 247, 0.5);
+  text-shadow: var(--nav-glow);
   animation: navWobbleTouch 420ms ease;
 }
 
