@@ -145,10 +145,10 @@ export function createDesktopDrift() {
         p.vx *= cfg.damping;
         p.vy *= cfg.damping;
 
-        const minX = cfg.offLeft + cfg.padding;
-        const maxX = W - cfg.offRight - cfg.padding;
-        const minY = cfg.offTop + cfg.padding;
-        const maxY = H - cfg.offBottom - cfg.padding;
+        const minX = Math.max(cfg.offLeft + cfg.padding + p.radius, 0);
+        const maxX = Math.max(minX + 10, W - cfg.offRight - cfg.padding - p.radius);
+        const minY = Math.max(cfg.offTop + cfg.padding + p.radius, 0);
+        const maxY = Math.max(minY + 10, H - cfg.offBottom - cfg.padding - p.radius);
 
         if (p.x < minX) p.vx += (minX - p.x) * cfg.edgePush;
         if (p.x > maxX) p.vx -= (p.x - maxX) * cfg.edgePush;

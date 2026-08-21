@@ -7,6 +7,6 @@ export const isTablet = () => mqTablet.matches;
 export const DESKTOP_PAGE_SIZE = 7;
 
 export function perSet(projectCount) {
-  if (isTablet()) return Math.min(5, projectCount);
+  if (isTablet()) return Math.min(6, projectCount);
   return Math.min(DESKTOP_PAGE_SIZE, projectCount);
 }

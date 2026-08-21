@@ -87,7 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getBlobScale() {
     const width = window.innerWidth || document.documentElement.clientWidth || screen.width;
-    if (width >= 768 && width < 992) return 0.68;
+    const height = window.innerHeight || document.documentElement.clientHeight || screen.height;
+
+    if (width >= 768 && width < 992) {
+      const base = Math.min(width * 0.39, height * 0.43);
+      const clamped = Math.min(Math.max(base, 300), 390);
+      return clamped / 520;
+    }
+
     if (width >= 992 && width < 1200) return 0.75;
     return 1;
   }

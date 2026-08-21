@@ -47,26 +47,71 @@ export function renderDesktopBlobs({ blobLayer, projects, setIndex, onProjectCli
   });
 
   const r0 = blobLayer.getBoundingClientRect();
+  const isMidTablet = r0.width >= 768 && r0.width < 992;
 
-  const particles = buttons.map(btn => {
+  const particles = [];
+
+  buttons.forEach(btn => {
     const id = btn.getAttribute("data-id") || "";
     const rnd = mulberry32(hashToSeed(id));
     const size = btn.getBoundingClientRect().width || uniform;
+    const radius = size * (0.42 + rnd() * 0.04);
 
-    return {
+    let x = rnd() * r0.width;
+    let y = rnd() * r0.height;
+
+    if (isMidTablet) {
+      const safeInsetX = Math.max(24, radius * 0.9);
+      const safeInsetY = Math.max(24, radius * 0.9);
+      const minX = safeInsetX;
+      const maxX = Math.max(minX + 20, r0.width - safeInsetX);
+      const minY = safeInsetY;
+      const maxY = Math.max(minY + 20, r0.height - safeInsetY);
+      const centerX = r0.width * 0.53;
+      const centerY = r0.height * 0.54;
+
+      let placed = false;
+      let attempts = 0;
+
+      while (!placed && attempts < 80) {
+        attempts += 1;
+        x = centerX + (rnd() - 0.5) * (maxX - minX) * 0.9;
+        y = centerY + (rnd() - 0.5) * (maxY - minY) * 0.9;
+
+        x = Math.min(Math.max(x, minX), maxX);
+        y = Math.min(Math.max(y, minY), maxY);
+
+        const overlaps = particles.some(other => {
+          const dx = x - other.x;
+          const dy = y - other.y;
+          return Math.hypot(dx, dy) < radius + other.radius + 12;
+        });
+
+        if (!overlaps) {
+          placed = true;
+        }
+      }
+
+      if (!placed) {
+        x = minX + rnd() * Math.max(1, maxX - minX);
+        y = minY + rnd() * Math.max(1, maxY - minY);
+      }
+    }
+
+    particles.push({
       btn, id,
-      x: rnd() * r0.width,
-      y: rnd() * r0.height,
+      x,
+      y,
       vx: (rnd()-0.5)*0.22,
       vy: (rnd()-0.5)*0.22,
-      radius: size * (0.42 + rnd()*0.04),
+      radius,
       grabbed: false,
       px: rnd()*1000,
       py: rnd()*1000,
       ph: rnd()*Math.PI*2,
       biasX: (rnd()-0.5)*0.08,
       biasY: (rnd()-0.5)*0.08
-    };
+    });
   });
 
   particles.forEach(p => {
