@@ -167,11 +167,13 @@ html:has(body.contact-body) {
 }
 
 .contact-title:hover,
-.contact-title:focus-visible {
+.contact-title:focus-visible,
+.contact-title:active {
   text-transform: lowercase;
   color: var(--modal-pink);
   -webkit-text-stroke-color: var(--uranium);
   text-stroke-color: var(--uranium);
+  animation: navWobbleTouch 420ms ease;
 }
 
 /* ------------------------------------
@@ -446,11 +448,13 @@ html:has(body.contact-body) {
 
 .contact-btn:hover,
 .contact-btn:focus,
-.contact-btn:active{
-  text-transform: lowercase;
+.contact-btn:active,
+.contact-btn:focus-visible {
+  text-transform: uppercase;
   color: var(--modal-pink);
   -webkit-text-stroke-color: var(--uranium);
   text-stroke-color: var(--uranium);
+  animation: navWobbleTouch 420ms ease;
 }
 
 /* ------------------------------------

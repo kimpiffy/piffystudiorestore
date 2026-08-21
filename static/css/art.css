@@ -71,6 +71,7 @@ body.art-page .wrap {
 .mobile-art-title {
   margin: 0;
   color: var(--art-uranium);
+  -webkit-text-fill-color: var(--art-uranium);
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: clamp(2.7rem, 8.4vw, 3.9rem);
   line-height: 1.1;
@@ -88,13 +89,18 @@ body.art-page .wrap {
 }
 
 body.art-page .mobile-art-title:hover,
-body.art-page .mobile-art-title:focus-visible {
+body.art-page .mobile-art-title:focus-visible,
+body.art-page .mobile-blob-stack-item:hover .mobile-art-title,
+body.art-page .mobile-blob-stack-item:focus-within .mobile-art-title {
   color: var(--art-pink);
-  -webkit-text-stroke-color: var(--art-uranium);
+  -webkit-text-fill-color: var(--art-pink);
+  -webkit-text-stroke: 0.7px var(--art-uranium);
+  text-transform: lowercase;
   text-shadow:
     0 0 12px rgba(124, 108, 247, 0.9),
     0 0 24px rgba(124, 108, 247, 0.7),
     0 0 36px rgba(124, 108, 247, 0.5);
+  animation: navWobbleTouch 420ms ease;
 }
 
 body.art-page footer {
@@ -220,7 +226,10 @@ body.art-page .overlay-panel #overlayContent {
   position: relative;
   width: 100%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 body.art-page .overlay-card {
@@ -228,7 +237,6 @@ body.art-page .overlay-card {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(1rem, 2vw, 1.5rem);
   width: 100%;
   max-width: 620px;
   margin: 0 auto;
@@ -236,38 +244,23 @@ body.art-page .overlay-card {
   padding: 0.35rem 0.1rem 0.2rem;
 }
 
-body.art-page .overlay-card__media {
+body.art-page .overlay-card__media,
+body.art-page .overlay-card__image,
+body.art-page .overlay-card__body {
   display: none;
 }
 
-body.art-page .overlay-card__image {
-  width: 100%;
-  display: block;
-  border-radius: 24px;
-  object-fit: cover;
-  background: rgba(3, 22, 36, 0.08);
-}
-
-body.art-page .overlay-card__body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  width: 100%;
-  max-width: 560px;
-  text-align: center;
-  margin: 0 auto;
-}
-
 body.art-page .overlay-title {
-  margin: 0 0 0.7rem;
+  margin: 0 0 1.5rem 0 !important;
+  padding: 0 !important;
+  display: inline-block;
   color: var(--art-ink);
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   font-size: clamp(2rem, 4.2vw, 3rem);
   line-height: 0.95;
   text-transform: lowercase;
   text-align: center;
+  transform-origin: center center;
   transition: color 180ms ease, text-transform 180ms ease, -webkit-text-stroke-color 180ms ease, text-shadow 180ms ease;
   -webkit-text-stroke: 0 transparent;
   text-shadow: none;
@@ -275,8 +268,9 @@ body.art-page .overlay-title {
 
 body.art-page .overlay-desc,
 body.art-page .overlay-panel p {
-  margin: 0.7rem clamp(0.75rem, 2.8vw, 2rem) 0.7rem;
+  width: 100%;
   max-width: 36rem;
+  margin: 0 auto 0;
   color: #031624;
   font-size: clamp(0.95rem, 1.8vw, 1.15rem);
   line-height: 1.4;
@@ -319,11 +313,14 @@ body.art-page .overlay-close:focus-visible {
 }
 
 body.art-page .overlay-title:hover,
-body.art-page .overlay-title:focus-visible {
+body.art-page .overlay-title:focus,
+body.art-page .overlay-title:focus-visible,
+body.art-page .overlay-title:active {
   color: #031624;
   text-transform: uppercase;
   -webkit-text-stroke-color: transparent;
   text-shadow: none;
+  animation: navWobbleTouch 420ms ease;
 }
 
 body.art-page .cta-row {
@@ -331,14 +328,15 @@ body.art-page .cta-row {
   justify-content: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin-top: 0.2rem;
+  margin-top: 12px;
 }
 
 body.art-page .project-cta,
-body.art-page .project-cta:hover,
-body.art-page .project-cta:focus,
-body.art-page .project-cta:active,
-body.art-page .project-cta:focus-visible {
+body.art-page .project-cta:link,
+body.art-page .project-cta:visited,
+body.art-page .overlay-panel .project-cta,
+body.art-page .overlay-panel .project-cta:link,
+body.art-page .overlay-panel .project-cta:visited {
   background: transparent !important;
   border: 0 !important;
   border-color: transparent !important;
@@ -352,14 +350,24 @@ body.art-page .project-cta:focus-visible {
   font-size: clamp(1.15rem, 2vw, 1.6rem) !important;
   letter-spacing: 0.02em;
   text-transform: lowercase;
-  transform: none !important;
+  display: inline-block;
+  transform-origin: center center;
+  will-change: transform;
 }
 
 body.art-page .project-cta:hover,
 body.art-page .project-cta:focus,
 body.art-page .project-cta:active,
-body.art-page .project-cta:focus-visible {
+body.art-page .project-cta:focus-visible,
+body.art-page .overlay-panel .project-cta:hover,
+body.art-page .overlay-panel .project-cta:focus,
+body.art-page .overlay-panel .project-cta:active,
+body.art-page .overlay-panel .project-cta:focus-visible {
+  color: #031624 !important;
+  -webkit-text-stroke: 0;
+  text-stroke: 0;
   text-transform: uppercase;
+  animation: navWobbleTouch 420ms ease !important;
 }
 
 .portfolio-mosaic-host {
@@ -380,6 +388,17 @@ body.art-page .project-cta:focus-visible {
     radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
     radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
     var(--art-ink);
+}
+
+body.art-page .portfolio-cell,
+body.art-page .portfolio-cell:hover,
+body.art-page .portfolio-cell:focus,
+body.art-page .portfolio-cell:focus-visible,
+body.art-page .portfolio-cell:active {
+  outline: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .portfolio-cell {
@@ -884,7 +903,18 @@ body.art-page .project-cta:focus-visible {
     width: 100% !important;
     display: block !important;
     margin-top: 0.75rem !important;
+    color: var(--art-uranium) !important;
+    -webkit-text-fill-color: var(--art-uranium) !important;
     -webkit-text-stroke: 0.55px var(--art-pink) !important;
+  }
+
+  body.art-page .mobile-art-title:hover,
+  body.art-page .mobile-art-title:focus-visible,
+  body.art-page .mobile-blob-stack-item:hover .mobile-art-title,
+  body.art-page .mobile-blob-stack-item:focus-within .mobile-art-title {
+    color: var(--art-pink) !important;
+    -webkit-text-fill-color: var(--art-pink) !important;
+    -webkit-text-stroke: 0.55px var(--art-uranium) !important;
   }
 
   body.art-page #navArrows{
@@ -973,7 +1003,18 @@ body.art-page .project-cta:focus-visible {
     width: 100% !important;
     display: block !important;
     margin-top: 0.75rem !important;
+    color: var(--art-uranium) !important;
+    -webkit-text-fill-color: var(--art-uranium) !important;
     -webkit-text-stroke: 0.55px var(--art-pink) !important;
+  }
+
+  body.art-page .mobile-art-title:hover,
+  body.art-page .mobile-art-title:focus-visible,
+  body.art-page .mobile-blob-stack-item:hover .mobile-art-title,
+  body.art-page .mobile-blob-stack-item:focus-within .mobile-art-title {
+    color: var(--art-pink) !important;
+    -webkit-text-fill-color: var(--art-pink) !important;
+    -webkit-text-stroke: 0.55px var(--art-uranium) !important;
   }
 
   body.art-page #navArrows{
@@ -1106,7 +1147,18 @@ body.art-page .project-cta:focus-visible {
     width: 100% !important;
     display: block !important;
     margin-top: 0.75rem !important;
+    color: var(--art-uranium) !important;
+    -webkit-text-fill-color: var(--art-uranium) !important;
     -webkit-text-stroke: 0.55px var(--art-pink) !important;
+  }
+
+  body.art-page .mobile-art-title:hover,
+  body.art-page .mobile-art-title:focus-visible,
+  body.art-page .mobile-blob-stack-item:hover .mobile-art-title,
+  body.art-page .mobile-blob-stack-item:focus-within .mobile-art-title {
+    color: var(--art-pink) !important;
+    -webkit-text-fill-color: var(--art-pink) !important;
+    -webkit-text-stroke: 0.55px var(--art-uranium) !important;
   }
 
   body.art-page #navArrows{

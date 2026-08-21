@@ -68,6 +68,56 @@ body.digital-page{
 }
 
 /* >=768: keep the desktop stage active until the mobile breakpoint */
+body.digital-page .overlay-panel #overlayContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+body.digital-page .overlay-card {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+body.digital-page .overlay-title {
+  margin: 0 0 1.5rem 0 !important;
+  padding: 0 !important;
+  display: inline-block;
+  text-align: center;
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  line-height: 0.95;
+  text-transform: lowercase;
+}
+
+body.digital-page .overlay-desc,
+body.digital-page .overlay-panel p {
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto 0;
+  opacity: 0.75;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+body.digital-page .cta-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  margin-top: 12px;
+}
+
 @media (min-width: 768px) {
   html,
   body.digital-page {
@@ -168,6 +218,7 @@ body.digital-page{
   padding: 0;
   margin: 0;
   color: var(--uranium);
+  -webkit-text-fill-color: var(--uranium);
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: clamp(2.025rem, 7.2vw, 2.925rem);
   line-height: 1;
@@ -175,7 +226,7 @@ body.digital-page{
   text-transform: lowercase;
   cursor: pointer;
   text-shadow: 0 0 10px rgba(124, 108, 247, 0.7);
-  -webkit-text-stroke: 0;
+  -webkit-text-stroke: 0.55px #ff4bb3;
   transition: color 180ms ease, transform 180ms ease;
 }
 
@@ -183,7 +234,8 @@ body.digital-page{
 .project-title-chip:focus-visible,
 .project-title-chip:active {
   color: #ff4bb3;
-  -webkit-text-stroke: 0;
+  -webkit-text-fill-color: #ff4bb3;
+  -webkit-text-stroke: 0.55px var(--uranium);
   transform: translateY(-1px);
   outline: none;
 }
@@ -201,8 +253,18 @@ body.digital-page{
     border: 0 !important;
     background: transparent !important;
     border-radius: 0 !important;
+    color: var(--uranium) !important;
+    -webkit-text-fill-color: var(--uranium) !important;
     -webkit-text-stroke: 0.55px var(--brand-modal-pink) !important;
     text-shadow: 0 0 10px rgba(124, 108, 247, 0.7) !important;
+  }
+
+  body.digital-page .project-title-chip:hover,
+  body.digital-page .project-title-chip:focus-visible,
+  body.digital-page .project-title-chip:active {
+    color: #ff4bb3 !important;
+    -webkit-text-fill-color: #ff4bb3 !important;
+    -webkit-text-stroke: 0.55px var(--uranium) !important;
   }
 }
 
@@ -446,11 +508,15 @@ body.digital-page{
 /* hover / focus / active: uppercase and stay charcoal */
 .project-cta:hover,
 .project-cta:focus,
-.project-cta:active{
+.project-cta:active,
+.project-cta:focus-visible {
   text-transform: uppercase;
   color: #031624;
+  -webkit-text-stroke: 0;
+  text-stroke: 0;
   outline: none;
   text-decoration: none;
+  animation: navWobbleTouch 420ms ease;
 }
 
 /* optional focus-visible ring for keyboard users */

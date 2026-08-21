@@ -283,21 +283,72 @@ img, svg, video {
   text-transform: uppercase !important;
 }
 
-.overlay-panel #overlayContent :is(h1, h2, h3, h4),
-.contact-modal :is(h1, h2, h3, h4) {
+body:not(.about-page) .overlay-panel #overlayContent :is(h1, h2, h3, h4),
+body:not(.about-page) .contact-modal :is(h1, h2, h3, h4) {
   font-size: var(--modal-header-size) !important;
+  margin: 0 0 1.5rem 0 !important;
+  padding: 0 !important;
+  display: inline-block;
+  transform-origin: center center;
+}
+
+body.about-page .overlay-panel #overlayContent .bio-modal-title {
+  margin: 0 !important;
+}
+
+.overlay-panel #overlayContent :is(h1, h2, h3, h4):hover,
+.overlay-panel #overlayContent :is(h1, h2, h3, h4):focus-visible,
+.overlay-panel #overlayContent :is(h1, h2, h3, h4):active,
+.contact-modal :is(h1, h2, h3, h4):hover,
+.contact-modal :is(h1, h2, h3, h4):focus-visible,
+.contact-modal :is(h1, h2, h3, h4):active {
+  animation: navWobbleTouch 420ms ease;
 }
 
 .overlay-panel #overlayContent a,
-.contact-modal a {
-  font-size: var(--modal-button-size) !important;
-  text-decoration: none !important;
-}
-
+.contact-modal a,
 .overlay-panel #overlayContent button:not(.overlay-close),
 .contact-modal button:not(.contact-modal-x) {
+  display: inline-block;
+  font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
   font-size: var(--modal-button-size) !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0.04em !important;
+  color: #031624 !important;
+  text-transform: lowercase !important;
   text-decoration: none !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-text-stroke: 0 !important;
+  text-stroke: 0 !important;
+}
+
+.overlay-panel #overlayContent a:hover,
+.overlay-panel #overlayContent a:focus,
+.overlay-panel #overlayContent a:focus-visible,
+.overlay-panel #overlayContent a:active,
+.contact-modal a:hover,
+.contact-modal a:focus,
+.contact-modal a:focus-visible,
+.contact-modal a:active,
+.overlay-panel #overlayContent button:not(.overlay-close):hover,
+.overlay-panel #overlayContent button:not(.overlay-close):focus,
+.overlay-panel #overlayContent button:not(.overlay-close):focus-visible,
+.overlay-panel #overlayContent button:not(.overlay-close):active,
+.contact-modal button:not(.contact-modal-x):hover,
+.contact-modal button:not(.contact-modal-x):focus,
+.contact-modal button:not(.contact-modal-x):focus-visible,
+.contact-modal button:not(.contact-modal-x):active {
+  color: #031624 !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  animation: navWobbleTouch 420ms ease;
 }
 
 .overlay-panel #overlayContent a:focus,
@@ -575,11 +626,99 @@ button.nav-x {
   }
 }
 
+.picnic-interactive {
+  display: inline-block;
+  transform-origin: center center;
+}
+
+.picnic-interactive:hover,
+.picnic-interactive:focus-visible,
+.picnic-interactive:active {
+  animation: navWobbleTouch 420ms ease;
+}
+
+.nav-action,
+.nav-action--top,
+.nav-action--submenu,
+.project-cta,
+.project-back,
+button.buy-btn,
+a.shop-back,
+.nav-arrows button,
+.project-title-chip,
+.mobile-carousel .arrow,
+.site-footer .footer-link,
+.site-footer .footer-email-text,
+.site-footer .footer-credit-link {
+  transform-origin: center center;
+}
+
+.nav-action:hover,
+.nav-action:focus-visible,
+.nav-action:active,
+.nav-action--top:hover,
+.nav-action--top:focus-visible,
+.nav-action--top:active,
+.nav-action--submenu:hover,
+.nav-action--submenu:focus-visible,
+.nav-action--submenu:active,
+.project-cta:hover,
+.project-cta:focus-visible,
+.project-cta:active,
+.project-back:hover,
+.project-back:focus-visible,
+.project-back:active,
+button.buy-btn:hover,
+button.buy-btn:focus-visible,
+button.buy-btn:active,
+a.shop-back:hover,
+a.shop-back:focus-visible,
+a.shop-back:active,
+.nav-arrows button:hover,
+.nav-arrows button:focus-visible,
+.nav-arrows button:active,
+.project-title-chip:hover,
+.project-title-chip:focus-visible,
+.project-title-chip:active,
+.mobile-carousel .arrow:hover,
+.mobile-carousel .arrow:focus-visible,
+.mobile-carousel .arrow:active,
+.site-footer .footer-link:hover,
+.site-footer .footer-link:focus-visible,
+.site-footer .footer-link:active,
+.site-footer .footer-email-text:hover,
+.site-footer .footer-email-text:focus-visible,
+.site-footer .footer-email-text:active,
+.site-footer .footer-credit-link:hover,
+.site-footer .footer-credit-link:focus-visible,
+.site-footer .footer-credit-link:active {
+  animation: navWobbleTouch 420ms ease;
+}
+
 .nav-x:hover .nav-x__stack,
 .nav-x:focus-visible .nav-x__stack,
 .nav-x[aria-expanded="true"] .nav-x__stack {
   animation: navWobbleTouch 420ms ease;
   transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picnic-interactive,
+  .nav-action,
+  .nav-action--top,
+  .nav-action--submenu,
+  .project-cta,
+  .project-back,
+  button.buy-btn,
+  a.shop-back,
+  .nav-arrows button,
+  .project-title-chip,
+  .mobile-carousel .arrow,
+  .nav-x:hover .nav-x__stack,
+  .nav-x:focus-visible .nav-x__stack,
+  .nav-x[aria-expanded="true"] .nav-x__stack {
+    animation: none !important;
+  }
 }
 
 /* start state: show lowercase with old pink color */
@@ -1255,6 +1394,17 @@ h1.product-title {
     0 0 16px rgba(123, 108, 246, 0.42);
 }
 
+h1.product-title:hover,
+h1.product-title:focus,
+h1.product-title:focus-visible,
+h1.product-title:active {
+  color: var(--community-pink) !important;
+  -webkit-text-fill-color: var(--community-pink) !important;
+  -webkit-text-stroke: 0.8px var(--community-uranium) !important;
+  text-transform: lowercase;
+  animation: navWobbleTouch 420ms ease;
+}
+
 .product-price {
   font-size: 1.6rem;
   font-weight: 600;
@@ -1584,6 +1734,7 @@ button.buy-btn:active {
 }
 
 a.shop-back {
+  display: inline-block;
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: clamp(1.8rem, 3vw, 2.7rem);
   line-height: 1.1;
@@ -1595,6 +1746,7 @@ a.shop-back {
   -webkit-text-stroke: 0.65px var(--community-pink);
   text-shadow: 0 0 8px rgba(123, 108, 246, 0.7), 0 0 16px rgba(123, 108, 246, 0.42);
   transition: color 140ms ease, transform 140ms ease, text-transform 120ms ease, -webkit-text-stroke-color 140ms ease;
+  transform-origin: center center;
 }
 
 a.shop-back:hover,
@@ -1608,6 +1760,7 @@ a.shop-back:active {
   text-decoration: none;
   outline: none;
   transform: translateY(-1px);
+  animation: navWobbleTouch 420ms ease;
 }
 
 @media (max-width: 767px) {

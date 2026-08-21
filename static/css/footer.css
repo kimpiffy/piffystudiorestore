@@ -136,6 +136,7 @@ body.art-page .site-footer {
 }
 
 .footer-link {
+  display: inline-block;
   font-family: "velvelyne-regular", ui-monospace, SFMono-Regular, Menlo, monospace;
   color: #031624;
   text-decoration: none;
@@ -166,8 +167,25 @@ body.art-page .site-footer {
 .footer-link:hover,
 .footer-link:focus-visible,
 .footer-email-copy:hover .footer-email-text,
-.footer-email-copy:focus-visible .footer-email-text {
+.footer-email-copy:focus-visible .footer-email-text,
+.footer-credit-link:hover,
+.footer-credit-link:focus-visible {
   color: var(--uranium, #e0ff9a);
+}
+
+.footer-email-copy:hover .footer-email-text,
+.footer-email-copy:focus-visible .footer-email-text,
+.footer-credit-link:hover .footer-credit-link,
+.footer-credit-link:focus-visible .footer-credit-link,
+.footer-credit-link:hover,
+.footer-credit-link:focus-visible {
+  animation: navWobbleTouch 420ms ease;
+}
+
+.footer-email-copy:hover .footer-copy-icon,
+.footer-email-copy:focus-visible .footer-copy-icon,
+.footer-email-copy:active .footer-copy-icon {
+  animation: none !important;
 }
 
 .footer-signoff {
@@ -194,14 +212,17 @@ body.art-page .site-footer {
 }
 
 .footer-credit-link {
+  display: inline-block;
   color: #031624;
   text-decoration: none;
   transition: color 180ms ease;
+  transform-origin: center center;
 }
 
 .footer-credit-link:hover,
 .footer-credit-link:focus-visible {
   color: var(--uranium, #e0ff9a);
+  animation: navWobbleTouch 420ms ease;
 }
 
 .footer-heart {

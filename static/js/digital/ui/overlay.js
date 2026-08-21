@@ -22,24 +22,21 @@ export function createOverlay(nodes, { onOpen, onClose, ctaLabel = "", ctaHref =
         ? `<a class="btn project-cta lilac" href="${escapeHtml(learnMoreHref)}">${escapeHtml(learnMoreLabel)}</a>`
         : "";
 
-    if (project.coming_soon) {
-      overlayContent.innerHTML = `
-        <div style="min-height: 220px; display: grid; place-items: center; text-align: center; padding: 32px 12px 40px;">
-          <h2 style="margin: 0; font-size: clamp(2.5rem, 7vw, 5rem); line-height: 0.95; font-family: picnic, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; text-transform: lowercase;">${title}</h2>
-          <div class="cta-row" style="margin-top: 12px; width: 100%; display: flex; justify-content: center;">${learnMoreCta}</div>
-        </div>
-      `;
-    } else {
-      overlayContent.innerHTML = `
-        <h2 style="font-size: 3rem; margin:0 0 10px 0; font-family: picnic; text-transform: lowercase; display: flex; justify-content: center;">${title}</h2>
-        ${blurb ? `<p style="margin:18px 0 12px 0; opacity:.75; display: flex; justify-content: center; text-align:center;">${blurb}</p>` : ""}
+    const actionContent = `
+      <div class="cta-row">
+        ${url ? `<a class="btn project-cta lilac" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View project</a>` : ""}
+        ${learnMoreCta}
+      </div>
+    `;
 
-        <div class="cta-row">
-          ${url ? `<a class="btn project-cta lilac" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View project</a>` : ""}
-          ${learnMoreCta}
-        </div>
-      `;
-    }
+    overlayContent.innerHTML = `
+      <div class="overlay-card">
+        <h2 class="overlay-title">${title}</h2>
+        ${blurb ? `<p class="overlay-desc">${blurb}</p>` : ""}
+        ${project.coming_soon ? "" : actionContent}
+        ${project.coming_soon && learnMoreCta ? `<div class="cta-row">${learnMoreCta}</div>` : ""}
+      </div>
+    `;
 
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");

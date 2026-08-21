@@ -38,11 +38,9 @@ export function createOverlay(nodes, { onOpen, onClose }) {
 
     overlayContent.innerHTML = `
       <div class="overlay-card">
-        <div class="overlay-card__body">
-          <h2 class="overlay-title">${title}</h2>
-          ${blurb ? `<p class="overlay-desc">${blurb}</p>` : ""}
-          ${learnMoreCta}
-        </div>
+        <h2 class="overlay-title">${title}</h2>
+        ${blurb ? `<p class="overlay-desc">${blurb}</p>` : ""}
+        ${learnMoreCta}
       </div>
     `;
 

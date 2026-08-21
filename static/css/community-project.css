@@ -69,7 +69,9 @@ body.community-project-page .site-content {
 }
 
 .project-title:hover,
-.project-title:focus-visible {
+.project-title:focus,
+.project-title:focus-visible,
+.project-title:active {
   color: var(--community-pink);
   -webkit-text-stroke-color: var(--community-uranium);
   text-shadow:
@@ -77,6 +79,7 @@ body.community-project-page .site-content {
     0 0 24px rgba(124, 108, 247, 0.75),
     0 0 36px rgba(124, 108, 247, 0.5);
   outline: none;
+  animation: navWobbleTouch 420ms ease;
 }
 
 .project-intro-grid {
@@ -143,6 +146,8 @@ body.community-project-page .site-content {
   min-height: min(62vh, 620px);
   margin-left: -15px;
   margin-top: -15px;
+  border-radius: 34px;
+  overflow: hidden;
 }
 
 .project-description,
@@ -337,10 +342,12 @@ body.modal-open {
 }
 
 .project-back {
+  display: inline-block;
   text-decoration: none;
   font-size: clamp(1.8rem, 2.9vw, 2.7rem);
   -webkit-text-stroke: 0.65px var(--community-pink);
   transition: transform 140ms ease, color 140ms ease, -webkit-text-stroke-color 140ms ease;
+  transform-origin: center center;
 }
 
 .project-back:hover,
@@ -353,6 +360,7 @@ body.modal-open {
   text-decoration: none;
   outline: none;
   transform: translateY(-1px);
+  animation: navWobbleTouch 420ms ease;
 }
 
 @media (max-width: 991.98px) {

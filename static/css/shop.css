@@ -203,6 +203,7 @@ body.shop-page .nav-panel {
 .product-title{
   margin: 0;
   color: var(--uranium);
+  -webkit-text-fill-color: var(--uranium);
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: clamp(1.7rem, 2.2vw + 0.9rem, 3.1rem);
   line-height: 0.96;
@@ -219,6 +220,24 @@ body.shop-page .nav-panel {
     0 0 10px rgba(124, 108, 247, 0.9),
     0 0 22px rgba(124, 108, 247, 0.7),
     0 0 34px rgba(124, 108, 247, 0.45);
+}
+
+@media (min-width: 1200px) {
+  .shop-grid .product-title {
+    font-size: calc(clamp(1.7rem, 2.2vw + 0.9rem, 3.1rem) * 0.9);
+  }
+}
+
+.product-card:hover .product-title,
+.product-card:focus-within .product-title,
+.product-card:hover .product-title:focus-visible,
+.product-card:focus-within .product-title:focus-visible {
+  color: var(--pink, #ff4bb3) !important;
+  -webkit-text-fill-color: var(--pink, #ff4bb3) !important;
+  -webkit-text-stroke: 0.7px var(--uranium, #e0ff9a) !important;
+  text-stroke: 0.7px var(--uranium, #e0ff9a);
+  text-transform: lowercase;
+  animation: navWobbleTouch 420ms ease;
 }
 
 @media (max-width: 991.98px){
