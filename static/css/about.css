@@ -538,7 +538,7 @@ body.about-page .overlay-panel #overlayContent .bio-modal-copy{
   display: block;
   width: 100%;
   max-width: 100%;
-  margin: 0.7rem auto 0.7rem;
+  margin: 0.35rem auto 0.7rem;
   padding: 0;
   box-sizing: border-box;
   color: #031624;
@@ -731,7 +731,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
   }
 
   body.about-page .orbit .about-word[data-key="community"]{
-    top: 63%;
+    top: calc(63% - 35px);
     left: 15%;
   }
 
@@ -743,7 +743,7 @@ body.about-page .about-word.is-wobbling .wobble-span{
 
   /* Lower + a bit to the right (staggered) */
   body.about-page .orbit .about-word[data-key="art"]{
-    top: 73%;
+    top: calc(73% - 35px);
     left: 62.5%; /* Adjusted to position correctly without transform */
   }
 
@@ -756,11 +756,11 @@ body.about-page .about-word.is-wobbling .wobble-span{
 
 @media (max-width: 576px){
   body.about-page .orbit .about-word[data-key="community"]{
-    top: calc(63% - 20px);
+    top: calc(63% - 45px);
   }
 
   body.about-page .orbit .about-word[data-key="art"]{
-    top: calc(73% - 20px);
+    top: calc(73% - 45px);
   }
 
   body.about-page .overlay-panel{

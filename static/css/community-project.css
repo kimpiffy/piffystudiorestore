@@ -423,7 +423,7 @@ body.modal-open {
 
   .community-project-shell {
     width: min(100%, calc(100vw - 18px));
-    padding: 1rem 0 4.5rem;
+    padding: clamp(4.5rem, 16vw, 6rem) 0 4.5rem;
   }
 
   .project-intro-grid {
@@ -531,7 +531,7 @@ body.modal-open {
 @media (max-width: 575.98px) {
   .community-project-shell {
     width: min(100%, calc(100vw - clamp(20px, 5vw, 36px)));
-    padding-top: 1rem;
+    padding-top: clamp(5rem, 18vw, 6.5rem);
     padding-bottom: 5.2rem;
   }
 
