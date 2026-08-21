@@ -487,8 +487,8 @@ body.digital-page{
 
   body.digital-page .showcase {
     position: fixed !important;
-    inset: 0 0 calc(var(--footer-bar-h, 48px) + 0px) 0 !important;
-    height: calc(100dvh - var(--footer-bar-h, 48px)) !important;
+    inset: 0 !important;
+    height: 100dvh !important;
     overflow: visible !important;
     display: flex !important;
     flex-direction: column !important;
@@ -530,6 +530,15 @@ body.digital-page{
     position: relative !important;
     display: flex !important;
     width: min(148vw, 860px) !important;
+  }
+
+  body.digital-page #blobLayer .blob-inner > .blob-svg {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    overflow: visible !important;
+    filter: none !important;
+    transform: translateZ(0) !important;
   }
 
   body.digital-page .project-title-wrap {

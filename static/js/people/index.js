@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const proj = projects.find((x) => String(x.id) === String(id));
           openProject(proj);
         },
-        mobileSizeVw: 130
+        mobileSizeVw: 100
       });
 
       edgeWarp.start();
