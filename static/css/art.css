@@ -23,6 +23,7 @@ body.art-page {
   overflow-y: auto;
   min-height: 100vh;
   max-height: none;
+  padding-bottom: calc(var(--footer-bar-h, 52px) + 2rem);
   background:
     radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
     radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
@@ -56,9 +57,11 @@ body.art-page .page-content {
 }
 
 body.art-page .site-content {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   position: relative;
   inset: auto;
+  padding-bottom: calc(var(--footer-bar-h, 52px) + 2rem);
+  overflow: visible !important;
   background:
     radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
     radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),

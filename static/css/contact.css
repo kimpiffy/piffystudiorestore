@@ -461,6 +461,31 @@ html:has(body.contact-body) {
    RESPONSIVE
 ------------------------------------ */
 
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape){
+  .contact-content{
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 1.25rem;
+    padding-bottom: 0.5rem;
+    margin-top: -7vh;
+  }
+
+  .contact-form-wrap {
+    width: min(860px, 82vw);
+    margin-top: -2vh;
+    transform: none;
+  }
+
+  .contact-inner{
+    padding: clamp(1.5rem, 2vw, 2.4rem);
+  }
+
+  .contact-title{
+    margin-bottom: 0.75rem;
+    margin-top: 0;
+  }
+}
+
 @media (max-width: 768px){
   .contact-content{
     align-items: flex-start;

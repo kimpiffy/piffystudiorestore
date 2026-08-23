@@ -30,29 +30,31 @@
 
 body.about-page{
   margin:0;
-  min-height: 100vh;
-  height: auto;
-  max-height: none;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
   background:
     radial-gradient(1200px 600px at 85% 12%, rgba(123, 108, 246, 0.2), transparent 60%),
     radial-gradient(900px 600px at 20% 75%, rgba(255, 75, 179, 0.14), transparent 60%),
     var(--ink);
   color: var(--uranium);
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding-bottom: 0 !important;
 }
 
 html:has(body.about-page){
-  height: auto;
+  height: 100dvh;
+  min-height: 100dvh;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 body.about-page .site-content{
   min-height: calc(100dvh - var(--footer-bar-h, 52px));
-  height: auto;
-  overflow: visible;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
 }
 
 body.about-page .about-intro{
@@ -74,16 +76,18 @@ body.about-page .about-intro p {
 @media (min-width: 768px){
   html:has(body.about-page),
   body.about-page{
-    height: auto;
-    min-height: 100vh;
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
 
   body.about-page .site-content{
-    min-height: 100vh;
-    height: auto;
-    overflow: visible;
+    min-height: calc(100dvh - var(--footer-bar-h, 52px));
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
   }
 }
 
@@ -678,8 +682,9 @@ body.about-page .about-word.is-wobbling .wobble-span{
   /* Keep the About page locked to the viewport area above the fixed footer. */
   html:has(body.about-page),
   body.about-page{
-    height: auto;
+    height: 100dvh;
     min-height: calc(100dvh - var(--footer-bar-h, 52px));
+    max-height: 100dvh;
     overflow-x: hidden;
     overflow-y: hidden;
   }
@@ -687,6 +692,8 @@ body.about-page .about-word.is-wobbling .wobble-span{
   body.about-page .about-stage{
     overflow: hidden !important;
     min-height: calc(100dvh - var(--footer-bar-h, 52px));
+    max-height: 100dvh;
+    height: 100dvh;
   }
 
   /* carousel off */
