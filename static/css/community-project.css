@@ -255,6 +255,69 @@ body.community-project-page .site-content {
   border-radius: 34px;
 }
 
+/* Full-width gallery items span both grid columns instead of sitting in the 2x2 layout. */
+.gallery-item--full {
+  grid-column: 1 / -1;
+}
+
+/* Single row of 3 images instead of the usual 2x2 grid, for projects that opt in. */
+.gallery-grid--3col {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Shift the crop window left so more of the image's right side shows through. */
+.gallery-item--crop-to-row img {
+  object-position: calc(50% - 100px) center;
+}
+
+/* UV / natural-light swap gallery items: two stacked images cross-fade in place.
+   Aspect ratio is set inline per item (from the default image's natural size) so
+   cover fills the blob shape without cropping regardless of source photo proportions. */
+.gallery-item--swap {
+  overflow: hidden;
+}
+
+.gallery-swap-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.gallery-swap-img.is-active {
+  opacity: 1;
+}
+
+/* Hover-trigger items: hover/focus previews the alternate image; click/tap pins it (for touch). */
+.gallery-item--swap-hover:hover .gallery-swap-img.is-active,
+.gallery-item--swap-hover:focus-visible .gallery-swap-img.is-active,
+.gallery-item--swap-hover.is-toggled .gallery-swap-img.is-active {
+  opacity: 0;
+}
+
+.gallery-item--swap-hover:hover .gallery-swap-img:not(.is-active),
+.gallery-item--swap-hover:focus-visible .gallery-swap-img:not(.is-active),
+.gallery-item--swap-hover.is-toggled .gallery-swap-img:not(.is-active) {
+  opacity: 1;
+}
+
+/* Click-trigger items: only a click/tap swaps the image, hover has no effect. */
+.gallery-item--swap-click.is-toggled .gallery-swap-img.is-active {
+  opacity: 0;
+}
+
+.gallery-item--swap-click.is-toggled .gallery-swap-img:not(.is-active) {
+  opacity: 1;
+}
+
+/* The Dark Mother's normal image has transparency; give it a white backing. */
+.gallery-item--swap[data-label="the-dark-mother"] {
+  background: #fff;
+}
+
 .community-image-overlay {
   position: fixed;
   inset: 0;
@@ -420,6 +483,10 @@ body.modal-open {
   .gallery-item--4 {
     grid-column: auto;
     min-height: 200px;
+  }
+
+  .gallery-item--full {
+    grid-column: 1 / -1;
   }
 }
 

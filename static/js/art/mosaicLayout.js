@@ -29,9 +29,9 @@ const VORONOI_SITES = [
 ];
 
 const INSET_SCALE = 0.91;
-const VOID_INSET_SCALE = 0.93;
-const ROUNDING_RATIO = 0.24;
-const VOID_ROUNDING_RATIO = 0.28;
+// The empty top-left cell follows the exact same Voronoi rules as every
+// other blob; it's just shrunk down afterwards so it reads as a small gap.
+const VOID_EXTRA_SCALE = 0.5;
 const EPSILON = 1e-6;
 
 function rectPolygon(bounds) {
@@ -133,23 +133,6 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-function vectorLength(vector) {
-  return Math.hypot(vector.x, vector.y);
-}
-
-function normalizeVector(vector) {
-  const length = vectorLength(vector);
-
-  if (length <= EPSILON) {
-    return { x: 0, y: 0 };
-  }
-
-  return {
-    x: vector.x / length,
-    y: vector.y / length,
-  };
-}
-
 function chaikinSmoothClosed(points, iterations) {
   if (points.length < 3) {
     return points.slice();
@@ -180,12 +163,51 @@ function chaikinSmoothClosed(points, iterations) {
   return currentPoints;
 }
 
+// Straight edges left over from clipping against the outer viewport bounds
+// (e.g. the top/side of edge cells) read as flat; give any edge notably longer
+// than the polygon's average a gentle outward bow so the cell reads as a full,
+// convex, bulbous blob instead of a flat-sided one.
+function bowLongEdges(points) {
+  if (points.length < 3) {
+    return points;
+  }
+
+  const centroid = computeCentroid(points);
+  const edgeLengths = points.map((point, index) => {
+    const next = points[(index + 1) % points.length];
+    return Math.hypot(next.x - point.x, next.y - point.y);
+  });
+  const averageLength = edgeLengths.reduce((total, length) => total + length, 0) / edgeLengths.length;
+  const threshold = averageLength * 1.5;
+  const bulgeRatio = 0.07;
+
+  const bowed = [];
+
+  points.forEach((point, index) => {
+    bowed.push(point);
+    const next = points[(index + 1) % points.length];
+    const length = edgeLengths[index];
+
+    if (length > threshold) {
+      const midpoint = { x: (point.x + next.x) / 2, y: (point.y + next.y) / 2 };
+
+      bowed.push({
+        x: midpoint.x - (centroid.x - midpoint.x) * bulgeRatio,
+        y: midpoint.y - (centroid.y - midpoint.y) * bulgeRatio,
+      });
+    }
+  });
+
+  return bowed;
+}
+
 function polygonPath(points) {
   if (points.length < 3) {
     return "";
   }
 
-  const smoothedPoints = chaikinSmoothClosed(points, 1);
+  const bowedPoints = bowLongEdges(points);
+  const smoothedPoints = chaikinSmoothClosed(bowedPoints, 1);
   const midpoint = (firstPoint, secondPoint) => ({
     x: (firstPoint.x + secondPoint.x) / 2,
     y: (firstPoint.y + secondPoint.y) / 2,
@@ -204,19 +226,24 @@ function polygonPath(points) {
   return `${path} Z`;
 }
 
+// Every site, including the empty one, is clipped against all its neighbours
+// the same way and gets the same inset/bow/smoothing treatment, so it's a
+// blob like any other. The empty cell is then shrunk further (around its own
+// centroid) so it reads as a small gap rather than a full-size cell.
 function buildVoronoiSpecs() {
   return VORONOI_SITES.map((site, index) => {
     let polygon = rectPolygon(VORONOI_BOUNDS);
 
     VORONOI_SITES.forEach((otherSite, otherIndex) => {
-      if (otherIndex !== index) {
-        polygon = clipPolygonWithBisector(polygon, site, otherSite);
-      }
+      if (otherIndex === index) return;
+      polygon = clipPolygonWithBisector(polygon, site, otherSite);
     });
 
-    const insetScale = site.isVoid ? VOID_INSET_SCALE : INSET_SCALE;
-    const roundingRatio = site.isVoid ? VOID_ROUNDING_RATIO : ROUNDING_RATIO;
-    polygon = insetPolygon(polygon, insetScale);
+    polygon = insetPolygon(polygon, INSET_SCALE);
+
+    if (site.isVoid) {
+      polygon = insetPolygon(polygon, VOID_EXTRA_SCALE);
+    }
 
     const bounds = polygonBounds(polygon);
     const localPoints = polygon.map((point) => ({
@@ -247,9 +274,12 @@ function buildCell(project, spec, index) {
   const clipId = `cellClip_${index}`;
   const imageHref = project?.cover ? String(project.cover) : "";
   const title = escapeHtml(project?.title || "");
-  const imageScale = 1.26;
-  const insetX = spec.width * (imageScale - 1) * 0.5;
-  const insetY = spec.height * (imageScale - 1) * 0.5;
+  const gridImageScale = Number(project?.grid_image_scale) || 1;
+  const imageScale = 1.26 * gridImageScale;
+  const offsetX = Number(project?.grid_image_offset_x) || 0;
+  const offsetY = Number(project?.grid_image_offset_y) || 0;
+  const insetX = spec.width * (imageScale - 1) * 0.5 - offsetX;
+  const insetY = spec.height * (imageScale - 1) * 0.5 - offsetY;
 
   return `
     <svg
@@ -308,21 +338,16 @@ export function buildMosaicMarkup(projects) {
   }
 
   const artworkSpecs = MOSAIC_SPECS.filter((spec) => !spec.isVoid);
+  const voidSpecs = MOSAIC_SPECS.filter((spec) => spec.isVoid);
   const repeatedProjects = artworkSpecs.map((_, index) => projects[index % projects.length]);
-  let artworkIndex = 0;
 
+  // Void cells are painted last (on top) so they punch a smooth rounded hole
+  // out of whichever artwork cell now extends underneath them, instead of the
+  // artwork cell's own outline being cut by a straight Voronoi bisector edge.
   return `
     <svg class="portfolio-mosaic" viewBox="0 0 ${MOSAIC_VIEWBOX.width} ${MOSAIC_VIEWBOX.height}" preserveAspectRatio="xMidYMid slice" aria-label="Portfolio mosaic">
-      ${MOSAIC_SPECS.map((spec) => {
-        if (spec.isVoid) {
-          return buildVoidCell(spec);
-        }
-
-        const project = repeatedProjects[artworkIndex];
-        const cell = buildCell(project, spec, artworkIndex);
-        artworkIndex += 1;
-        return cell;
-      }).join("")}
+      ${artworkSpecs.map((spec, index) => buildCell(repeatedProjects[index], spec, index)).join("")}
+      ${voidSpecs.map((spec) => buildVoidCell(spec)).join("")}
     </svg>
   `;
 }

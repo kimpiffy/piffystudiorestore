@@ -12,9 +12,16 @@
   <section class="project-intro-grid" aria-label="Project intro">
     <h1 class="project-title">{{ project.title }}</h1>
 
-    <div class="hero-media blob-frame blob-frame--hero" data-image="{{ project.hero_image }}" tabindex="0" role="button" aria-label="Open {{ project.title }} cover image">
-      <img src="{{ project.hero_image }}" alt="{{ project.title }} hero image placeholder">
-    </div>
+    {% if project.hero_uv %}
+      <div class="hero-media blob-frame blob-frame--hero gallery-item--swap gallery-item--swap-hover" tabindex="0" role="button" aria-label="Toggle {{ project.title }} cover UV view">
+        <img class="gallery-swap-img gallery-swap-img--normal is-active" src="{{ project.hero_image }}" alt="{{ project.title }} cover in natural light">
+        <img class="gallery-swap-img gallery-swap-img--uv" src="{{ project.hero_uv }}" alt="{{ project.title }} cover under UV light">
+      </div>
+    {% else %}
+      <div class="hero-media blob-frame blob-frame--hero" data-image="{{ project.hero_image }}" tabindex="0" role="button" aria-label="Open {{ project.title }} cover image">
+        <img src="{{ project.hero_image }}" alt="{{ project.title }} hero image placeholder">
+      </div>
+    {% endif %}
 
     <aside class="project-metadata" aria-label="Project metadata">
       <dl>
@@ -33,11 +40,18 @@
   </section>
 
   <section class="project-gallery" aria-label="Responsive project gallery">
-    <div class="gallery-grid">
+    <div class="gallery-grid{% if project.gallery_columns == 3 %} gallery-grid--3col{% endif %}">
       {% for image in project.gallery %}
-        <figure class="gallery-item gallery-item--{{ forloop.counter }} blob-frame" data-image="{{ image }}" tabindex="0" aria-label="Open {{ project.title }} image {{ forloop.counter }}">
-          <img src="{{ image }}" alt="{{ project.title }} gallery image placeholder {{ forloop.counter }}">
-        </figure>
+        {% if image.uv %}
+          <figure class="gallery-item gallery-item--{{ forloop.counter }} blob-frame gallery-item--swap gallery-item--swap-{{ image.trigger }}{% if image.full_width %} gallery-item--full{% endif %}" data-label="{{ image.label|slugify }}" tabindex="0" role="button" aria-label="Toggle {{ image.label }} UV view">
+            <img class="gallery-swap-img gallery-swap-img--normal{% if image.default == 'normal' %} is-active{% endif %}" src="{{ image.normal }}" alt="{{ project.title }} {{ image.label }} in natural light">
+            <img class="gallery-swap-img gallery-swap-img--uv{% if image.default == 'uv' %} is-active{% endif %}" src="{{ image.uv }}" alt="{{ project.title }} {{ image.label }} under UV light">
+          </figure>
+        {% else %}
+          <figure class="gallery-item gallery-item--{{ forloop.counter }} blob-frame{% if image.full_width %} gallery-item--full{% endif %}{% if image.crop_to_row %} gallery-item--crop-to-row{% endif %}" data-image="{{ image.src|default:image }}" tabindex="0" aria-label="Open {{ project.title }} image {{ forloop.counter }}">
+            <img src="{{ image.src|default:image }}" alt="{{ project.title }} gallery image placeholder {{ forloop.counter }}">
+          </figure>
+        {% endif %}
       {% endfor %}
     </div>
   </section>
@@ -62,6 +76,97 @@
 
 {% block extra_scripts %}
 <script>
+  (function () {
+    var swapItems = document.querySelectorAll('.gallery-item--swap');
+    swapItems.forEach(function (item) {
+      function toggle() {
+        item.classList.toggle('is-toggled');
+      }
+      item.addEventListener('click', toggle);
+      item.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggle();
+        }
+      });
+    });
+
+    // Match every gallery blob to its image's natural proportions so
+    // object-fit: cover fills it completely instead of cropping/squishing.
+    var galleryItems = document.querySelectorAll('.project-gallery .gallery-item');
+    galleryItems.forEach(function (item) {
+      var refImg = item.querySelector('.gallery-swap-img.is-active') || item.querySelector('img');
+      if (!refImg) return;
+      function applyRatio() {
+        if (refImg.naturalWidth && refImg.naturalHeight) {
+          item.style.aspectRatio = refImg.naturalWidth + ' / ' + refImg.naturalHeight;
+        }
+      }
+      if (refImg.complete) {
+        applyRatio();
+      } else {
+        refImg.addEventListener('load', applyRatio, { once: true });
+      }
+    });
+
+    // Give same-row items a shared aspect ratio (averaged) so they render at the
+    // same height as each other instead of each following its own image's ratio.
+    document.querySelectorAll('.project-gallery .gallery-grid').forEach(function (grid) {
+      var columns = grid.classList.contains('gallery-grid--3col') ? 3 : 2;
+      var items = Array.prototype.filter.call(grid.children, function (el) {
+        return el.classList.contains('gallery-item');
+      });
+      var rows = [];
+      var currentRow = [];
+      items.forEach(function (item) {
+        if (item.classList.contains('gallery-item--full')) {
+          if (currentRow.length) rows.push(currentRow);
+          currentRow = [];
+          rows.push([item]);
+          return;
+        }
+        currentRow.push(item);
+        if (currentRow.length === columns) {
+          rows.push(currentRow);
+          currentRow = [];
+        }
+      });
+      if (currentRow.length) rows.push(currentRow);
+
+      rows.filter(function (row) { return row.length > 1; }).forEach(function (row) {
+        var refs = row.map(function (item) {
+          return item.querySelector('.gallery-swap-img.is-active') || item.querySelector('img');
+        });
+        // Items marked "crop to row" don't influence the shared ratio; they just
+        // get cropped to match whatever height the other row images settle on.
+        var ratioRow = row.filter(function (item) {
+          return !item.classList.contains('gallery-item--crop-to-row');
+        });
+        var ratioRefs = ratioRow.length
+          ? ratioRow.map(function (item) {
+              return item.querySelector('.gallery-swap-img.is-active') || item.querySelector('img');
+            })
+          : refs;
+        function applyRowRatio() {
+          var ratios = ratioRefs
+            .filter(function (img) { return img && img.naturalWidth && img.naturalHeight; })
+            .map(function (img) { return img.naturalWidth / img.naturalHeight; });
+          if (!ratios.length) return;
+          var avg = ratios.reduce(function (a, b) { return a + b; }, 0) / ratios.length;
+          row.forEach(function (item) {
+            item.style.aspectRatio = avg;
+          });
+        }
+        refs.forEach(function (img) {
+          if (img && !img.complete) {
+            img.addEventListener('load', applyRowRatio, { once: true });
+          }
+        });
+        applyRowRatio();
+      });
+    });
+  })();
+
   (function () {
     var overlay = document.getElementById('communityImageOverlay');
     if (!overlay) return;

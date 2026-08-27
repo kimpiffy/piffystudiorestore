@@ -436,7 +436,7 @@ body.art-page .portfolio-cell:active {
 }
 
 .portfolio-void {
-  fill: var(--art-ink);
+  fill: transparent;
   pointer-events: none;
 }
 
@@ -451,6 +451,36 @@ body.art-page .portfolio-cell:active {
 
 .nav-arrows {
   display: none !important;
+}
+
+/* Masonry desktop (matches isMasonryDesktop's 1200px breakpoint in state.js):
+   the page owns the viewport exactly, no scroll, so the mosaic cells fill the
+   available space instead of being sized for a taller scrollable page. */
+@media (min-width: 1200px) {
+  html,
+  body.art-page {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+
+  body.art-page {
+    padding-bottom: 0 !important;
+  }
+
+  body.art-page .site-content,
+  body.art-page main,
+  body.art-page .page-content,
+  body.art-page .wrap,
+  body.art-page .showcase,
+  body.art-page .blob-layer,
+  body.art-page .portfolio-mosaic-host,
+  body.art-page .portfolio-mosaic {
+    height: 100vh !important;
+    min-height: 0 !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
 }
 
 @media (max-width: 991px) {

@@ -266,7 +266,9 @@ ART_PROJECT_DETAILS = {
         "slug": "pine",
         "title": "Pine",
         "subtitle": "Placeholder Art Project",
-        "hero_image": "/static/img/art/placeholders/pine.svg",
+        "hero_image": "/static/img/art/pine/pinecover.webp",
+        # Grid blob cover uses Antagony's normal-light image; detail-page hero uses the supplied pine cover.
+        "cover": "/static/img/art/pine/antagony.webp",
         "description": "Placeholder study in tactile, resin-like structure and rhythm.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -275,10 +277,34 @@ ART_PROJECT_DETAILS = {
             ["Location", "TBC"],
         ],
         "gallery": [
-            "/static/img/art/placeholders/pine.svg",
-            "/static/img/art/placeholders/pine.svg",
-            "/static/img/art/placeholders/pine.svg",
-            "/static/img/art/placeholders/pine.svg",
+            {
+                "label": "Solastalgia",
+                "normal": "/static/img/art/pine/solastalgia.webp",
+                "uv": "/static/img/art/pine/solastalgia-uv.webp",
+                "default": "uv",
+                "trigger": "hover",
+            },
+            {
+                "label": "Antagony",
+                "normal": "/static/img/art/pine/antagony.webp",
+                "uv": "/static/img/art/pine/antagony-uv.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
+            {
+                "label": "Communion",
+                "normal": "/static/img/art/pine/communion.webp",
+                "uv": "/static/img/art/pine/communion-uv.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
+            {
+                "label": "Division",
+                "normal": "/static/img/art/pine/division.webp",
+                "uv": "/static/img/art/pine/division-uv.webp",
+                "default": "uv",
+                "trigger": "hover",
+            },
         ],
     },
     "piffy": {
@@ -286,7 +312,9 @@ ART_PROJECT_DETAILS = {
         "slug": "piffy",
         "title": "Piffy",
         "subtitle": "Placeholder Art Project",
-        "hero_image": "/static/img/art/placeholders/piffy.svg",
+        "hero_image": "/static/img/art/piffy/prophecy.webp",
+        # UV swap only happens on the detail-page hero; the grid blob cover stays the normal-light Prophecy image.
+        "hero_uv": "/static/img/art/piffy/prophecy-uv.webp",
         "description": "Placeholder work using bold repetition and chromatic tension.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -295,10 +323,18 @@ ART_PROJECT_DETAILS = {
             ["Location", "TBC"],
         ],
         "gallery": [
-            "/static/img/art/placeholders/piffy.svg",
-            "/static/img/art/placeholders/piffy.svg",
-            "/static/img/art/placeholders/piffy.svg",
-            "/static/img/art/placeholders/piffy.svg",
+            {
+                "src": "/static/img/art/piffy/piffy2.webp",
+                "full_width": True,
+            },
+            {
+                "src": "/static/img/art/piffy/piffy3.webp",
+                "full_width": True,
+            },
+            {
+                "src": "/static/img/art/piffy/piffy4.webp",
+                "full_width": True,
+            },
         ],
     },
     "matrascence": {
@@ -306,7 +342,14 @@ ART_PROJECT_DETAILS = {
         "slug": "matrascence",
         "title": "Matrascence",
         "subtitle": "Placeholder Art Project",
-        "hero_image": "/static/img/art/placeholders/matrascence.svg",
+        "hero_image": "/static/img/art/matrascence/treeoflife.webp",
+        # Grid blob cover uses Mother Wound; the detail-page hero uses Tree of Life.
+        "cover": "/static/img/art/matrascence/motherwound.webp",
+        # Zoom the cover image in an extra 25% within the art-grid blob shape only.
+        "grid_image_scale": 1.25,
+        # Nudge the cover image within the blob (not the blob itself): up 60px, right 10px.
+        "grid_image_offset_x": 10,
+        "grid_image_offset_y": -60,
         "description": "Placeholder work on transformation, softness and spatial drift.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -315,10 +358,28 @@ ART_PROJECT_DETAILS = {
             ["Location", "TBC"],
         ],
         "gallery": [
-            "/static/img/art/placeholders/matrascence.svg",
-            "/static/img/art/placeholders/matrascence.svg",
-            "/static/img/art/placeholders/matrascence.svg",
-            "/static/img/art/placeholders/matrascence.svg",
+            {
+                "label": "Ambivalence",
+                "normal": "/static/img/art/matrascence/ambiv.webp",
+                "uv": "/static/img/art/matrascence/ambivalence2.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
+            {
+                "label": "The Dark Mother",
+                "normal": "/static/img/art/matrascence/thedarkmother.webp",
+                "uv": "/static/img/art/matrascence/thedarkmother2.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
+            {
+                "label": "Mother Wound",
+                "normal": "/static/img/art/matrascence/motherwound.webp",
+                "uv": "/static/img/art/matrascence/motherwound-uv.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
+            "/static/img/art/matrascence/loveahaiku.webp",
         ],
     },
     "clothing": {
@@ -326,7 +387,13 @@ ART_PROJECT_DETAILS = {
         "slug": "clothing",
         "title": "Clothing",
         "subtitle": "Placeholder Art Project",
-        "hero_image": "/static/img/art/placeholders/clothing.svg",
+        "hero_image": "/static/img/art/clothing/clothingcover.webp",
+        # Hover swap only happens on the detail-page hero, not the art-grid blob.
+        "hero_uv": "/static/img/art/clothing/clothingcoverhover.webp",
+        "cover": "/static/img/art/clothing/clothes.webp",
+        "grid_image_scale": 0.85,
+        "grid_image_offset_x": 0,
+        "grid_image_offset_y": 0,
         "description": "Placeholder study tracing material language and bodily shape.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -335,18 +402,44 @@ ART_PROJECT_DETAILS = {
             ["Location", "TBC"],
         ],
         "gallery": [
-            "/static/img/art/placeholders/clothing.svg",
-            "/static/img/art/placeholders/clothing.svg",
-            "/static/img/art/placeholders/clothing.svg",
-            "/static/img/art/placeholders/clothing.svg",
+            {
+                "label": "Clothing 4",
+                "normal": "/static/img/art/clothing/clothing4.webp",
+                "uv": "/static/img/art/clothing/clothing4hover.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
+            {
+                "label": "Clothing 2",
+                "normal": "/static/img/art/clothing/clothing2.webp",
+                "uv": "/static/img/art/clothing/clothing2hover.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
+            {
+                "label": "Clothing 3",
+                "normal": "/static/img/art/clothing/clothing3hover.webp",
+                "uv": "/static/img/art/clothing/clothing3.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
+            {
+                "label": "Clothing 1",
+                "normal": "/static/img/art/clothing/clothing1.webp",
+                "uv": "/static/img/art/clothing/clothing1hover.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
         ],
     },
     "ars-lapsu": {
         "template": "portfolio/community_project_detail.html",
         "slug": "ars-lapsu",
-        "title": "Ars Lapsu",
+        "title": "Paradigm",
         "subtitle": "Placeholder Art Project",
-        "hero_image": "/static/img/art/placeholders/ars-lapsu.svg",
+        "hero_image": "/static/img/art/ars-lapsu/larsapsuprojectcover.webp",
+        # Grid blob cover uses the separate art-grid cover image, not the detail-page hero.
+        "cover": "/static/img/art/ars-lapsu/larsapsucover.webp",
         "description": "Placeholder work exploring rift, echo and threshold forms.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -354,11 +447,18 @@ ART_PROJECT_DETAILS = {
             ["Year", "TBC"],
             ["Location", "TBC"],
         ],
+        # Single row of 3 images instead of the usual 2x2 grid.
+        "gallery_columns": 3,
         "gallery": [
-            "/static/img/art/placeholders/ars-lapsu.svg",
-            "/static/img/art/placeholders/ars-lapsu.svg",
-            "/static/img/art/placeholders/ars-lapsu.svg",
-            "/static/img/art/placeholders/ars-lapsu.svg",
+            "/static/img/art/ars-lapsu/larsapsucover.webp",
+            "/static/img/art/ars-lapsu/larsapsu3.webp",
+            {
+                "label": "Lars Apsu 4",
+                "normal": "/static/img/art/ars-lapsu/larsapsu4.webp",
+                "uv": "/static/img/art/ars-lapsu/larsapsu4-rollover.webp",
+                "default": "normal",
+                "trigger": "hover",
+            },
         ],
     },
     "hca": {
@@ -366,7 +466,9 @@ ART_PROJECT_DETAILS = {
         "slug": "hca",
         "title": "HCA",
         "subtitle": "Placeholder Art Project",
-        "hero_image": "/static/img/art/placeholders/hca.svg",
+        "hero_image": "/static/img/art/hca/hcacover.webp",
+        # UV/hover swap only on the detail-page hero.
+        "hero_uv": "/static/img/art/hca/hcacoverhover.webp",
         "description": "Placeholder study for modular structure and visual memory.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -375,10 +477,14 @@ ART_PROJECT_DETAILS = {
             ["Location", "TBC"],
         ],
         "gallery": [
-            "/static/img/art/placeholders/hca.svg",
-            "/static/img/art/placeholders/hca.svg",
-            "/static/img/art/placeholders/hca.svg",
-            "/static/img/art/placeholders/hca.svg",
+            "/static/img/art/hca/hca1.webp",
+            {
+                "src": "/static/img/art/hca/hca2.webp",
+                # Cropped to match hca1's height rather than averaging the row.
+                "crop_to_row": True,
+            },
+            "/static/img/art/hca/hca3.webp",
+            "/static/img/art/hca/hca4.webp",
         ],
     },
     "falmouth-university": {
@@ -778,16 +884,16 @@ def art(request):
     projects = []
     art_order = [
         "polycephaly",
+        "3",
+        "2",
+        "ars-lapsu",
+        "clothing",
         "pine",
         "piffy",
-        "matrascence",
-        "clothing",
-        "ars-lapsu",
-        "hca",
         "falmouth-university",
         "1",
-        "2",
-        "3",
+        "hca",
+        "matrascence",
         "4",
     ]
 
@@ -798,8 +904,11 @@ def art(request):
                 "id": item["slug"],
                 "title": item["title"],
                 "description": item["description"],
-                "cover": item["hero_image"],
+                "cover": item.get("cover", item["hero_image"]),
                 "cover_focus_y": item.get("cover_focus_y", "Mid"),
+                "grid_image_scale": item.get("grid_image_scale", 1),
+                "grid_image_offset_x": item.get("grid_image_offset_x", 0),
+                "grid_image_offset_y": item.get("grid_image_offset_y", 0),
                 "slug": item["slug"],
                 "learn_more_label": "Learn More",
                 "learn_more_url": reverse(
