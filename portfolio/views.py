@@ -269,6 +269,7 @@ ART_PROJECT_DETAILS = {
         "hero_image": "/static/img/art/pine/pinecover.webp",
         # Grid blob cover uses Antagony's normal-light image; detail-page hero uses the supplied pine cover.
         "cover": "/static/img/art/pine/antagony.webp",
+        "grid_image_scale": 1.15,
         "description": "Placeholder study in tactile, resin-like structure and rhythm.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -315,6 +316,7 @@ ART_PROJECT_DETAILS = {
         "hero_image": "/static/img/art/piffy/prophecy.webp",
         # UV swap only happens on the detail-page hero; the grid blob cover stays the normal-light Prophecy image.
         "hero_uv": "/static/img/art/piffy/prophecy-uv.webp",
+        "grid_image_scale": 1.3,
         "description": "Placeholder work using bold repetition and chromatic tension.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -391,7 +393,7 @@ ART_PROJECT_DETAILS = {
         # Hover swap only happens on the detail-page hero, not the art-grid blob.
         "hero_uv": "/static/img/art/clothing/clothingcoverhover.webp",
         "cover": "/static/img/art/clothing/clothes.webp",
-        "grid_image_scale": 0.85,
+        "grid_image_scale": 1,
         "grid_image_offset_x": 0,
         "grid_image_offset_y": 0,
         "description": "Placeholder study tracing material language and bodily shape.",
@@ -469,6 +471,10 @@ ART_PROJECT_DETAILS = {
         "hero_image": "/static/img/art/hca/hcacover.webp",
         # UV/hover swap only on the detail-page hero.
         "hero_uv": "/static/img/art/hca/hcacoverhover.webp",
+        "grid_image_scale": 0.75,
+        "grid_image_offset_x": 15,
+        "grid_image_offset_y": -95,
+        "grid_image_rotate": 0,
         "description": "Placeholder study for modular structure and visual memory.",
         "metadata": [
             ["Status", "Placeholder"],
@@ -885,9 +891,9 @@ def art(request):
     art_order = [
         "polycephaly",
         "3",
-        "2",
-        "ars-lapsu",
         "clothing",
+        "ars-lapsu",
+        "2",
         "pine",
         "piffy",
         "falmouth-university",
@@ -909,6 +915,7 @@ def art(request):
                 "grid_image_scale": item.get("grid_image_scale", 1),
                 "grid_image_offset_x": item.get("grid_image_offset_x", 0),
                 "grid_image_offset_y": item.get("grid_image_offset_y", 0),
+                "grid_image_rotate": item.get("grid_image_rotate", 0),
                 "slug": item["slug"],
                 "learn_more_label": "Learn More",
                 "learn_more_url": reverse(

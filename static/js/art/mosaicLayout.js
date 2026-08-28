@@ -23,7 +23,7 @@ const VORONOI_SITES = [
   { x: 1000, y: 412 },
   { x: 1330, y: 454 },
   { x: 420, y: 766 },
-  { x: 780, y: 804 },
+  { x: 760, y: 804 },
   { x: 1120, y: 742 },
   { x: 1430, y: 786 },
 ];
@@ -278,8 +278,11 @@ function buildCell(project, spec, index) {
   const imageScale = 1.26 * gridImageScale;
   const offsetX = Number(project?.grid_image_offset_x) || 0;
   const offsetY = Number(project?.grid_image_offset_y) || 0;
+  const rotateDeg = Number(project?.grid_image_rotate) || 0;
   const insetX = spec.width * (imageScale - 1) * 0.5 - offsetX;
   const insetY = spec.height * (imageScale - 1) * 0.5 - offsetY;
+  const centerX = spec.width / 2;
+  const centerY = spec.height / 2;
 
   return `
     <svg
@@ -309,6 +312,7 @@ function buildCell(project, spec, index) {
         height="${spec.height * imageScale}"
         preserveAspectRatio="xMidYMid slice"
         clip-path="url(#${clipId})"
+        transform="rotate(${rotateDeg} ${centerX} ${centerY})"
       ></image>
       <path class="cell-hit" d="${spec.path}"></path>
     </svg>
