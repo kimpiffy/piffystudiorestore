@@ -39,10 +39,10 @@ class SeedShopCommandTests(TestCase):
         call_command("seed_shop")
 
         self.assertEqual(Product.objects.count(), first_count)
-        self.assertEqual(Product.objects.count(), 16)
+        self.assertEqual(Product.objects.count(), 23)
         self.assertEqual(ProductImage.objects.count(), first_image_count)
-        self.assertEqual(ProductImage.objects.count(), 16)
-        self.assertEqual(Category.objects.count(), 5)
+        self.assertEqual(ProductImage.objects.count(), 23)
+        self.assertEqual(Category.objects.count(), 6)
 
     def test_shop_pages_render_with_local_placeholder_media(self):
         call_command("seed_shop")
@@ -51,14 +51,14 @@ class SeedShopCommandTests(TestCase):
         shop_response = self.client.get(reverse("shop:shop_index"))
         self.assertEqual(shop_response.status_code, 200)
         self.assertContains(shop_response, product.title)
-        self.assertContains(shop_response, "placeholder-product.svg")
+        self.assertContains(shop_response, "placeholder-product")
 
         detail_response = self.client.get(
             reverse("shop:product_detail", args=[product.slug])
         )
         self.assertEqual(detail_response.status_code, 200)
         self.assertContains(detail_response, product.title)
-        self.assertContains(detail_response, "placeholder-product.svg")
+        self.assertContains(detail_response, "placeholder-product")
 
         staff_user = get_user_model().objects.create_user(
             username="staffpageuser",

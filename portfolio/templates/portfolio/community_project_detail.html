@@ -40,7 +40,7 @@
   </section>
 
   <section class="project-gallery" aria-label="Responsive project gallery">
-    <div class="gallery-grid{% if project.gallery_columns == 3 %} gallery-grid--3col{% endif %}">
+    <div class="gallery-grid{% if project.gallery_columns == 3 %} gallery-grid--3col{% elif project.gallery_columns == 4 %} gallery-grid--4col{% endif %}">
       {% for image in project.gallery %}
         {% if image.uv %}
           <figure class="gallery-item gallery-item--{{ forloop.counter }} blob-frame gallery-item--swap gallery-item--swap-{{ image.trigger }}{% if image.full_width %} gallery-item--full{% endif %}" data-label="{{ image.label|slugify }}" tabindex="0" role="button" aria-label="Toggle {{ image.label }} UV view">
@@ -112,7 +112,7 @@
     // Give same-row items a shared aspect ratio (averaged) so they render at the
     // same height as each other instead of each following its own image's ratio.
     document.querySelectorAll('.project-gallery .gallery-grid').forEach(function (grid) {
-      var columns = grid.classList.contains('gallery-grid--3col') ? 3 : 2;
+      var columns = grid.classList.contains('gallery-grid--4col') ? 4 : grid.classList.contains('gallery-grid--3col') ? 3 : 2;
       var items = Array.prototype.filter.call(grid.children, function (el) {
         return el.classList.contains('gallery-item');
       });

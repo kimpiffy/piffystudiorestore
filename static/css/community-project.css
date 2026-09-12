@@ -190,6 +190,17 @@ body.community-project-page .site-content {
   margin-top: 0.8rem;
 }
 
+.project-inline-link {
+  color: inherit;
+  text-decoration: underline;
+  transition: color 160ms ease;
+}
+
+.project-inline-link:hover,
+.project-inline-link:focus-visible {
+  color: #ff69b4;
+}
+
 .project-description p {
   text-align: justify;
   hyphens: none;
@@ -263,6 +274,11 @@ body.community-project-page .site-content {
 /* Single row of 3 images instead of the usual 2x2 grid, for projects that opt in. */
 .gallery-grid--3col {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Single row of 4 images instead of the usual 2x2 grid, for projects that opt in. */
+.gallery-grid--4col {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 /* Shift the crop window left so more of the image's right side shows through. */
