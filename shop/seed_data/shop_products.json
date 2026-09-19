@@ -21,7 +21,7 @@
     "title": "Nature vs Machine Diptych",
     "slug": "nature-vs-machine-diptych",
     "category": "Prints",
-    "description": "",
+    "description": "**A diptych that collapses the boundaries between natural and artificial systems.**\n\nThis pair of **A3 posters** questions \"nature versus machine,\" with each image containing characteristics we usually associate with the other.\n\nBright, graphic and just a little bit uncanny, the pairing sits comfortably in the ambiguous, holding the tension between opposites.",
     "price": "20.00",
     "stock": 10,
     "featured": false
@@ -30,7 +30,7 @@
     "title": "Manifesto Zine",
     "slug": "manifesto-zine",
     "category": "Zines",
-    "description": "An alchemical approach to actualising creative potential. Part artist manifesto, part practical philosophy \u2014 not a self-help zine.",
+    "description": "An A5 zine all about the creative process, framed through a transformative, alchemical cycle.\n\nThis isn't your average self-help guide. It's your field notes for moving an idea from an intuitive notion into actualized form.\n\nThe five stages **Unveil, Articulate, Synthesize, Actualise and Distill** give the creative process a symbolic structure to follow, but the writing stays grounded in practice with affirming honesty that will help you to bring your brilliant ideas into reality.",
     "price": "5.00",
     "stock": 20,
     "featured": true
@@ -48,7 +48,7 @@
     "title": "Polycephalic Postcard (Double Sided)",
     "slug": "polycephalic-postcard",
     "category": "Postcards",
-    "description": "Double-sided. Two heads, one card.",
+    "description": "**Four postcards for the price of one!**\n\nNot only are there multiple ways to view each face, there's a different design printed on either side.\n\nDisplay one then, flip it, turn it, reverse it as you please. If you're the kind of person who gets bored easily, this artwork should definitely keep you entertained for a while.",
     "price": "3.00",
     "stock": 30,
     "featured": false
@@ -209,5 +209,14 @@
     "stock": 1,
     "featured": true,
     "image": "static/img/art/pine/division.webp"
+  },
+  {
+    "title": "Grumpy Green Man Sticker",
+    "slug": "grumpy-green-man-sticker",
+    "category": "Badges & Stickers",
+    "description": "*With the state of things, no wonder he's grumpy.*\n\nA super-shiny **holographic sticker featuring this very cute Green Man** — a bit fed up with the world, but still sparkling! Approx. **3 inches tall x 2.4 inches wide**.",
+    "price": "4.00",
+    "stock": 30,
+    "featured": true
   }
 ]

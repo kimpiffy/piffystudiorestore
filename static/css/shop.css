@@ -71,8 +71,32 @@ body.shop-page .nav-panel {
   align-items: start;
 }
 
-.blob-img{ transition: opacity 180ms ease; }
-.blob-img--b{ opacity: 0; }
+.blob-img{ transition: opacity 220ms ease; }
+.blob-alt-image{
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  max-width: none;
+  border-radius: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.72);
+  transform-origin: center;
+  transition:
+    opacity 220ms ease,
+    transform 360ms cubic-bezier(.2, .8, .2, 1),
+    border-radius 360ms ease;
+}
+
+.product-card[data-product-slug="try-and-stop-me-t-shirt"] .blob-alt-image{
+  object-position: 50% calc(50% - 10px);
+}
 
 .like{
   display: inline-flex;
@@ -93,12 +117,20 @@ body.shop-page .nav-panel {
 
 /* only on real-hover devices */
 @media (hover: hover) and (pointer: fine){
-  .product-card:hover .blob-img--b{ opacity: 1; }
+  .product-card:hover .blob-alt-image{
+    border-radius: 28px;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
   .product-card:hover .blob-img--a{ opacity: 0; }
 }
 
 /* touch: tap to preview alt image via focus */
-.product-card .blob:focus-visible .blob-img--b{ opacity: 1; }
+.product-card .blob:focus-visible .blob-alt-image{
+  border-radius: 28px;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
 .product-card .blob:focus-visible .blob-img--a{ opacity: 0; }
 
 
@@ -177,6 +209,7 @@ body.shop-page .nav-panel {
 }
 
 .blob{
+  position: relative;
   display:block;
   width: min(100%, var(--shop-card-size));
   height: min(100%, var(--shop-card-size));
@@ -206,11 +239,11 @@ body.shop-page .nav-panel {
   -webkit-text-fill-color: var(--uranium);
   font-family: picnic, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: clamp(1.7rem, 2.2vw + 0.9rem, 3.1rem);
-  line-height: 0.96;
+  line-height: 1.15;
   text-transform: lowercase;
   letter-spacing: 0.02em;
   text-align: center;
-  white-space: nowrap;
+  white-space: normal;
   overflow: visible;
   text-overflow: clip;
   width: 100%;
@@ -220,11 +253,15 @@ body.shop-page .nav-panel {
     0 0 10px rgba(124, 108, 247, 0.9),
     0 0 22px rgba(124, 108, 247, 0.7),
     0 0 34px rgba(124, 108, 247, 0.45);
+  word-break: break-word;
+  hyphens: none;
 }
 
 @media (min-width: 1200px) and (max-width: 1399.98px) {
   .shop-grid .product-title {
     font-size: calc(clamp(1.7rem, 2.2vw + 0.9rem, 3.1rem) * 0.72);
+    line-height: 1.15;
+    white-space: normal;
   }
 }
 
@@ -243,16 +280,17 @@ body.shop-page .nav-panel {
 @media (max-width: 991.98px){
   .product-title{
     font-size: clamp(2.4rem, 4vw, 4rem);
-    line-height: 0.94;
+    line-height: 1.15;
     white-space: normal;
     -webkit-text-stroke: 0.6px #ff4bb3;
+    overflow: hidden;
   }
 }
 
 @media (max-width: 767.98px){
   .shop-grid .product-title {
     font-size: calc(clamp(2.025rem, 7.2vw, 2.925rem) * 0.8) !important;
-    line-height: 0.92;
+    line-height: 1.15;
     white-space: normal;
     -webkit-text-stroke: 0.55px #ff4bb3;
   }
@@ -262,6 +300,8 @@ body.shop-page .nav-panel {
   .shop-grid .product-title {
     font-size: calc(clamp(1.8rem, 2.2vw + 0.9rem, 3.2rem) * 0.8);
     -webkit-text-stroke: 0.7px #ff4bb3;
+    line-height: 1.15;
+    white-space: normal;
   }
 }
 
@@ -306,5 +346,215 @@ body.shop-page .nav-panel {
   .shop-grid{
     grid-template-columns: repeat(5, minmax(0, 1fr));
     max-width: 1900px;
+  }
+}
+
+/* ====================================
+   PRODUCT DETAIL PAGE - CAROUSEL
+==================================== */
+
+.product-carousel {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  border-radius: 34px;
+}
+
+.carousel-container:hover .carousel-main-image {
+  opacity: 0.95;
+}
+
+.carousel-main-image {
+  cursor: pointer;
+  transition: opacity 200ms ease;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 34px !important;
+  display: block;
+  object-fit: contain;
+}
+
+.carousel-main-image:hover {
+  opacity: 0.95;
+}
+
+/* Dots styled like preloader blobs */
+.carousel-dots {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 3rem;
+  padding: 0;
+  min-height: 3.5rem;
+  flex-wrap: wrap;
+  z-index: 100;
+  position: relative;
+}
+
+.carousel-dot {
+  width: 2.5rem;
+  height: 2.5rem;
+  cursor: pointer;
+  opacity: 0.45;
+  transform: scale(0.75);
+  transition: opacity 250ms ease, transform 250ms ease;
+  border: none;
+  background: var(--pink);
+  border-radius: 42% 58% 46% 54% / 54% 40% 60% 46%;
+  display: block;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.carousel-dot--pink {
+  background: var(--pink);
+}
+
+.carousel-dot--lilac {
+  background: var(--lilac);
+  border-radius: 54% 46% 57% 43% / 50% 44% 56% 50%;
+}
+
+.carousel-dot--uranium {
+  background: var(--uranium);
+  border-radius: 48% 52% 60% 40% / 58% 46% 54% 42%;
+}
+
+.carousel-dot:hover {
+  opacity: 0.65;
+}
+
+.carousel-dot.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ====================================
+   PRODUCT IMAGE OVERLAY (ENLARGEMENT)
+==================================== */
+
+.product-image-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 180ms ease, visibility 180ms ease;
+}
+
+.product-image-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.product-image-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 23, 40, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.product-image-overlay__panel {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  max-width: min(88vw, 1400px);
+  max-height: min(86vh, 960px);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image-overlay__panel img {
+  display: block;
+  width: auto;
+  max-width: min(88vw, 1320px);
+  max-height: min(80vh, 900px);
+  object-fit: contain;
+  border-radius: 34px;
+  background: transparent;
+  box-shadow: 0 0 28px rgba(123, 108, 246, 0.18);
+}
+
+.product-image-overlay__close {
+  position: absolute;
+  top: -0.15rem;
+  right: 10px;
+  z-index: 2;
+  width: auto;
+  height: auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: "picnic", sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1;
+  color: var(--uranium);
+  -webkit-text-stroke: 0.8px var(--pink);
+  text-shadow:
+    0 0 8px rgba(123, 108, 246, 0.7),
+    0 0 16px rgba(123, 108, 246, 0.42);
+  text-transform: lowercase;
+  padding: 0;
+  transition: color 140ms ease, -webkit-text-stroke-color 140ms ease, text-shadow 140ms ease, text-transform 120ms ease, transform 120ms ease;
+}
+
+.product-image-overlay__close:hover,
+.product-image-overlay__close:focus,
+.product-image-overlay__close:focus-visible,
+.product-image-overlay__close:active {
+  color: var(--pink);
+  -webkit-text-stroke-color: var(--uranium);
+  text-shadow:
+    0 0 10px rgba(124, 108, 247, 0.85),
+    0 0 20px rgba(124, 108, 247, 0.6),
+    0 0 30px rgba(124, 108, 247, 0.4);
+  text-transform: uppercase;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+@media (max-width: 576px) {
+  .carousel-dots {
+    gap: 1.2rem;
+    margin-top: 2.5rem;
+  }
+
+  .carousel-dot {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .product-image-overlay__close {
+    top: 2px;
+    right: 4px;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
   }
 }

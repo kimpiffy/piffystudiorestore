@@ -18,6 +18,27 @@ env/
 # ---- DJANGO ----
 staticfiles/
 media/
+!media/
+media/*
+!media/products/
+media/products/*
+!media/products/naturevsmachine1.webp
+!media/products/naturevsmachine2.webp
+!media/products/naturevsmachine3.webp
+!media/products/naturevsmachine4.webp
+!media/products/tryandstopme1.webp
+!media/products/tryandstopme2.webp
+!media/products/tryandstopme3.webp
+!media/products/tryandstopme4.webp
+!media/products/tryandstopme5.webp
+!media/products/tuneinhoodie1.webp
+!media/products/tuneinhoodie2.webp
+!media/products/tuneinhoodie3.webp
+!media/products/tuneinhoodie4.webp
+!media/products/solastalgia-uv.webp
+!media/products/communion-uv.webp
+!media/products/division-uv.webp
+!media/products/antagony-uv.webp
 db.sqlite3
 
 # ---- NODE / MEDIA OPTIMIZER ----

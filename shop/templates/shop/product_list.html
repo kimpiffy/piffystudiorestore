@@ -14,8 +14,15 @@
   <div class="shop-grid" id="shopGrid">
     {% for product in products %}
       {% with imgs=product.images.all|slice:"0:2" %}
-      <article class="product-card" data-blob-id="p{{ product.id }}">
+      <article class="product-card" data-blob-id="p{{ product.id }}" data-product-slug="{{ product.slug }}">
         <a class="blob" href="{% url 'shop:product_detail' slug=product.slug %}" aria-label="{{ product.title }}">
+          {% if imgs|length >= 2 %}
+            <img class="blob-alt-image"
+              src="{{ imgs.1.image.url }}"
+              alt="{{ product.title }} alternate view"
+              loading="lazy"
+            >
+          {% endif %}
           <svg class="blob-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
             <defs>
               <clipPath id="clip-p{{ product.id }}">
@@ -36,15 +43,6 @@
               <text x="50" y="52" text-anchor="middle" dominant-baseline="middle">no image</text>
             {% endif %}
 
-            {% if imgs|length >= 2 %}
-              <image class="blob-img blob-img--b"
-                href="{{ imgs.1.image.url }}"
-                xlink:href="{{ imgs.1.image.url }}"
-                width="100" height="100"
-                preserveAspectRatio="xMidYMid slice"
-                clip-path="url(#clip-p{{ product.id }})"
-              />
-            {% endif %}
           </svg>
         </a>
 
