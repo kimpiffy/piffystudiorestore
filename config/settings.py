@@ -232,7 +232,7 @@ HAS_CLOUDINARY_CONFIG = bool(
 STORAGES = {
     "default": {
         "BACKEND": (
-            "cloudinary_storage.storage.MediaCloudinaryStorage"
+            "shop.storage.OverwritingMediaCloudinaryStorage"
             if HAS_CLOUDINARY_CONFIG
             else "django.core.files.storage.FileSystemStorage"
         )
