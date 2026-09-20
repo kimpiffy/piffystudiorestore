@@ -144,11 +144,17 @@ class Command(BaseCommand):
         # image for a different gallery position, so it must never be deleted just
         # because this row is being reassigned to a different canonical file.
         is_generated_duplicate = bool(re.search(r"_[A-Za-z0-9]{5,}(?:_[A-Za-z0-9]{5,})*\.[^.]+$", current_name))
-        if current_name and current_name != target_relative and is_generated_duplicate and product_image.image.storage.exists(current_name):
-            product_image.image.storage.delete(current_name)
+        storage = product_image.image.storage
+        if current_name and current_name != target_relative and is_generated_duplicate and storage.exists(current_name):
+            storage.delete(current_name)
 
-        # The canonical gallery file already exists in media/products and should be referenced as-is.
-        # Copying it back through ImageField.save() creates hash-suffixed duplicates in Django.
+        # Locally, FileSystemStorage already has the file under MEDIA_ROOT, so pointing
+        # image.name at it is enough. Remote backends (e.g. Cloudinary in production)
+        # have no such file until it's actually uploaded, so upload it if missing.
+        if not storage.exists(target_relative):
+            with image_path.open("rb") as fh:
+                storage.save(target_relative, ContentFile(fh.read()))
+
         product_image.image.name = target_relative
         if product_image.pk:
             product_image.save(update_fields=["image"])
