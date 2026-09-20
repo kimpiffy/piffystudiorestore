@@ -68,6 +68,16 @@ class SeedShopCommandTests(TestCase):
             self.assertGreaterEqual(product.images.count(), 4)
             self.assertFalse(product.images.filter(image__icontains="placeholder-product").exists())
 
+    def test_seed_command_prefers_webp_gallery_files_over_png_duplicates(self):
+        call_command("seed_shop")
+
+        product = Product.objects.get(slug="paroxysm")
+        images = list(product.images.order_by("position").values_list("image", flat=True))
+
+        self.assertTrue(images)
+        self.assertTrue(all(".webp" in image.lower() for image in images))
+        self.assertFalse(any(".png" in image.lower() for image in images))
+
     def test_shop_pages_render_with_local_placeholder_media(self):
         call_command("seed_shop")
         product = Product.objects.get(slug="solastalgia")

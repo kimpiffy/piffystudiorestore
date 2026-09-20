@@ -44,34 +44,61 @@ class Command(BaseCommand):
 
     @staticmethod
     def slug_prefixes(slug):
+        """Cumulative slug prefixes ordered longest-first so the most specific match wins.
+
+        A lone first-token prefix (e.g. "dragon") is only used when the slug has just
+        one token; otherwise it's too ambiguous and would cross-match sibling products
+        (e.g. "dragon-postcard" vs "dragon-a3-print").
+        """
         slug_tokens = [token for token in re.findall(r"[a-z0-9]+", slug.lower()) if token and len(token) > 1]
         if not slug_tokens:
-            return set()
+            return []
 
-        prefixes = {"".join(slug_tokens)}
+        prefixes = []
         running = ""
-        for token in slug_tokens:
+        for index, token in enumerate(slug_tokens):
             running += token
-            prefixes.add(running)
-        return prefixes
+            if index > 0 or len(slug_tokens) == 1:
+                prefixes.append(running)
+        return list(reversed(prefixes))
 
     @staticmethod
-    def find_gallery_paths(base_dir, slug):
+    def find_gallery_paths(base_dir, slug, all_slugs=()):
         slug_prefixes = Command.slug_prefixes(slug)
         if not slug_prefixes:
             return []
 
-        candidates = []
+        # A shorter (non-full) prefix is only usable if no sibling product's own
+        # prefix set also contains it, otherwise two products sharing a leading
+        # phrase (e.g. "mudra-mandala-square-postcard" vs "mudra-mandala-sticker")
+        # could both claim the same files.
+        full_prefix = slug_prefixes[0]
+        other_prefixes = set()
+        for other_slug in all_slugs:
+            if other_slug == slug:
+                continue
+            other_prefixes.update(Command.slug_prefixes(other_slug))
+        usable_prefixes = [p for p in slug_prefixes if p == full_prefix or p not in other_prefixes]
+
         media_dir = base_dir / "media" / "products"
+        all_files = []
         if media_dir.exists():
             for path in sorted(media_dir.iterdir()):
                 if not path.is_file():
                     continue
                 key = Command.canonical_gallery_key(path)
-                if not key:
-                    continue
-                if any(key.startswith(prefix) or prefix.startswith(key) for prefix in slug_prefixes):
-                    candidates.append(path)
+                if key:
+                    all_files.append((path, key))
+
+        # Try the most specific (longest) slug prefix first so slugs sharing a
+        # leading word (e.g. "goldberry-postcard" vs "goldberry-a4-print") don't
+        # cross-match each other's files.
+        candidates = []
+        for prefix in usable_prefixes:
+            matches = [path for path, key in all_files if key.startswith(prefix) or prefix.startswith(key)]
+            if matches:
+                candidates = matches
+                break
 
         deduped = {}
         for path in candidates:
@@ -85,6 +112,7 @@ class Command(BaseCommand):
                 matches,
                 key=lambda p: (
                     0 if p.stem == key else 1,
+                    0 if p.suffix.lower() == ".webp" else 1 if p.suffix.lower() == ".png" else 2,
                     len(p.name),
                     p.name.lower(),
                 ),
@@ -93,10 +121,14 @@ class Command(BaseCommand):
 
         if unique_paths:
             def sort_key(path):
-                match = re.search(r"(\d+)", path.name)
+                match = re.match(r"[^\d]*(\d+)(?:-(\d+))?", path.name)
                 if match:
-                    return (0, int(match.group(1)))
-                return (1, path.name.lower())
+                    primary = int(match.group(1))
+                    secondary = int(match.group(2)) if match.group(2) else 0
+                    return (0, primary, secondary)
+                # Non-numbered variants (e.g. "antagony-uv.webp") follow their base image.
+                is_variant = 1 if "-uv" in path.stem.lower() else 0
+                return (1, is_variant, path.name.lower())
             return sorted(dict.fromkeys(unique_paths), key=sort_key)
 
         return []
@@ -107,7 +139,12 @@ class Command(BaseCommand):
         target_relative = f"products/{target_name}"
         current_name = product_image.image.name if product_image.image else ""
 
-        if current_name and current_name != target_relative and product_image.image.storage.exists(current_name):
+        # Only clean up generated hash-suffix duplicates here (e.g. "foo_Ab12xYz.webp").
+        # A bare canonical filename (e.g. "manifestozine4.webp") may still be the real
+        # image for a different gallery position, so it must never be deleted just
+        # because this row is being reassigned to a different canonical file.
+        is_generated_duplicate = bool(re.search(r"_[A-Za-z0-9]{5,}(?:_[A-Za-z0-9]{5,})*\.[^.]+$", current_name))
+        if current_name and current_name != target_relative and is_generated_duplicate and product_image.image.storage.exists(current_name):
             product_image.image.storage.delete(current_name)
 
         # The canonical gallery file already exists in media/products and should be referenced as-is.
@@ -131,6 +168,8 @@ class Command(BaseCommand):
 
         with seed_file.open("r", encoding="utf-8") as fh:
             products = json.load(fh)
+
+        all_slugs = [(p.get("slug") or slugify(p["title"])).strip() for p in products]
 
         created = 0
         updated = 0
@@ -164,7 +203,7 @@ class Command(BaseCommand):
 
             product.images.filter(image__icontains="placeholder-product").delete()
 
-            gallery_paths = self.find_gallery_paths(base_dir, slug)
+            gallery_paths = self.find_gallery_paths(base_dir, slug, all_slugs)
             if gallery_paths:
                 keep_ids = []
                 for position, image_path in enumerate(gallery_paths):

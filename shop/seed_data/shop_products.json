@@ -3,7 +3,7 @@
     "title": "Tune In Hoodie",
     "slug": "tune-in-hoodie",
     "category": "Clothing",
-    "description": "",
+    "description": "Oh believe me, they’ll try.\n\nThis cheeky Cheshire cat tshirt is for anyone who refuses to be derailed! Grin through the chaos and give those haters absolutely nothing to work with...because they really do hate to see us smilin’ and shinin’.",
     "price": "55.00",
     "stock": 10,
     "featured": true
@@ -34,15 +34,6 @@
     "price": "5.00",
     "stock": 20,
     "featured": true
-  },
-  {
-    "title": "Ridiculous Wisdom Zine",
-    "slug": "ridiculous-wisdom-zine",
-    "category": "Zines",
-    "description": "",
-    "price": "5.00",
-    "stock": 20,
-    "featured": false
   },
   {
     "title": "Polycephalic Postcard (Double Sided)",

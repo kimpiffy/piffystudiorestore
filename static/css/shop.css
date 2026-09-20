@@ -94,10 +94,6 @@ body.shop-page .nav-panel {
     border-radius 360ms ease;
 }
 
-.product-card[data-product-slug="try-and-stop-me-t-shirt"] .blob-alt-image{
-  object-position: 50% calc(50% - 10px);
-}
-
 .like{
   display: inline-flex;
   gap: .5rem;
@@ -124,6 +120,13 @@ body.shop-page .nav-panel {
   }
   .product-card:hover .blob-img--a{ opacity: 0; }
 }
+
+.blob-alt-image{
+  border: 6px solid var(--uranium);
+}
+
+.shop-grid .product-card:nth-child(3n+2) .blob-alt-image{ border-color: var(--pink); }
+.shop-grid .product-card:nth-child(3n+3) .blob-alt-image{ border-color: var(--lilac); }
 
 /* touch: tap to preview alt image via focus */
 .product-card .blob:focus-visible .blob-alt-image{
