@@ -14,25 +14,31 @@
 
         <!-- LEFT SIDE — ARTWORK IMAGES -->
         <div class="col-md-7 product-image-col">
+            {% if images %}
+                <div class="product-carousel" id="productCarousel">
+                    <div class="carousel-container" data-image="{{ images.0.image.url }}" tabindex="0" role="button" aria-label="Open product image">
+                        <img id="main-img"
+                             src="{{ images.0.image.url }}"
+                             class="main-image carousel-main-image"
+                             alt="{{ product.title }}"
+                             loading="lazy">
+                    </div>
 
-            <div class="image-wrapper">
-                {% if images %}
-                    <img id="main-img"
-                         src="{{ images.0.image.url }}"
-                         class="main-image">
-                {% else %}
-                    <img src="{% static 'img/placeholder.png' %}"
-                         class="main-image">
-                {% endif %}
-            </div>
-
-            {% if images|length > 1 %}
-                <div class="thumbnail-row">
-                    {% for img in images %}
-                        <img src="{{ img.image.url }}"
-                             onclick="document.getElementById('main-img').src='{{ img.image.url }}'">
-                    {% endfor %}
+                    {% if images|length > 1 %}
+                        <div class="carousel-dots"></div>
+                        
+                        <!-- Hidden image data for carousel -->
+                        <div class="carousel-images-data" style="display: none;">
+                            {% for img in images %}
+                                <img data-carousel-item src="{{ img.image.url }}" alt="{{ product.title }} - Image {{ forloop.counter }}">
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
+            {% else %}
+                <img src="{% static 'img/placeholder.png' %}"
+                     class="main-image"
+                     alt="{{ product.title }}">
             {% endif %}
         </div>
 
@@ -78,6 +84,15 @@
 
 </div>
 
+<!-- Product Image Overlay for Enlargement -->
+<div class="product-image-overlay" id="productImageOverlay" aria-hidden="true">
+    <div class="product-image-overlay__backdrop" id="productImageOverlayBackdrop"></div>
+    <div class="product-image-overlay__panel" role="dialog" aria-modal="true" aria-label="Enlarged product image">
+        <button class="product-image-overlay__close" id="productImageOverlayClose" type="button" aria-label="Close image">x</button>
+        <img id="productImageOverlayImage" src="" alt="">
+    </div>
+</div>
+
 
 <script>
     // Keep variant dropdown synced to hidden input
@@ -92,4 +107,8 @@
     }
 </script>
 
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/shop/productCarousel.js' %}"></script>
 {% endblock %}

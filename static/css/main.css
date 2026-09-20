@@ -298,7 +298,14 @@ img, svg, video {
   height: auto;
 }
 
-/* Modal body copy stays on body size; headers are larger than CTA/link text. */
+.overlay-panel img,
+.contact-modal img {
+  border-radius: 34px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 .overlay-panel #overlayContent :is(p, li, span, small),
 .contact-modal :is(p, li, span, small) {
   display: block !important;
@@ -1498,7 +1505,6 @@ h1.product-title:active {
   border-radius: 34px;
   object-fit: contain;
   max-height: 650px;
-  box-shadow: 0 0 28px rgba(123, 108, 246, 0.18);
 }
 
 .thumbnail-row {

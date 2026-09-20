@@ -39,26 +39,50 @@ class SeedShopCommandTests(TestCase):
         call_command("seed_shop")
 
         self.assertEqual(Product.objects.count(), first_count)
-        self.assertEqual(Product.objects.count(), 23)
+        self.assertEqual(Product.objects.count(), 24)
         self.assertEqual(ProductImage.objects.count(), first_image_count)
-        self.assertEqual(ProductImage.objects.count(), 23)
+        self.assertGreaterEqual(ProductImage.objects.count(), 24)
         self.assertEqual(Category.objects.count(), 6)
+
+    def test_seed_command_replaces_existing_placeholder_images(self):
+        product = Product.objects.get(slug="solastalgia")
+        ProductImage.objects.filter(product=product).delete()
+        ProductImage.objects.create(
+            product=product,
+            image="products/placeholder-product.svg",
+            position=0,
+        )
+
+        call_command("seed_shop")
+        product.refresh_from_db()
+
+        self.assertEqual(product.description, "")
+        self.assertIn("solastalgia", product.images.first().image.name.lower())
+        self.assertFalse(product.images.filter(image__icontains="placeholder-product").exists())
+
+    def test_seed_command_populates_gallery_images_for_real_products(self):
+        call_command("seed_shop")
+
+        for slug in ["nature-vs-machine-diptych", "tune-in-hoodie", "try-and-stop-me-t-shirt"]:
+            product = Product.objects.get(slug=slug)
+            self.assertGreaterEqual(product.images.count(), 4)
+            self.assertFalse(product.images.filter(image__icontains="placeholder-product").exists())
 
     def test_shop_pages_render_with_local_placeholder_media(self):
         call_command("seed_shop")
-        product = Product.objects.order_by("id").first()
+        product = Product.objects.get(slug="solastalgia")
 
         shop_response = self.client.get(reverse("shop:shop_index"))
         self.assertEqual(shop_response.status_code, 200)
         self.assertContains(shop_response, product.title)
-        self.assertContains(shop_response, "placeholder-product")
+        self.assertNotContains(shop_response, "placeholder-product")
 
         detail_response = self.client.get(
             reverse("shop:product_detail", args=[product.slug])
         )
         self.assertEqual(detail_response.status_code, 200)
         self.assertContains(detail_response, product.title)
-        self.assertContains(detail_response, "placeholder-product")
+        self.assertNotContains(detail_response, "placeholder-product")
 
         staff_user = get_user_model().objects.create_user(
             username="staffpageuser",
