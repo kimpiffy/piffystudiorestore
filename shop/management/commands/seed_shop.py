@@ -1,4 +1,5 @@
 import json
+import os
 import re
 from pathlib import Path
 
@@ -222,6 +223,9 @@ class Command(BaseCommand):
                 created += 1
             else:
                 updated += 1
+
+            if not created_flag and os.getenv("RENDER") is not None:
+                continue
 
             product.images.filter(image__icontains="placeholder-product").delete()
 
