@@ -1,6 +1,3 @@
-// static/js/shop/blobs.js
-import { createBlobModel, computePathFromModel } from "../about/blob/model.js";
-
 /* -------------------------
    GRID: feature last card
 -------------------------- */
@@ -17,45 +14,6 @@ function reflowShopGrid() {
   if (remainder === 1 && cards.length > 1) {
     cards[cards.length - 1].classList.add("is-featured");
   }
-}
-
-/* -------------------------
-   BLOBS: animate outline
--------------------------- */
-function initBlobAnimations() {
-  const cards = [...document.querySelectorAll(".product-card[data-blob-id]")];
-  if (!cards.length) return;
-
-  const blobs = cards
-    .map((card) => {
-      const id = card.getAttribute("data-blob-id") || "x";
-      const path = card.querySelector(".blob-path");
-      if (!path) return null;
-      return { model: createBlobModel(id), path };
-    })
-    .filter(Boolean);
-
-  let raf = null;
-  const t0 = performance.now();
-
-  function tick(now) {
-    const t = (now - t0) / 1000;
-    for (const b of blobs) {
-      b.path.setAttribute("d", computePathFromModel(b.model, t));
-    }
-    raf = requestAnimationFrame(tick);
-  }
-
-  raf = requestAnimationFrame(tick);
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden && raf) {
-      cancelAnimationFrame(raf);
-      raf = null;
-    } else if (!document.hidden && !raf) {
-      raf = requestAnimationFrame(tick);
-    }
-  });
 }
 
 /* -------------------------
@@ -122,7 +80,6 @@ async function wireLikes() {
 -------------------------- */
 window.addEventListener("load", () => {
   reflowShopGrid();
-  initBlobAnimations();
   wireLikes();
 });
 

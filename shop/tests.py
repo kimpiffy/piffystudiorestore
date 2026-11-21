@@ -39,13 +39,30 @@ class SeedShopCommandTests(TestCase):
         call_command("seed_shop")
 
         self.assertEqual(Product.objects.count(), first_count)
-        self.assertEqual(Product.objects.count(), 24)
+        self.assertEqual(Product.objects.count(), 13)
         self.assertEqual(ProductImage.objects.count(), first_image_count)
         self.assertGreaterEqual(ProductImage.objects.count(), 24)
-        self.assertEqual(Category.objects.count(), 6)
+        self.assertEqual(Category.objects.count(), 5)
+
+    def test_seed_command_deletes_retired_products(self):
+        call_command("seed_shop")
+
+        retired_slugs = [
+            "match-my-freak-badges",
+            "division",
+            "communion",
+            "antagony",
+            "solastalgia",
+            "paroxysm",
+            "goldberry-postcard",
+            "mudra-mandala-sticker",
+            "dragon-postcard",
+            "tantra-mandala-sticker",
+        ]
+        self.assertFalse(Product.objects.filter(slug__in=retired_slugs).exists())
 
     def test_seed_command_replaces_existing_placeholder_images(self):
-        product = Product.objects.get(slug="solastalgia")
+        product = Product.objects.get(slug="try-and-stop-me-t-shirt")
         ProductImage.objects.filter(product=product).delete()
         ProductImage.objects.create(
             product=product,
@@ -57,7 +74,7 @@ class SeedShopCommandTests(TestCase):
         product.refresh_from_db()
 
         self.assertEqual(product.description, "")
-        self.assertIn("solastalgia", product.images.first().image.name.lower())
+        self.assertTrue(product.images.exists())
         self.assertFalse(product.images.filter(image__icontains="placeholder-product").exists())
 
     def test_seed_command_populates_gallery_images_for_real_products(self):
@@ -71,7 +88,7 @@ class SeedShopCommandTests(TestCase):
     def test_seed_command_prefers_webp_gallery_files_over_png_duplicates(self):
         call_command("seed_shop")
 
-        product = Product.objects.get(slug="paroxysm")
+        product = Product.objects.get(slug="try-and-stop-me-t-shirt")
         images = list(product.images.order_by("position").values_list("image", flat=True))
 
         self.assertTrue(images)
@@ -80,12 +97,25 @@ class SeedShopCommandTests(TestCase):
 
     def test_shop_pages_render_with_local_placeholder_media(self):
         call_command("seed_shop")
-        product = Product.objects.get(slug="solastalgia")
+        product = Product.objects.get(slug="try-and-stop-me-t-shirt")
 
         shop_response = self.client.get(reverse("shop:shop_index"))
         self.assertEqual(shop_response.status_code, 200)
         self.assertContains(shop_response, product.title)
         self.assertNotContains(shop_response, "placeholder-product")
+        self.assertNotContains(shop_response, "blob")
+        self.assertContains(shop_response, "product-main-image")
+        self.assertContains(shop_response, "product-alt-image")
+        self.assertNotContains(shop_response, "Match My Freak! Badges")
+        self.assertNotContains(shop_response, "Division")
+        self.assertNotContains(shop_response, "Communion")
+        self.assertNotContains(shop_response, "Antagony")
+        self.assertNotContains(shop_response, "Solastalgia")
+        self.assertNotContains(shop_response, "Paroxysm")
+        self.assertNotContains(shop_response, "Goldberry Postcard")
+        self.assertNotContains(shop_response, "Mudra Mandala Sticker")
+        self.assertNotContains(shop_response, "Dragon Postcard")
+        self.assertNotContains(shop_response, "Tantra Mandala Sticker")
 
         detail_response = self.client.get(
             reverse("shop:product_detail", args=[product.slug])

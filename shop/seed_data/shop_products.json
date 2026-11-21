@@ -45,39 +45,12 @@
     "featured": false
   },
   {
-    "title": "Goldberry Postcard",
-    "slug": "goldberry-postcard",
-    "category": "Postcards",
-    "description": "",
-    "price": "2.00",
-    "stock": 30,
-    "featured": false
-  },
-  {
     "title": "Goldberry A4 Print",
     "slug": "goldberry-a4-print",
     "category": "Prints",
     "description": "",
     "price": "6.00",
     "stock": 20,
-    "featured": false
-  },
-  {
-    "title": "Match My Freak! Badges",
-    "slug": "match-my-freak-badges",
-    "category": "Badges & Stickers",
-    "description": "Get one for you, one for your bestie. Match your freak.",
-    "price": "4.00",
-    "stock": 30,
-    "featured": true
-  },
-  {
-    "title": "Mudra Mandala Sticker",
-    "slug": "mudra-mandala-sticker",
-    "category": "Badges & Stickers",
-    "description": "",
-    "price": "4.00",
-    "stock": 30,
     "featured": false
   },
   {
@@ -92,24 +65,6 @@
   {
     "title": "Tantra Mandala Square Postcard",
     "slug": "tantra-mandala-square-postcard",
-    "category": "Postcards",
-    "description": "",
-    "price": "2.00",
-    "stock": 30,
-    "featured": false
-  },
-  {
-    "title": "Tantra Mandala Sticker",
-    "slug": "tantra-mandala-sticker",
-    "category": "Badges & Stickers",
-    "description": "",
-    "price": "4.00",
-    "stock": 30,
-    "featured": false
-  },
-  {
-    "title": "Dragon Postcard",
-    "slug": "dragon-postcard",
     "category": "Postcards",
     "description": "",
     "price": "2.00",
@@ -151,55 +106,6 @@
     "price": "6.00",
     "stock": 20,
     "featured": false
-  },
-  {
-    "title": "Paroxysm",
-    "slug": "paroxysm",
-    "category": "Original Art",
-    "description": "",
-    "price": "1000.00",
-    "stock": 1,
-    "featured": false
-  },
-  {
-    "title": "Solastalgia",
-    "slug": "solastalgia",
-    "category": "Original Art",
-    "description": "",
-    "price": "2000.00",
-    "stock": 1,
-    "featured": true,
-    "image": "static/img/art/pine/solastalgia.webp"
-  },
-  {
-    "title": "Antagony",
-    "slug": "antagony",
-    "category": "Original Art",
-    "description": "",
-    "price": "2500.00",
-    "stock": 1,
-    "featured": true,
-    "image": "static/img/art/pine/antagony.webp"
-  },
-  {
-    "title": "Communion",
-    "slug": "communion",
-    "category": "Original Art",
-    "description": "",
-    "price": "2000.00",
-    "stock": 1,
-    "featured": true,
-    "image": "static/img/art/pine/communion.webp"
-  },
-  {
-    "title": "Division",
-    "slug": "division",
-    "category": "Original Art",
-    "description": "",
-    "price": "1500.00",
-    "stock": 1,
-    "featured": true,
-    "image": "static/img/art/pine/division.webp"
   },
   {
     "title": "Grumpy Green Man Sticker",

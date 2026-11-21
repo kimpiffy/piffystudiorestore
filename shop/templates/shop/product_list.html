@@ -14,36 +14,24 @@
   <div class="shop-grid" id="shopGrid">
     {% for product in products %}
       {% with imgs=product.images.all|slice:"0:2" %}
-      <article class="product-card" data-blob-id="p{{ product.id }}" data-product-slug="{{ product.slug }}">
-        <a class="blob" href="{% url 'shop:product_detail' slug=product.slug %}" aria-label="{{ product.title }}">
+      <article class="product-card" data-product-slug="{{ product.slug }}">
+        <a class="product-image-link" href="{% url 'shop:product_detail' slug=product.slug %}" aria-label="{{ product.title }}">
+          {% if imgs|length >= 1 %}
+            <img class="product-main-image"
+              src="{{ imgs.0.image.url }}"
+              alt="{{ product.title }}"
+              loading="lazy"
+            >
+          {% else %}
+            <span class="product-image-placeholder">No image</span>
+          {% endif %}
           {% if imgs|length >= 2 %}
-            <img class="blob-alt-image"
+            <img class="product-alt-image"
               src="{{ imgs.1.image.url }}"
               alt="{{ product.title }} alternate view"
               loading="lazy"
             >
           {% endif %}
-          <svg class="blob-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <defs>
-              <clipPath id="clip-p{{ product.id }}">
-                <path class="blob-path" d="M50 0 L100 50 L50 100 L0 50 Z"></path>
-              </clipPath>
-            </defs>
-
-            {% if imgs|length >= 1 %}
-              <image class="blob-img blob-img--a"
-                href="{{ imgs.0.image.url }}"
-                xlink:href="{{ imgs.0.image.url }}"
-                width="100" height="100"
-                preserveAspectRatio="xMidYMid slice"
-                clip-path="url(#clip-p{{ product.id }})"
-              />
-            {% else %}
-              <rect width="100" height="100" clip-path="url(#clip-p{{ product.id }})"></rect>
-              <text x="50" y="52" text-anchor="middle" dominant-baseline="middle">no image</text>
-            {% endif %}
-
-          </svg>
         </a>
 
         <h3 class="product-title">{{ product.title }}</h3>
@@ -64,5 +52,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  <script type="module" src="{% static 'js/shop/blobs.js' %}"></script>
+  <script type="module" src="{% static 'js/shop/productList.js' %}"></script>
 {% endblock %}

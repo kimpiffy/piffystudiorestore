@@ -9,6 +9,20 @@ from django.utils.text import slugify
 from shop.models import Category, Product, ProductImage
 
 
+RETIRED_PRODUCT_SLUGS = (
+    "match-my-freak-badges",
+    "division",
+    "communion",
+    "antagony",
+    "solastalgia",
+    "paroxysm",
+    "goldberry-postcard",
+    "mudra-mandala-sticker",
+    "dragon-postcard",
+    "tantra-mandala-sticker",
+)
+
+
 class Command(BaseCommand):
     help = "Seed the shop with the current product lineup from seed_data/shop_products.json."
 
@@ -174,6 +188,8 @@ class Command(BaseCommand):
 
         with seed_file.open("r", encoding="utf-8") as fh:
             products = json.load(fh)
+
+        Product.objects.filter(slug__in=RETIRED_PRODUCT_SLUGS).delete()
 
         all_slugs = [(p.get("slug") or slugify(p["title"])).strip() for p in products]
 
