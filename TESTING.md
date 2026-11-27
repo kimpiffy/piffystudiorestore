@@ -35,7 +35,18 @@ The ID maps to the existing test method, not to an additional test or source-cod
 | `AUTO-SHOP-PAY-001` | `shop.tests.StripeCheckoutConfigurationTests.test_checkout_redirects_cleanly_when_stripe_is_unconfigured` | Unconfigured Stripe checkout returns to cart and displays a Stripe-related message. | All assertions passed. | PASS — 2026-11-27 baseline | `shop/tests.py` |
 | `AUTO-SHOP-CONTACT-001` | `shop.tests.ContactMessageTests.test_contact_submission_renders_visible_success_banner` | Valid contact submission renders visible success feedback. | All assertions passed. | PASS — 2026-11-27 baseline | `shop/tests.py` |
 
-This inventory documents the current 13 tests; it does not claim coverage beyond the assertions described.
+The original inventory documents 13 tests; Task 002 adds four production-configuration tests, for 17 tests total. This does not claim coverage beyond the assertions described.
+
+### Production configuration security tests
+
+These configuration tests were added in Task 002; they run the settings module in isolated child processes and do not print secret values.
+
+| Test ID | Test module and method | Purpose / assertions | Result |
+|---|---|---|---|
+| `AUTO-CONFIG-SEC-001` | `config.tests.ProductionSettingsTests.test_render_forces_debug_off_and_uses_django_secret_key` | Render settings force `DEBUG=False` even when the environment says true and load `DJANGO_SECRET_KEY`. | PASS — Task 002 |
+| `AUTO-CONFIG-SEC-002` | `config.tests.ProductionSettingsTests.test_render_accepts_existing_secret_key_during_migration` | Existing Render `SECRET_KEY` remains accepted during the environment-variable rename. | PASS — Task 002 |
+| `AUTO-CONFIG-SEC-003` | `config.tests.ProductionSettingsTests.test_production_without_a_secret_key_fails_to_start` | Production settings fail closed rather than using a development fallback when no secret is configured. | PASS — Task 002 |
+| `AUTO-CONFIG-SEC-004` | `config.tests.ProductionSettingsTests.test_render_manifest_uses_secure_production_settings` | Render manifest declares `DJANGO_SECRET_KEY` and disables DEBUG. | PASS — Task 002 |
 
 ## 3. Automated test baseline
 
@@ -46,6 +57,9 @@ This inventory documents the current 13 tests; it does not claim coverage beyond
 | 2026-11-27 | [`86f3708`](https://github.com/kimpiffy/piffystudiorestore/commit/86f3708) | All 13 tests pass under the previously isolated local-development setup. | 13 tests passed in 26.730 seconds; Django system check reported no issues. The runner warned that `staticfiles/` did not exist. | PASS — historical baseline | Test-run output in the prior assessment session; this file records the result, not a contemporaneous CI artifact. |
 | 2026-11-27 | [`7dfd648`](https://github.com/kimpiffy/piffystudiorestore/commit/7dfd6483ef3ee4e65b704a698f788e18faa87a47) | All 13 existing tests pass with dedicated test settings; migrations apply; no production service or repository media/database is used. | 13 tests passed in 24.663 seconds. Django system checks reported no issues; migrations applied; the missing-`staticfiles/` warning was resolved. | PASS — Task 001 | Local test-run output, 27 Nov 2026. |
 | 2026-11-27 | [`cdbf618`](https://github.com/kimpiffy/piffystudiorestore/commit/cdbf618c840a720017e9c3d5c6e4361fffeb1a93) | The same 13 tests pass under coverage measurement. | 13 tests passed in 54.800 seconds. Coverage scope: 1,330 statements and 432 branches; 745 statements and 179 branches covered; statement coverage 56.0%, branch coverage 41.4%, combined coverage 52.4%. | PASS — measured baseline | Local `coverage.py` 7.6.1 run and JSON report, 27 Nov 2026. |
+| 2026-11-27 | Task 002 security-test commit [`2c193b8`](https://github.com/kimpiffy/piffystudiorestore/commit/2c193b8199f273691d60d9479db30ab73876974f) | New production security tests should reject insecure Render DEBUG/key behavior and require the Render manifest to use the Django setting name. | **Red:** 4 new tests ran; all 4 failed against the pre-fix configuration: production accepted a missing key, Render left DEBUG enabled, the existing `SECRET_KEY` alias was ignored, and the manifest used `SECRET_KEY`. | FAIL — expected TDD red | Isolated test-run output, 27 Nov 2026. |
+| 2026-11-27 | Task 002 implementation [`06a1bf4`](https://github.com/kimpiffy/piffystudiorestore/commit/06a1bf4000fdf99784bac646911b589ef5efcfb0) | All existing and new tests pass under dedicated settings. | 17 tests passed in 26.919 seconds; migrations applied; Django system checks reported no issues. | PASS — security fix verification | Local test-run output, 27 Nov 2026. |
+| 2026-11-27 | Task 002 coverage run | The 17-test suite passes under branch coverage measurement. | 17 tests passed in 57.483 seconds. Configured scope: 1,338 statements and 438 branches; 750 statements and 181 branches covered; statement coverage 56.1%, branch coverage 41.3%, combined coverage 52.4%. | PASS — measured Task 002 baseline | Local `coverage.py` 7.6.1 run and JSON report, 27 Nov 2026. |
 
 The historical `86f3708` run used an in-memory SQLite test database and local-development settings; it warned that `staticfiles/` was missing. The Task 001 runs use the dedicated `config.test_settings` module described below. These results do not verify production deployment, external services, payment collection or manual browser behavior.
 
@@ -76,7 +90,7 @@ python -m coverage run --rcfile=.coveragerc manage.py test --settings=config.tes
 python -m coverage report --rcfile=.coveragerc
 ```
 
-The first command replaces the current coverage data with a fresh test run; the second prints the measured report. The 27 November 2026 baseline was **56.0% statement coverage, 41.4% branch coverage, and 52.4% combined coverage** across the configured 1,330 statements and 432 branches. This is measured code coverage, not a claim that the application's features are 52.4% functionally tested. The report showed particularly low coverage in `shop/views.py` (26.4%), `interactions/views.py` (21.1%) and `accounts/views.py` (43.5%).
+The first command replaces the current coverage data with a fresh test run; the second prints the measured report. The Task 001 baseline was **56.0% statement coverage, 41.4% branch coverage, and 52.4% combined coverage** across 1,330 statements and 432 branches. After Task 002, coverage is **56.1% statement, 41.3% branch, and 52.4% combined** across 1,338 statements and 438 branches. The four security tests launch isolated subprocesses to verify settings imports; coverage.py does not measure those child processes, so the production-only settings branches they exercise are not included in the coverage totals. This is measured code coverage, not a claim that the application's features are 52.4% functionally tested. The report showed particularly low coverage in `shop/views.py` (26.4%), `interactions/views.py` (21.1%) and `accounts/views.py` (43.5%).
 
 ## 4. TDD evidence
 
@@ -86,9 +100,11 @@ The first command replaces the current coverage data with a fresh test run; the 
 - The first substantive shop test suite is visible in [`a0b2297`](https://github.com/kimpiffy/piffystudiorestore/commit/a0b2297) on 18 August 2026, after the shop, checkout and staff workflows had already been developed.
 - Further regression tests were added or revised alongside later shop-media and authentication changes, including [`7eba725`](https://github.com/kimpiffy/piffystudiorestore/commit/7eba725), [`9aaf403`](https://github.com/kimpiffy/piffystudiorestore/commit/9aaf403) and [`e33cd75`](https://github.com/kimpiffy/piffystudiorestore/commit/e33cd75).
 - The 21 August 2026 commit titled “MANUAL TESTING AMENDMENTS” ([`4c44d72`](https://github.com/kimpiffy/piffystudiorestore/commit/4c44d72)) changes CSS only; it is not evidence that test code or test results were added.
-- The history reviewed for [BUGLOG.md](BUGLOG.md) does not show test-first commits, recorded red/green runs or contemporaneous CI results.
+- Before Task 002, the repository history did not show test-first commits, recorded red/green runs or contemporaneous CI results.
 
-**Conclusion:** Automated regression tests exist and the current 13-test suite passed in the recorded local run. A test-driven development process is **not evidenced** by the available history; this does not establish whether informal test-first work occurred outside Git.
+- Task 002 provides explicit red/green evidence: four configuration-security tests were committed separately in [`2c193b8`](https://github.com/kimpiffy/piffystudiorestore/commit/2c193b8199f273691d60d9479db30ab73876974f). **Red result:** all four failed against the old configuration: missing production key did not stop startup; Render retained `DEBUG=True`; legacy Render `SECRET_KEY` was ignored; and `render.yaml` used the mismatched key name. After the implementation commit [`06a1bf4`](https://github.com/kimpiffy/piffystudiorestore/commit/06a1bf4000fdf99784bac646911b589ef5efcfb0), all four passed as part of the complete 17-test suite.
+
+**Conclusion:** The original tests are regression tests, but their history does not prove they were written test-first. Task 002 demonstrates a genuine test-first sequence for the production configuration defects.
 
 ### Continuing TDD record
 

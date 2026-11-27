@@ -216,7 +216,7 @@ These are documentation placeholders, not a substitute for checking each field a
 
 ## Known issues and current limitations
 
-These items come from the code and the read-only Gateway Qualifications assessment audit. They are documented findings, not claims that a fix has been made. Recheck each item after changes and link its test ID/evidence from [TESTING.md](TESTING.md).
+These items come from the code and the read-only Gateway Qualifications assessment audit. Resolved items are identified with their test evidence; unresolved items remain limitations. Link verification details from [TESTING.md](TESTING.md).
 
 ### Functional and payment limitations
 
@@ -232,10 +232,10 @@ These items come from the code and the read-only Gateway Qualifications assessme
 
 ### Security, deployment and assessment-evidence limitations
 
-- **Production secret-name mismatch:** Django settings read `DJANGO_SECRET_KEY`, while the Render manifest configures `SECRET_KEY`. Confirm the effective production value and remove any unsafe fallback before deployment.
-- **Tracked local environment file:** `.env.local` is tracked despite the ignore rule and the assessment audit found unresolved conflict markers there. Review it privately, remove it from version control, and rotate any credentials if present. Never copy values into documentation.
+- **Production secret configuration:** Code now forces `DEBUG=False` on Render, requires a configured secret when debug is disabled, reads `DJANGO_SECRET_KEY`, and temporarily accepts the existing `SECRET_KEY` name. Automated coverage is in `AUTO-CONFIG-SEC-001` through `AUTO-CONFIG-SEC-004`; the live Render environment has not been inspected or changed. Before the next manual Render deploy, set `DJANGO_SECRET_KEY` in the service environment to the existing secret value using Render's private dashboard, retain the previous variable until the new deployment is verified, and keep `DEBUG=False`. Do not paste the value into Git, logs or chat.
+- **Local environment history:** `.env.local` is now ignored and untracked, and tracked `.venv/` files have been removed from the Git index without deleting local copies. Historical revisions of `.env.local` were reviewed without displaying values; no secret-named variables or database URL credentials were detected. The local file still contains unresolved merge markers and remains on disk; review it privately before using it. Removing it from the current Git tree does not rewrite prior history.
 - **Deployment parity is not demonstrated:** Render build/deployment configuration exists, but matching local/production behavior, production database operation, persistent media and payment flows are not evidenced.
-- **Test coverage is limited:** the current 13-test suite does not comprehensively cover CRUD, invalid form submissions, cart edge cases, payment/webhook handling, responsive layouts or accessibility.
+- **Test coverage is limited:** the current 17-test suite does not comprehensively cover CRUD, invalid form submissions, cart edge cases, payment/webhook handling, responsive layouts or accessibility.
 - **Design and assessment records are incomplete:** approved user stories, wireframes, detailed model field documentation, an ERD, comprehensive manual test evidence, a TDD sequence and source/AI attribution records remain TODO.
 - **Code-quality/standards results are absent:** no repository-wide Python PEP 8, HTML, CSS or JavaScript validation result is documented.
 - **Other route/UI issues need review:** the Stripe webhook is registered at two paths, and no custom 404 redirect behavior is documented. Confirm intended routes and error-page behavior.
@@ -248,7 +248,7 @@ The sequence below is a proposed development backlog informed by the assessment 
 
 | Priority | Proposed work | Completion evidence |
 |---|---|---|
-| P0 | Correct production secret configuration and audit/remove tracked environment files; address credentials safely. | Deployment configuration review, secret-handling evidence and a successful production security check. |
+| P0 | Complete the manual Render secret-variable transition without unintentionally rotating the key; inspect the local ignored environment file privately. | Render configuration review and a successful manually initiated production security check. |
 | P0 | Complete variant management and connect variant selection, stock and price through cart, Stripe and order records. | Regression tests for variant CRUD and end-to-end test-mode checkout. |
 | P0 | Make guest order persistence compatible with the model and make payment webhook processing idempotent. | Tests for guest/member orders, repeated events, invalid signatures and clear transaction feedback. |
 | P1 | Review all state-changing routes and validate form/cart input; complete CRUD and permission coverage. | Route-by-route automated tests and recorded negative/authorization cases. |
@@ -301,7 +301,7 @@ Open `http://127.0.0.1:8000/`.
 | `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP sender credentials. |
 | `SEO_CANONICAL_BASE_URL`, `SEO_PRODUCTION_HOSTS` | Canonical URL and production SEO host configuration. |
 
-**TODO:** Add a checked-in `.env.example` containing variable names and safe placeholders only; confirm which optional settings are required for local testing versus production. `.env.local` is currently tracked in the repository history; review its contents privately and remove/rotate any credentials if present before distributing the repository.
+`.env.example` contains variable names and safe placeholders only. For local setup, copy it to `.env` and replace the development secret placeholder with a locally generated key. Never commit `.env` or `.env.local`; both are ignored. `.env.local` exists in earlier Git history and remains as an ignored local file, so review it privately before use. The repository history review found no secret-named assignments or database URL credentials in its recorded revisions; no credential rotation is indicated by that review.
 
 ### Seed shop data
 
