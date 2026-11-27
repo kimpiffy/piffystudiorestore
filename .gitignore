@@ -35,6 +35,11 @@ media/products/*_*.svg
 !media/products/placeholder-product.svg
 db.sqlite3
 
+# ---- COVERAGE ----
+.coverage
+.coverage.*
+htmlcov/
+
 # ---- NODE / MEDIA OPTIMIZER ----
 node_modules/
 .media-optimizer-state.json

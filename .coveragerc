@@ -1,0 +1,21 @@
+[run]
+branch = True
+source =
+    accounts
+    config
+    interactions
+    pages
+    portfolio
+    shop
+omit =
+    */migrations/*
+    */tests.py
+    */test_settings.py
+    */asgi.py
+    */wsgi.py
+    manage.py
+
+[report]
+show_missing = True
+skip_covered = True
+precision = 1
