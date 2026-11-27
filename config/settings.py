@@ -3,6 +3,7 @@ import os
 
 import dj_database_url
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +24,17 @@ DEBUG = os.getenv("DEBUG", "false").strip().lower() in (
     "yes",
     "on",
 )
+
+if os.getenv("RENDER") is not None:
+    DEBUG = False
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY") or os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured(
+            "DJANGO_SECRET_KEY must be configured when DEBUG is disabled."
+        )
+    SECRET_KEY = "unsafe-default-for-dev"
 
 raw_allowed = os.getenv(
     "ALLOWED_HOSTS",

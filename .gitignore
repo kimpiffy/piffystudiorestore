@@ -7,12 +7,14 @@ __pycache__/
 *.log
 
 # ---- VENV ----
-venv/
-env/
-*.env
+/.venv/
+/venv/
+/env/
 .env
 .env.local
-.venv
+.env.*
+!.env.example
+*.env
 
 
 # ---- DJANGO ----

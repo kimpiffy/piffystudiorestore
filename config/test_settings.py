@@ -5,6 +5,7 @@ from pathlib import Path
 
 os.environ["RENDER"] = "1"
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+os.environ["DJANGO_SECRET_KEY"] = "test-only-not-for-production"
 
 for setting in (
     "CLOUDINARY_URL",

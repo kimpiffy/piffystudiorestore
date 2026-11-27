@@ -7,7 +7,7 @@ services:
     envVars:
       - key: DEBUG
         value: "False"
-      - key: SECRET_KEY
+      - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
         fromDatabase:
