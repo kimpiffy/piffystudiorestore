@@ -43,27 +43,40 @@ This inventory documents the current 13 tests; it does not claim coverage beyond
 
 | Date | Revision | Expected result | Actual result | Status | Evidence |
 |---|---|---|---|---|---|
-| 2026-11-27 | [`86f3708`](https://github.com/kimpiffy/piffystudiorestore/commit/86f3708) | All 13 tests pass under isolated local-development settings, without loading local dotenv credentials. | 13 tests passed in 26.730 seconds; Django system check reported no issues. The runner warned that `staticfiles/` did not exist. | PASS — recorded baseline | Test-run output in the prior assessment session; this file records the result, not a contemporaneous CI artifact. |
+| 2026-11-27 | [`86f3708`](https://github.com/kimpiffy/piffystudiorestore/commit/86f3708) | All 13 tests pass under the previously isolated local-development setup. | 13 tests passed in 26.730 seconds; Django system check reported no issues. The runner warned that `staticfiles/` did not exist. | PASS — historical baseline | Test-run output in the prior assessment session; this file records the result, not a contemporaneous CI artifact. |
+| 2026-11-27 | [`7dfd648`](https://github.com/kimpiffy/piffystudiorestore/commit/7dfd6483ef3ee4e65b704a698f788e18faa87a47) | All 13 existing tests pass with dedicated test settings; migrations apply; no production service or repository media/database is used. | 13 tests passed in 24.663 seconds. Django system checks reported no issues; migrations applied; the missing-`staticfiles/` warning was resolved. | PASS — Task 001 | Local test-run output, 27 Nov 2026. |
+| 2026-11-27 | [`cdbf618`](https://github.com/kimpiffy/piffystudiorestore/commit/cdbf618c840a720017e9c3d5c6e4361fffeb1a93) | The same 13 tests pass under coverage measurement. | 13 tests passed in 54.800 seconds. Coverage scope: 1,330 statements and 432 branches; 745 statements and 179 branches covered; statement coverage 56.0%, branch coverage 41.4%, combined coverage 52.4%. | PASS — measured baseline | Local `coverage.py` 7.6.1 run and JSON report, 27 Nov 2026. |
 
-The recorded run used an in-memory SQLite test database, `DEBUG=true`, settings loaded without reading `.env` or `.env.local`, and `RENDER` unset before tests started. This result is limited to the automated tests under that local setup; it does not verify production deployment, external services, payment collection or manual browser behavior.
+The historical `86f3708` run used an in-memory SQLite test database and local-development settings; it warned that `staticfiles/` was missing. The Task 001 runs use the dedicated `config.test_settings` module described below. These results do not verify production deployment, external services, payment collection or manual browser behavior.
 
-### Reproducing the recorded local setup
+### Dedicated isolated test configuration
 
-The following command is the command recorded for the baseline, from the repository root with dependencies installed and the virtual environment active:
-
-```bash
-python -c 'import os; os.environ["DJANGO_SETTINGS_MODULE"]="config.settings"; os.environ["RENDER"]="1"; os.environ["DEBUG"]="true"; os.environ["DATABASE_URL"]="sqlite:///:memory:"; import config.settings; os.environ.pop("RENDER", None); from django.core.management import execute_from_command_line; execute_from_command_line(["manage.py", "test"])'
-```
-
-The settings module is imported while `RENDER` is set so local dotenv files are not loaded. `RENDER` is then removed before running tests because the shop seeding command has Render-specific behavior. `DEBUG=true` enables local-development settings for the test client.
-
-For an ordinary local environment where environment loading has been reviewed and configured, the standard Django command is:
+Install the development dependencies once from the repository root:
 
 ```bash
-python manage.py test
+python -m pip install -r requirements-dev.txt
 ```
 
-**TODO:** Confirm and document a short, cross-platform test command after local environment setup is standardized. Never add real environment credentials to this document.
+Run the complete suite with:
+
+```bash
+python manage.py test --settings=config.test_settings
+```
+
+`config.test_settings` prevents base settings from reading `.env` or `.env.local` by setting `RENDER` during base-settings import, then removes it before the tests start so `seed_shop` follows local behavior. It forces an in-memory SQLite database, temporary media and static roots, filesystem media storage, Django's in-memory email backend and blank Stripe, Cloudinary, OpenAI and SMTP credentials. Its temporary directories are removed when the process exits. It also enables `DEBUG` and disables HTTPS-only redirects/cookies strictly for the test client; production settings are unchanged. These settings prevent the application's configured Stripe, Cloudinary, OpenAI and SMTP integrations from reaching their external services during this suite.
+
+The static root is created within the temporary test directory, avoiding the previous WhiteNoise warning about a missing `staticfiles/` directory. No existing test files or assertions were changed.
+
+### Measuring code coverage
+
+The report uses branch measurement. Coverage is configured in `.coveragerc` for the Django project packages; test modules, migrations, test settings, ASGI/WSGI entry points and `manage.py` are excluded. After installing `requirements-dev.txt`, run:
+
+```bash
+python -m coverage run --rcfile=.coveragerc manage.py test --settings=config.test_settings
+python -m coverage report --rcfile=.coveragerc
+```
+
+The first command replaces the current coverage data with a fresh test run; the second prints the measured report. The 27 November 2026 baseline was **56.0% statement coverage, 41.4% branch coverage, and 52.4% combined coverage** across the configured 1,330 statements and 432 branches. This is measured code coverage, not a claim that the application's features are 52.4% functionally tested. The report showed particularly low coverage in `shop/views.py` (26.4%), `interactions/views.py` (21.1%) and `accounts/views.py` (43.5%).
 
 ## 4. TDD evidence
 
