@@ -9,16 +9,10 @@ urlpatterns = [
     path('digital/', views.digital, name='digital'),  # Corrected name
     path('art/', views.art, name='art'),  # Corrected name
     path('art/<slug:slug>/', views.art_project_detail, name='art_project_detail'),
-    path('styles/', views.styles, name='styles'),
     path('industry/', views.industry, name='industry'),
     re_path(
         r'^industry/brand-guidelines\.pdf/?$',
         views.industry_brand_guidelines_pdf,
         name='industry_brand_guidelines_pdf',
-    ),
-    re_path(
-        r'^styles/brand-guidelines\.pdf/?$',
-        views.industry_brand_guidelines_pdf,
-        name='styles_brand_guidelines_pdf',
     ),
 ]

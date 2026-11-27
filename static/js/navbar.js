@@ -403,31 +403,9 @@
     setupSmartScrollNav(contactTargets);
   }
 
-  const stylesShell = document.querySelector('.styles-shell');
-  if (stylesShell) {
-    const scrollModeQuery = window.matchMedia(
-      '(max-width: 767px), (orientation: landscape) and (max-height: 600px)'
-    );
-
-    function applyStylesNavBehavior() {
-      if (scrollModeQuery.matches) {
-        setupSmartScrollNav(stylesShell);
-      }
-    }
-
-    applyStylesNavBehavior();
-
-    if (scrollModeQuery.addEventListener) {
-      scrollModeQuery.addEventListener('change', applyStylesNavBehavior);
-    } else if (scrollModeQuery.addListener) {
-      scrollModeQuery.addListener(applyStylesNavBehavior);
-    }
-  }
-
   function shouldUseInFlowNav() {
     const fixedNavPages = [
       'shop-page',
-      'styles-page',
       'about-page',
       'art-page',
       'digital-page',

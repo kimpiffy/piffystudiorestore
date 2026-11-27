@@ -11,8 +11,6 @@ const projectRoot = path.resolve(__dirname, '..');
 const manifestPath = path.join(projectRoot, '.media-optimizer-state.json');
 const imageDirs = [
   'static/img',
-  'static/styles/publication-web-resources/image',
-  'static/styles/publication-web-resources/Thumbnails',
 ];
 const videoDirs = ['static/video'];
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;

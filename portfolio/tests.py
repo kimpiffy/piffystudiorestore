@@ -16,9 +16,10 @@ class CommunityProjectTests(TestCase):
 
 class RetiredStylesPublicationTests(TestCase):
     def test_styles_publication_route_is_removed(self):
-        response = self.client.get("/work/styles/")
-
-        self.assertEqual(response.status_code, 404)
+        for path in ("/work/styles/", "/work/styles/brand-guidelines.pdf"):
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 404)
 
     def test_industry_route_still_renders_brand_guidelines(self):
         response = self.client.get(reverse("portfolio:industry"))

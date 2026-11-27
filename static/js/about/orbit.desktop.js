@@ -29,16 +29,6 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
   function openBio() {
     const contactHref = routes?.contact || "/contact/";
     const cvHref = routes?.cv || "#";
-    const styleHref = routes?.style || "/work/styles/";
-    const styleLink =
-      styleHref && styleHref !== "#"
-        ? `
-          <a class="btn project-cta lilac"
-             href="${escapeHtml(styleHref)}"
-             style="font-family: picnic; font-size: 2rem; text-decoration:none;">
-            styles
-          </a>`
-        : "";
     const cvLink =
       cvHref && cvHref !== "#"
         ? `
@@ -57,7 +47,6 @@ export function createOrbitController({ stage, overlay, routes, wordsLayer }) {
         ${escapeHtml(BIO_TEXT)}
       </p>
       <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top: 12px;">
-        ${styleLink}
         ${cvLink}
         <a class="btn project-cta lilac"
            href="${escapeHtml(contactHref)}"

@@ -1,9 +1,7 @@
 from pathlib import Path
 
 from django.http import FileResponse, Http404
-from django.shortcuts import redirect
 from django.shortcuts import render
-from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -859,31 +857,14 @@ def people(request):
     )
 
 
-def styles(request):
-    title = "Styles | Kim Piffy"
-    description = (
-        "Browse Kim Piffy's styles publication in an embedded interactive viewer."
-    )
-
-    styles_html_dir = (
-        Path(__file__).resolve().parent.parent
-        / "static" / "styles" / "publication-web-resources" / "html"
-    )
-    page_count = len(list(styles_html_dir.glob("publication*.html"))) if styles_html_dir.exists() else 0
-    styles_page_urls = [
-        static(
-            "styles/publication-web-resources/html/"
-            + ("publication.html" if i == 0 else f"publication-{i}.html")
-        )
-        for i in range(page_count)
-    ]
-
+def industry(request):
+    title = "Industry Brand Guidelines | Kim Piffy"
+    description = "View Kim Piffy's industry brand guidelines."
     return render(
         request,
-        "portfolio/styles.html",
+        "portfolio/industry.html",
         {
-            "styles_package_url": static("styles/index.html"),
-            "styles_page_urls": styles_page_urls,
+            "pdf_url": reverse("portfolio:industry_brand_guidelines_pdf"),
             "seo": build_seo(
                 request,
                 title=title,
@@ -893,13 +874,9 @@ def styles(request):
                 twitter_title=title,
                 twitter_description=description,
             ),
-            "section_h1": "Styles",
+            "section_h1": "Industry Brand Guidelines",
         },
     )
-
-
-def industry(request):
-    return redirect("portfolio:styles", permanent=True)
 
 
 @xframe_options_sameorigin

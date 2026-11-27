@@ -15,6 +15,16 @@ class HomepageNavigationTests(TestCase):
         self.assertContains(response, "data-url-contact=")
         self.assertNotContains(response, "data-url-style=")
 
+        for route_name in (
+            "portfolio:art",
+            "portfolio:digital",
+            "portfolio:people",
+            "pages:contact",
+        ):
+            with self.subTest(route=route_name):
+                linked_page = self.client.get(reverse(route_name))
+                self.assertEqual(linked_page.status_code, 200)
+
         project_root = Path(__file__).resolve().parent.parent
         for script in (
             "static/js/about/orbit.desktop.js",
