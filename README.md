@@ -112,7 +112,6 @@ These are implementation details, not an accessibility or responsive pass result
 | Art | `/work/art/` | Art portfolio and project details. |
 | Digital | `/work/digital/` | Digital work portfolio and project interactions. |
 | Community | `/work/people/` | Community/creative-health work and project details. |
-| Styles | `/work/styles/` | Responsive publication/studio-style presentation. |
 | Industry | `/work/industry/` | Brand-guidelines/document viewer. |
 
 Named routes are maintained in `pages/urls.py` and `portfolio/urls.py`. Community project detail routes are registered at `/community/<slug>/`.
@@ -151,7 +150,7 @@ Authenticated routes under `/accounts/` include a dashboard, contact-message and
 | Django app | Responsibility |
 |---|---|
 | `pages` | Home, About, Contact, contact/newsletter models, SEO metadata, sitemap and robots support. |
-| `portfolio` | Art, Digital, Community, Styles and Industry portfolio views and project data. |
+| `portfolio` | Art, Digital, Community and Industry portfolio views and project data. |
 | `shop` | Catalogue, cart, orders, product media, likes, Stripe integration and staff shop management. |
 | `accounts` | Login/logout, dashboard, contact-message and newsletter administration. |
 | `interactions` | Creative-prompt API endpoint and generation/fallback logic. |
@@ -199,7 +198,7 @@ These are documentation placeholders, not a substitute for checking each field a
 
 ### Static files and uploaded media
 
-- Source CSS, JavaScript, fonts, images, video and publication assets are in `static/`.
+- Source CSS, JavaScript, fonts, images and video are in `static/`.
 - User-uploaded product media is stored under `media/` locally. When Cloudinary configuration is present, the custom shop storage backend is selected.
 - In production, WhiteNoise serves collected static assets from `STATIC_ROOT`.
 - The build script runs the media optimizer, installs Python requirements, applies migrations, seeds the shop and collects static assets.
@@ -220,6 +219,7 @@ These items come from the code and the read-only Gateway Qualifications assessme
 
 ### Functional and payment limitations
 
+- **Styles publication retired:** The standalone InDesign publication was intentionally removed after production-equivalent static collection reproduced a missing-font failure. Its old route and assets are no longer part of the application. The separate Industry brand-guidelines viewer and its original PDF asset have been preserved. Regression and collection evidence is recorded in [TESTING.md](TESTING.md).
 - **Product variants are incomplete:** variant routes are present, but the views refer to add/edit template names that are not in the repository (the available template is `shop/templates/shop/manage/variant_form.html`). Product detail variant selection is not connected to the add-to-cart submission; variant pricing/stock is not carried through the cart and checkout.
 - **Guest payment order creation is at risk:** the guest checkout path can reach webhook order creation without an authenticated user, while `Order.user` is a required foreign key. Successful guest payments may therefore fail to create an order.
 - **Webhook idempotency is not implemented:** repeated Stripe event delivery may create duplicate orders; the successful payment/webhook path has not been integration-tested.
@@ -235,8 +235,8 @@ These items come from the code and the read-only Gateway Qualifications assessme
 - **Production secret configuration:** Code now forces `DEBUG=False` on Render, requires a configured secret when debug is disabled, reads `DJANGO_SECRET_KEY`, and temporarily accepts the existing `SECRET_KEY` name. Automated coverage is in `AUTO-CONFIG-SEC-001` through `AUTO-CONFIG-SEC-004`; the live Render environment has not been inspected or changed. Before the next manual Render deploy, set `DJANGO_SECRET_KEY` in the service environment to the existing secret value using Render's private dashboard, retain the previous variable until the new deployment is verified, and keep `DEBUG=False`. Do not paste the value into Git, logs or chat.
 - **Local environment history:** `.env.local` is now ignored and untracked, and tracked `.venv/` files have been removed from the Git index without deleting local copies. Historical revisions of `.env.local` were reviewed without displaying values; no secret-named variables or database URL credentials were detected. The local file still contains unresolved merge markers and remains on disk; review it privately before using it. Removing it from the current Git tree does not rewrite prior history.
 - **Deployment parity is not demonstrated:** Render build/deployment configuration exists, but matching local/production behavior, production database operation, persistent media and payment flows are not evidenced.
-- **Test coverage is limited:** the current 17-test suite does not comprehensively cover CRUD, invalid form submissions, cart edge cases, payment/webhook handling, responsive layouts or accessibility.
-- **Design and assessment records are incomplete:** approved user stories, wireframes, detailed model field documentation, an ERD, comprehensive manual test evidence, a TDD sequence and source/AI attribution records remain TODO.
+- **Test coverage is limited:** the current 22-test suite does not comprehensively cover CRUD, invalid form submissions, cart edge cases, payment/webhook handling, responsive layouts or accessibility.
+- **Design and assessment records are incomplete:** approved user stories, wireframes, detailed model field documentation, an ERD, comprehensive manual test evidence, broader TDD evidence and external-source attribution records remain TODO.
 - **Code-quality/standards results are absent:** no repository-wide Python PEP 8, HTML, CSS or JavaScript validation result is documented.
 - **Other route/UI issues need review:** the Stripe webhook is registered at two paths, and no custom 404 redirect behavior is documented. Confirm intended routes and error-page behavior.
 
@@ -315,7 +315,7 @@ python manage.py seed_shop
 
 ## Testing and assessment evidence
 
-Automated tests are maintained in the apps' `tests.py` modules. A current local test run and the evidence gaps are documented in [TESTING.md](TESTING.md). The Git history shows when tests were added or changed, but does not establish a test-driven-development cycle or historical pass results.
+Automated tests are maintained in the apps' `tests.py` modules. A current local test run and the evidence gaps are documented in [TESTING.md](TESTING.md). Tasks 002 and 002A have separate test-first commits and recorded red/green results; that evidence does not establish test-first development for the rest of the project history.
 
 **TODO:** Add approved user stories, wireframes, database schema diagram, manual test evidence and external code/AI attribution records as they are completed.
 
@@ -330,6 +330,10 @@ Before deploying, configure a production secret key, allowed hosts, database and
 ## Credits, licensing and contact
 
 - Frameworks, packages, fonts, images, video and portfolio content retain their respective licenses and ownership.
-- **TODO:** Add a complete asset/source attribution table, including externally sourced and AI-assisted material where applicable.
+- **TODO:** Add a complete attribution table for externally sourced assets and references.
 - **TODO:** Confirm the intended project license and repository distribution terms.
 - Developer/contact: Kim Piffy; see the published studio contact details on the site.
+
+### AI assistance and authorship
+
+Git history is preserved. Copilot assisted with the isolated test configuration and coverage setup (Task 001), production security tests/configuration and related documentation (Task 002), and the Styles-removal regression tests, implementation, Industry PDF restoration and assessment documentation (Task 002A). This disclosure records that assistance; it does not claim that AI authored the pre-existing application, portfolio content, design work or assets. Test outcomes and the scope of the AI-assisted changes are documented in [TESTING.md](TESTING.md) and [BUGLOG.md](BUGLOG.md).
