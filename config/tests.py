@@ -3,8 +3,11 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
-from django.test import SimpleTestCase
+from django.conf import settings
+from django.core.management import call_command
+from django.test import SimpleTestCase, override_settings
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -64,3 +67,26 @@ class ProductionSettingsTests(SimpleTestCase):
         self.assertIn("key: DJANGO_SECRET_KEY", manifest)
         self.assertNotIn("key: SECRET_KEY", manifest)
         self.assertIn('key: DEBUG\n        value: "False"', manifest)
+
+
+class ProductionStaticCollectionTests(SimpleTestCase):
+    def test_collectstatic_succeeds_with_production_manifest_storage(self):
+        with TemporaryDirectory(prefix="piffy-collectstatic-test-") as temp_dir:
+            static_root = Path(temp_dir) / "staticfiles"
+            staticfiles_storage = {
+                "BACKEND": (
+                    "whitenoise.storage."
+                    "CompressedManifestStaticFilesStorage"
+                ),
+            }
+            storages = {
+                **settings.STORAGES,
+                "staticfiles": staticfiles_storage,
+            }
+
+            with override_settings(
+                DEBUG=False,
+                STATIC_ROOT=static_root,
+                STORAGES=storages,
+            ):
+                call_command("collectstatic", interactive=False, verbosity=0)

@@ -13,4 +13,15 @@ class CommunityProjectTests(TestCase):
         )
         self.assertEqual(detail_response.status_code, 404)
 
-# Create your tests here.
+
+class RetiredStylesPublicationTests(TestCase):
+    def test_styles_publication_route_is_removed(self):
+        response = self.client.get("/work/styles/")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_industry_route_still_renders_brand_guidelines(self):
+        response = self.client.get(reverse("portfolio:industry"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Brand guidelines")
